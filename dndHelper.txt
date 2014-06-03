@@ -1,0 +1,75 @@
+swordfighting graphical interface ideas:
+   Key points:
+      I want to keep this as a tool to help Justin decide what happens in a fight
+         Keep input easy if possible - I attack this guy vs that guy
+         Allow greater input if necessary - I swing my sword into his left shoulder, then turn and stab the guy behind me
+         Give feedback quickly - He takes a gaping bloody wound to the left shoulder (7 damage)
+         Give rollplaying feedback - He discards his shield as he can't keep it raised. He is fighting for an opening to flee.
+      I want to help keep track of hitpoints and other stats
+         Have the players create a character in the interface and have save/load mechanisms
+         
+      This tool should only be used to simulate fighting, so no scenery or visuals
+
+   Information shown:
+      Display enemy information
+         Posture (see below)
+         Wounds (see below)
+         Guesses at statistics
+            As the fight goes on, more information is displayed about the enemy (protects left side, yells before attacking, etc)
+      Display your information
+         Posture (see below) 
+         Damage Taken
+            HP remaining (keep this until the wound system is fully implemented?)
+            Wounds (see below) 
+         Other Statistics
+      Display Allies information
+         Posture (see below) 
+         Wounds (see below) 
+         
+   Actions available:
+      Depends on how in depth you want to get
+         1st level: Who?
+            "Attack/Defend against this character"
+            Rolls basic attack roll vs AC roll
+         2nd level: What?
+            "Attack this character's Torso/Leg etc..."
+            Rolls Dex check to see if you hit body part (Based on enemy dex bonus, Torso is easier to hit than hand/head)
+            Rolls attack roll vs specific AC of body part (Armor is highest in Torso, then leg, ... head, hand)
+         3rd level: Maneuver?
+            "Attack this character, spin, kick him in the face, then roast him with a fireball"
+            For each stage of the maneuver:
+               Roll an Int check vs enemy Int: if it fails they get a bonus to Dex because they see what you are doing
+               Proceed like it was a 2nd level action
+   Ending conditions:
+      First blood - first hit wins
+      To the death - mortal/incapacitating wound, need some kind of endurance factor with blood loss incorporated
+      To the pain - practice/combo mode
+      
+   Other clairifications:
+      Posture
+         Placement and Facing
+         Where known weapons are
+         Where known weak and strong points are (This could change based on the Wis of the player?)
+         Capabilities of attack/movement (a sword moves differently to attack than a spear)
+         
+      Wounds
+         Where?
+            Neck
+            Face
+            Shoulder/upper arm
+               Right/Left
+            Torso
+               Right side/Left side
+            Thigh
+               Right/Left
+            Lower leg
+               Right/Left
+            Hand
+               Right/Left
+         How Serious?
+            Just a scratch 
+            Needs a bandaid
+            Needs medical attention
+            Bleeding profusely
+            How is he still standing?
+         
