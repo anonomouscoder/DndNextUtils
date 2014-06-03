@@ -137,7 +137,6 @@ class Kender(BaseRace):
 class Tiefling(BaseRace):
    raceString = "Tiefling"
    abiltyAdjustment = ["int","cha"]
-   speed = 30
    vision = "lowlight"
    languages = ["common","infernal"]
    traits = ["Hellish Resistance","Infernal Wrath"]

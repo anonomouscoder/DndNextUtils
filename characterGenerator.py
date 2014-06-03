@@ -168,8 +168,12 @@ class Character:
       print "Class Features:"
       for i in self.classLevels:
          for j in range(i.level):
-            for k in i.featureList[j]:
-               print k
+            #print i.featureList
+            #print i.featureListDescriptions
+            for feature,descriptions in zip(i.featureList[j],i.featureListDescriptions[j]):
+               print feature
+               for descriptionLine in descriptions:
+                  print "-" + descriptionLine
       print "----------------------------------"
       print "Proficiencies (+" + str(self.proficiency) + ")"
       print "-Skills"
@@ -185,8 +189,8 @@ class Character:
       for i in self.toolProficiencies:
          print " " + i
 #
-orderOfStats = ["con","wis","str","dex","int","cha"]
-listOfClasses = [Cleric(),Cleric()]
+orderOfStats = ["con","str","dex","wis","int","cha"]
+listOfClasses = [Barbarian(),Barbarian()]
 listOfSkills = ["insight"]
 race = Dwarf("Mountain Dwarf")
 c = Character(orderOfStats, listOfClasses, race, Sage, listOfSkills)

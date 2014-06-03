@@ -9,6 +9,7 @@ class BaseClass:
    savingThrows = []
    possibleSkills = []
    skillsToChoose = 0
+   numberOfAttacks = 1
    spellsPerDayPerLevel = [[0,0,0,0,0,0,0,0,0],
                            [0,0,0,0,0,0,0,0,0],
                            [0,0,0,0,0,0,0,0,0],
@@ -49,12 +50,37 @@ class BaseClass:
                   [],
                   [],
                   []]
+   featureListDescriptions = [[],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              [],
+                              []]
    #Called to increment the level, and update the list of features, if needed
    def levelUp(self):
       self.level = self.level + 1
       self.updateFeatures()
    #used for classes that have numerical amounts in features that increase based on level (sneak attack goes from 1d6 to 7d6
    def updateFeatures(self):
+      return
+   def updateDescriptions(self):
+      return
+   pathsToChoose = []
+   def choosePath(self,choice): 
       return
 #
 class Barbarian(BaseClass):
@@ -89,8 +115,75 @@ class Barbarian(BaseClass):
                   ["Ability Score Improvement"],
                   ["Primal Might"],
                   ["Death-Defying Rage"]]
+   featureListDescriptions = [[["Advantage on Strength checks and Saving throws","Gain a bonus to melee damage","Gain temporary hitpoints = 2*Barbarian level"],["if no armor: AC = 10 + DexMod + ConMod"]],
+                              [["Advantage on Initiative"],["Advantage on Attack rolls, If not raging: opponents get advantage on attack rolls against you"]],
+                              [["Path of Beserker", "Path of Totem Warrior"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["You can attack an extra time"],["You gain 10 Speed while wearing Light, medium, or no armor"]],
+                              [[""]],
+                              [["Take a turn during a surprise round if you rage that round"]],
+                              [["Roll an additional damage die for critical hits"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["Raging + drop to 0 hp and don't die, DC10 Con check: pass = 1 hp instead"]],
+                              [["Advantage on raging saving throws"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["Rage can last through a full boring turn"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Advantage on death rolls"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Minimum total for any Strength check or saving throw is your strength score"]],
+                              [["Raging prevents unconsciousness", "6 death roll failures required to die during this"]]]
    def updateFeatures(self):   
       self.featureList[0] = ["Rage ("+str(self.ragesPerLevel[self.level])+"/rest, +"+str(self.rageDamagePerLevel[self.level])+" dmg)","Thick Hide"]
+   pathsToChoose = ["Path of the Berserker","Path of the Totem Warrior: Bear","Path of the Totem Warrior: Cougar","Path of the Totem Warrior: Hawk","Path of the Totem Warrior: Wolf"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Path of the Berserker
+         self.pathChosen = choice
+         self.featureList[3] = "Fearless Rage"
+         self.featureListDescriptions[3] = "Immune to fear while raging"
+         self.featureList[6] = "Mindless Rage"
+         self.featureListDescriptions[6] = "Immune to charm while raging"
+         self.featureList[10] = "Unchecked Fury"
+         self.featureListDescriptions[10] = "If you miss a melee attack, immediately make one retry"
+         self.featureList[14] = "Brutal Rage"
+         self.featureListDescriptions[14] = "You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"
+         
+      elif choice == self.pathsToChoose[1]: # Path of the Totem Warrior: Bear
+         self.pathChosen = choice
+         self.featureList[3] = "Totem Spirit: " + self.animalChosen[0]
+         if self.animalChosen[0] == self.animalToChoose[0]: #Bear
+            self.featureListDescriptions[3] = "Roll hitdice twice when regaining health"
+         elif self.animalChosen[0] == self.animalToChoose[1]:#Cougar
+            self.featureListDescriptions[3] = ["Speed increases 5","You gain proficiency in acrobatics"]
+         elif self.animalChosen[0] == self.animalToChoose[2]:#Hawk
+            self.featureListDescriptions[3] = ["Jump double your normal distance","Raging dex-based attack rolls gain advantage"]
+         elif self.animalChosen[0] == self.animalToChoose[3]:#Wolf
+            self.featureListDescriptions[3] = "You gain proficiency in perception"
+         self.featureList[6] = "Spirit Rage: " + self.animalChosen[1]
+         if self.animalChosen[1] == self.animalToChoose[0]: #Bear
+            self.featureListDescriptions[3] = "You may expend up to 2 hitdice to regain HP when entering rage"
+         elif self.animalChosen[1] == self.animalToChoose[1]:#Cougar
+            self.featureListDescriptions[3] = ["While raging, opportunity attacks have disadvantage against you"]
+         elif self.animalChosen[1] == self.animalToChoose[2]:#Hawk
+            self.featureListDescriptions[3] = ["Jump double your normal distance","Raging dex-based attack rolls gain advantage"]
+         elif self.animalChosen[1] == self.animalToChoose[3]:#Wolf
+            self.featureListDescriptions[3] = "You gain proficiency in perception"
+         self.featureList[10] = "Spirit Vitality"
+         self.featureListDescriptions[10] = "If you miss a melee attack, immediately make one retry"
+         self.featureList[14] = "Guiding Totem"
+         self.featureListDescriptions[14] = "You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"
+
+   animalToChoose = ["Bear","Cougar","Hawk","Wolf"]
+   animalChosen = [[],[]]
+   def chooseAnimals(self,choices):
+      totem,rage = choices
+      if totem == animalToChoose[0] or totem == animalToChoose[1] or totem == animalToChoose[2] or totem == animalToChoose[3]:
+         self.animalChosen[0] = totem
+      if rage == animalToChoose[0] or rage == animalToChoose[1] or rage == animalToChoose[2] or rage == animalToChoose[3]:
+         self.animalChosen[1] = rage
 #
 class Bard(BaseClass):
    classString = "Bard"
