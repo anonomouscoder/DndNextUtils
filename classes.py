@@ -71,20 +71,24 @@ class BaseClass:
                               [],
                               [],
                               []]
-   #Called to increment the level, and update the list of features, if needed
+   #Called to increment the level, and update the list of features, or change variables upon leveling up, if needed
    def levelUp(self):
       self.level = self.level + 1
       if "Ability Score Improvement" in self.featureList[self.level-1]:
          self.numberOfAbilitiesToIncrease = self.numberOfAbilitiesToIncrease + 2
       self.updateFeatures()
-   #used for classes that have numerical amounts in features that increase based on level (sneak attack goes from 1d6 to 7d6
+   
+   #used for classes that have numerical amounts in features that increase based on level (sneak attack goes from 1d6 to 7d6)
    def updateFeatures(self):
       return
-   def updateDescriptions(self):
-      return
+
+   #Paths are used when the character has to choose between groups of features (Path of the Beserker vs Path of the Totem Warrior)
    pathsToChoose = []
+   pathChosen = ""
    def choosePath(self,choice): 
       return
+   
+   #The constructor allows a level to be inputted so that you can create a lvl 5 character easily
    def __init__(self,level=1):
       for l in range(1,level):
          self.levelUp()
@@ -143,6 +147,7 @@ class Barbarian(BaseClass):
                               [["Raging prevents unconsciousness", "6 death roll failures required to die during this"]]]
    def updateFeatures(self):   
       self.featureList[0] = ["Rage ("+str(self.ragesPerLevel[self.level-1])+"/rest, +"+str(self.rageDamagePerLevel[self.level-1])+" dmg)","Thick Hide"]
+
    pathsToChoose = ["Path of the Berserker","Path of the Totem Warrior"]
    pathChosen = ""
    def choosePath(self,choice): 
@@ -404,8 +409,8 @@ class Druid(BaseClass):
                   ["Ability Score Improvement"],
                   ["Beast Spells"]]
 #
-class Figher(BaseClass):
-   classString = "Figher"
+class Fighter(BaseClass):
+   classString = "Fighter"
    hitDice = 10
    armorProfenciencies = ["all","shields"]
    weaponProfenciencies = ["simple","martial"]
