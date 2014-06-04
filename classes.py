@@ -307,8 +307,8 @@ class Cleric(BaseClass):
    level = 1
    classString = "Cleric"
    hitDice = 8
-   channelDivinityPerLevel =     [0,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3]
-   divineStrikeDicePerLevel =    [0,0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,2]
+   channelDivinityPerLevel =  [0,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3]
+   divineStrikeDicePerLevel = [0,0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,2]
    armorProficiencies = ["light","medium"]
    weaponProficiencies = ["simple"]
    toolProficiencies = ["kitHealer"]
@@ -336,7 +336,7 @@ class Cleric(BaseClass):
                            [4,3,3,3,2,1,1,1,1],
                            [4,3,3,3,2,1,1,1,1]]
    featureList = [["Divine Domain","Spellcasting"],
-                  ["Channel Divinity ("+str(channelDivinityPerLevel[level-1])+"/rest)"],
+                  ["Turn Undead","Channel Divinity ("+str(channelDivinityPerLevel[level-1])+"/rest)"],
                   [],
                   ["Ability Score Improvement"],
                   [],
@@ -355,9 +355,105 @@ class Cleric(BaseClass):
                   [],
                   ["Ability Score Improvement"],
                   ["Domain Benefit"]]
+   featureListDescriptions = [[["Knowledge","Life","Light","Nature","War"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]],
+                              [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"],["Once per turn, deal bonus (radiant/necrotic) damage"]],
+                              [[""]],
+                              [["Call upon your god for help when your need is great","Succeeds if 1d100 < Cleric level","Cooldown of 1 week"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]]]
+
    def updateFeatures(self):
-      self.featureList[1] = ["Channel Divinity ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
-      self.featureList[1] = ["Ability Score Improvement", "Divine Strike ("+str(self.divineStrikeDicePerLevel[self.level-1])+"d8)"]
+      if self.pathChosen == "": 
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+      if self.pathChosen == self.pathsToChoose[1]: # Life
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+      elif self.pathChosen == self.pathsToChoose[2]: # Light
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+      elif self.pathChosen == self.pathsToChoose[4]: # War
+         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+      self.featureList[7] = ["Ability Score Improvement", "Divine Strike ("+str(self.divineStrikeDicePerLevel[self.level-1])+"d8)"]
+   pathsToChoose = ["Knowledge", "Life","Light","Nature","War"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Knowledge
+         self.pathChosen = choice
+      elif choice == self.pathsToChoose[1]: # Life
+         self.pathChosen = choice
+         self.featureList[1] = "Domain Spells","Disciple of Life","Spellcasting"
+         self.featureListDescriptions[1] = ["Bless","Cure Wounds"],["Healing spells gain an addition 2 + spell level"]["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]
+         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureListDescriptions[2] = ["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Heal HP equal to 5 * Cleric Level","Only affects living creatures at less than half HP"]
+         self.featureList[3] = "Domain Spells"
+         self.featureListDescriptions[3] = ["Lesser Restoration","Spiritual Weapon"]
+         self.featureList[5] = "Domain Spells"
+         self.featureListDescriptions[5] = ["Beacon of Hope","Prayer"]
+         self.featureList[7] = "Domain Spells"
+         self.featureListDescriptions[7] = ["Death Ward","Guardian of Faith"]
+         self.featureList[9] = "Domain Spells"
+         self.featureListDescriptions[9] = ["Mass Cure Wounds","Raise Dead"]
+         self.featureList[20] = "Supreme Healing"
+         self.featureListDescriptions[20] = ["Maximize all die rolls while healing"]
+         self.armorProficiencies = ["light","medium","heavy","shields"]
+      elif choice == self.pathsToChoose[2]: # Light
+         self.pathChosen = choice
+         self.featureList[1] = "Bonus Spells","Domain Spells","Flare","Spellcasting"
+         self.featureListDescriptions[1] = ["Gain the light and sacred flame cantrips"],["Burning Hands","Faerie Fire"],["Use reaction to cause attacker to have DISADV"]["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]
+         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureListDescriptions[2] = ["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Dispel magical darkness in 25ft","Enemies make a Constitution save, fail = 2d10+ Cleric Level radiant damage, success = half damage"]
+         self.featureList[3] = "Domain Spells"
+         self.featureListDescriptions[3] = ["Flaming Sphere","Scorching Ray"]
+         self.featureList[5] = "Domain Spells"
+         self.featureListDescriptions[5] = ["Daylight","Fireball"]
+         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureListDescriptions[6] = ["Any Illusion within 25ft is dispelled if it's level <= Cleric level / 2"]
+         self.featureList[7] = "Domain Spells"
+         self.featureListDescriptions[7] = ["Guardian of Faith","Wall of Fire"]
+         self.featureList[9] = "Domain Spells"
+         self.featureListDescriptions[9] = ["Flame Strike","True Seeing"]
+         self.featureList[11] = "Domain Spells"
+         self.featureListDescriptions[11] = ["Sunbeam"]
+         self.featureList[15] = "Domain Spells"
+         self.featureListDescriptions[15] = ["Sunburst"]
+         self.featureList[20] = "Corona of Light"
+         self.featureListDescriptions[20] = ["Bright light - 50ft radius (Enemies take DISADV against Fire/Radiant damage)","Dim light - 25ft beyond","1 minute duration"]
+      elif choice == self.pathsToChoose[3]: # Nature
+         self.pathChosen = choice
+      elif choice == self.pathsToChoose[4]: # War
+         self.pathChosen = choice
+         self.featureList[1] = "Domain Spells","War Priest","Spellcasting"
+         self.featureListDescriptions[1] = ["Divine Favor","Shield of Faith"],["Attack a single extra time in a turn","Can be used up to WISMOD"]["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]
+         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureListDescriptions[2] = ["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["After making attack roll, add +10 to roll"]
+         self.featureList[3] = "Domain Spells"
+         self.featureListDescriptions[3] = ["Magic Weapon","Spiritual Weapon"]
+         self.featureList[5] = "Domain Spells"
+         self.featureListDescriptions[5] = ["Holy Vigor","Prayer"]
+         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureListDescriptions[6] = ["Any Illusion within 25ft is dispelled if it's level <= Cleric level / 2"]
+         self.featureList[7] = "Domain Spells"
+         self.featureListDescriptions[7] = ["Divine Power","Freedom of Movement"]
+         self.featureList[9] = "Domain Spells"
+         self.featureListDescriptions[9] = ["Flame Strike","Hold Monster"]
+         self.featureList[20] = "Avatar of Battle"
+         self.featureListDescriptions[20] = ["Gain resistance to Bludgeoning, Piercing, and Slashing damage"]
+         self.armorProficiencies = ["light","medium","heavy","shields"]
+         weaponProficiencies = ["simple","martial"]
+
 #
 class Druid(BaseClass):
    classString = "Druid"
