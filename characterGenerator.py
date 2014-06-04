@@ -69,6 +69,10 @@ class Character:
             self.hitPoints = self.classLevels[0].hitDice + ((self.con - 10)/2)
          else:
             self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + ((self.con - 10)/2)
+   def choosePath(self,classToChooseFrom,path):
+      for i in self.classLevels:
+         if isinstance(i,classToChooseFrom.__class__):
+            i.choosePath(path)
    def addSkill(self,choice):
       #compile list of possible skills
       for i in self.classLevels:
@@ -143,7 +147,7 @@ class Character:
          for i in self.classLevels:
             if i.numberOfAbilitiesToIncrease > 0:
                i.numberOfAbilitiesToIncrease = i.numberOfAbilitiesToIncrease - 1
-      
+   
    def combineProficiencies(self):
       #proficiency bonus
       for i in self.classLevels:
@@ -232,9 +236,8 @@ listOfClasses = [Barbarian(2)]
 listOfSkills = ["athletics"]
 race = Dwarf("Mountain Dwarf")
 c = Character(orderOfStats, listOfClasses, race, Sage, listOfSkills)
-c.printStats()
-c.addToAbility("str")
-c.addToAbility("str")
+c.choosePath(Barbarian(),"Path of the Berserker")
 c.printStats()
 c.addClassLevel(Barbarian(5))
+c.combineProficiencies()
 c.printStats()

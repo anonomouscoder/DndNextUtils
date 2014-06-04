@@ -153,39 +153,39 @@ class Barbarian(BaseClass):
    def choosePath(self,choice): 
       if choice == self.pathsToChoose[0]: # Path of the Berserker
          self.pathChosen = choice
-         self.featureList[3] = "Fearless Rage"
-         self.featureListDescriptions[3] = "Immune to fear while raging"
-         self.featureList[6] = "Mindless Rage"
-         self.featureListDescriptions[6] = "Immune to charm while raging"
-         self.featureList[10] = "Unchecked Fury"
-         self.featureListDescriptions[10] = "If you miss a melee attack, immediately make one retry"
-         self.featureList[14] = "Brutal Rage"
-         self.featureListDescriptions[14] = "You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"
+         self.featureList[2] = ["Fearless Rage"]
+         self.featureListDescriptions[2] = [["Immune to fear while raging"]]
+         self.featureList[5] = ["Mindless Rage"]
+         self.featureListDescriptions[5] = [["Immune to charm while raging"]]
+         self.featureList[9] = ["Unchecked Fury"]
+         self.featureListDescriptions[9] = [["If you miss a melee attack, immediately make one retry"]]
+         self.featureList[13] = ["Brutal Rage"]
+         self.featureListDescriptions[13] = [["You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"]]
          
       elif choice == self.pathsToChoose[1]: # Path of the Totem Warrior
          self.pathChosen = choice
          self.featureList[3] = "Totem Spirit: " + self.animalChosen[0]
          if self.animalChosen[0] == self.animalToChoose[0]: #Bear
-            self.featureListDescriptions[3] = "Roll hitdice twice when regaining health"
+            self.featureListDescriptions[2] = "Roll hitdice twice when regaining health"
          elif self.animalChosen[0] == self.animalToChoose[1]:#Cougar
-            self.featureListDescriptions[3] = ["Speed increases 5","You gain proficiency in acrobatics"]
+            self.featureListDescriptions[2] = ["Speed increases 5","You gain proficiency in acrobatics"]
          elif self.animalChosen[0] == self.animalToChoose[2]:#Hawk
-            self.featureListDescriptions[3] = ["Jump double your normal distance","ADV on Raging dex-based attack rolls"]
+            self.featureListDescriptions[2] = ["Jump double your normal distance","ADV on Raging dex-based attack rolls"]
          elif self.animalChosen[0] == self.animalToChoose[3]:#Wolf
-            self.featureListDescriptions[3] = "You gain proficiency in perception"
-         self.featureList[6] = "Spirit Rage: " + self.animalChosen[1]
+            self.featureListDescriptions[2] = "You gain proficiency in perception"
+         self.featureList[5] = "Spirit Rage: " + self.animalChosen[1]
          if self.animalChosen[1] == self.animalToChoose[0]: #Bear
-            self.featureListDescriptions[3] = "You may expend up to 2 hitdice to regain HP when entering rage"
+            self.featureListDescriptions[5] = "You may expend up to 2 hitdice to regain HP when entering rage"
          elif self.animalChosen[1] == self.animalToChoose[1]:#Cougar
-            self.featureListDescriptions[3] = ["While raging, opportunity attacks have DISADV against you"]
+            self.featureListDescriptions[5] = ["While raging, opportunity attacks have DISADV against you"]
          elif self.animalChosen[1] == self.animalToChoose[2]:#Hawk
-            self.featureListDescriptions[3] = ["While raging, you have resistance to falling damage","Jump triple your normal distance"]
+            self.featureListDescriptions[5] = ["While raging, you have resistance to falling damage","Jump triple your normal distance"]
          elif self.animalChosen[1] == self.animalToChoose[3]:#Wolf
-            self.featureListDescriptions[3] = "While raging, you sense the location of any creature within 15 feet"
-         self.featureList[10] = "Spirit Vitality"
-         self.featureListDescriptions[10] = "While raging, regain 5 HP if you are at less than half health"
-         self.featureList[14] = "Guiding Totem"
-         self.featureListDescriptions[14] = ["You gain proficiency in Wisdom saving throws","Hidden threats do not gain ADV on you"]
+            self.featureListDescriptions[5] = "While raging, you sense the location of any creature within 15 feet"
+         self.featureList[9] = "Spirit Vitality"
+         self.featureListDescriptions[9] = "While raging, regain 5 HP if you are at less than half health"
+         self.featureList[13] = "Guiding Totem"
+         self.featureListDescriptions[13] = ["You gain proficiency in Wisdom saving throws","Hidden threats do not gain ADV on you"]
 
    animalToChoose = ["Bear","Cougar","Hawk","Wolf"]
    animalChosen = [[],[]]
@@ -453,7 +453,6 @@ class Cleric(BaseClass):
          self.featureListDescriptions[20] = ["Gain resistance to Bludgeoning, Piercing, and Slashing damage"]
          self.armorProficiencies = ["light","medium","heavy","shields"]
          weaponProficiencies = ["simple","martial"]
-
 #
 class Druid(BaseClass):
    classString = "Druid"
@@ -504,7 +503,127 @@ class Druid(BaseClass):
                   ["Evergreen"],
                   ["Ability Score Improvement"],
                   ["Beast Spells"]]
+   featureListDescriptions = [[["Read/Leave hidden messages in secret language of Druids"],["2 cantrips","DC = 8 + WISmod","Present magic focus to add proficiency bonus to DC"]],
+                              [["Circle of the Land","Circle of the Moon"],["Transform into a bat, cat, deer, dog, fish, hawk, horse, owl, raven, snake, toad, or weasel"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [["You can speak in beast form, but no spellcasting"]],
+                              [["???"]],
+                              [[""]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["Use Wild Shape to change to the same size and type as you"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["For every 10 years that pass, you age only 1 year"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Cast spells in Wild shape. Apply proficiency bonus if you had focus when you used Wild Shape"]]]
+   def updateFeatures(self):
+      if self.pathChosen == "": 
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+      if self.pathChosen == self.pathsToChoose[1]: # Life
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+      elif self.pathChosen == self.pathsToChoose[2]: # Light
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+      elif self.pathChosen == self.pathsToChoose[4]: # War
+         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+      self.featureList[7] = ["Ability Score Improvement", "Divine Strike ("+str(self.divineStrikeDicePerLevel[self.level-1])+"d8)"]
+   pathsToChoose = ["Circle of the Land", "Circle of the Moon"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Circle of the Land
+         self.pathChosen = choice
+         self.featureList[2] = "Circle Spells","Natural Recovery"
+         self.featureListDescriptions[2] = ["Gain a cantrip"],["Once a day: short rest to recover spell slots up to Druid Level/2 of spell levels"]
+         self.featureList[6] = "Land's Stride"
+         self.featureListDescriptions[6] = ["Move through non-magical difficult terrain without extra movement","ADV on magic plants to impede movement"]
+         self.featureList[10] = "Nature's Ward"
+         self.featureListDescriptions[10] = ["Immune to Charm/Fright from elemental/fey creatures"],["Immune to poison and disease"]
+         if self.landChosen == self.landToChoose[0]: #Coast
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Augury","Mirror Image"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Water Breathing","Water Walk"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Freedom of Movement","Solid Fog"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Scrying","True Seeing"]
+         elif self.landChosen == self.landToChoose[1]: #Desert
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Blur","Silence"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Create Food and Water","Protection from Energy"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Blight","Hallucinatory Terrain"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Control Winds","Wall of Stone"]
+         elif self.landChosen == self.landToChoose[2]: #Forest
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Augury","Barkskin"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Call Lightning","Plant Growth"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Divination","Freedom of Movement"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Commune with Nature","Plant Door"]
+         elif self.landChosen == self.landToChoose[3]: #Grassland
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Augury","Pass without Trace"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Daylight","Haste"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Air Walk","Divination"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Dream","Insect Plague"]
+         elif self.landChosen == self.landToChoose[4]: #Mountain
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Spider Climb","Spike Growth"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Elemental Mantle","Meld into Stone"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Confusion","Stoneskin"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Passwall","Wall of Stone"]
+         elif self.landChosen == self.landToChoose[5]: #Swamp
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Augury","Locate Object"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Water Walk","Stinking Cloud"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Freedom of Movement","Locate Creature"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Insect Plague","Scrying"]
+         elif self.landChosen == self.landToChoose[6]: #Tundra
+            self.featureList[3] = "Circle Spells"
+            self.featureListDescriptions[3] = ["Augury","Spike Growth"]
+            self.featureList[5] = "Circle Spells"
+            self.featureListDescriptions[5] = ["Sleet Storm","Slow"]
+            self.featureList[7] = "Circle Spells"
+            self.featureListDescriptions[7] = ["Freedom of Movement","Ice Storm"]
+            self.featureList[9] = "Circle Spells"
+            self.featureListDescriptions[9] = ["Commune with Nature","Cone of Cold"]
+      elif choice == self.pathsToChoose[1]: # Circle of the Moon
+         self.pathChosen = choice
+         self.featureList[2] = "Battle Wild Shape"
+         self.featureListDescriptions[2] = ["Use Wild Shape as part of any action except spell casting","Gain ability to change into a dire wolf or panther"]
+         self.featureList[6] = "Mauler Shapes"
+         self.featureListDescriptions[6] = ["Gain ability to change into a brown bear or tiger"]
+         self.featureList[10] = "Monstrous Shapes"
+         self.featureListDescriptions[10] = ["Gain ability to change into a cave bear or triceratops"]
+
+   landToChoose = ["Coast","Desert","Forest","Grassland","Mountain","Swamp","Tundra"]
+   landChosen = ""
+   def chooseLand(self,choice):
+      if choice == self.landToChoose[0] or choice == self.landToChoose[1] or choice == self.landToChoose[2] or choice == self.landToChoose[3] or choice == self.landToChoose[4] or choice == self.landToChoose[5] or choice == self.landToChoose[6]:
+         self.landChosen = choice
 #
+
 class Fighter(BaseClass):
    classString = "Fighter"
    hitDice = 10
