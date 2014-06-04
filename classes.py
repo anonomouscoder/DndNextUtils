@@ -1,7 +1,7 @@
 class BaseClass:
    classString = "BaseClass"
    hitDice = 8
-   level = 0
+   level = 1
    proficiencyBonusPerLevel =   [1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6]
    armorProficiencies = []
    weaponProficiencies = []
@@ -10,6 +10,7 @@ class BaseClass:
    possibleSkills = []
    skillsToChoose = 0
    numberOfAttacks = 1
+   numberOfAbilitiesToIncrease = 0
    spellsPerDayPerLevel = [[0,0,0,0,0,0,0,0,0],
                            [0,0,0,0,0,0,0,0,0],
                            [0,0,0,0,0,0,0,0,0],
@@ -73,6 +74,8 @@ class BaseClass:
    #Called to increment the level, and update the list of features, if needed
    def levelUp(self):
       self.level = self.level + 1
+      if "Ability Score Improvement" in self.featureList[self.level-1]:
+         self.numberOfAbilitiesToIncrease = self.numberOfAbilitiesToIncrease + 2
       self.updateFeatures()
    #used for classes that have numerical amounts in features that increase based on level (sneak attack goes from 1d6 to 7d6
    def updateFeatures(self):
@@ -82,9 +85,12 @@ class BaseClass:
    pathsToChoose = []
    def choosePath(self,choice): 
       return
+   def __init__(self,level=1):
+      for l in range(1,level):
+         self.levelUp()
 #
 class Barbarian(BaseClass):
-   level = 0
+   level = 1
    classString = "Barbarian"
    hitDice = 12
    ragesPerLevel =               [2,2,3,3,3,4,4,4,4,4,4,5,5,5,5,5,6,6,6,99]
@@ -95,7 +101,7 @@ class Barbarian(BaseClass):
    savingThrows = ["str","con"]
    possibleSkills = ["athletics","intimidation","survival"]
    skillsToChoose = 1
-   featureList = [["Rage ("+str(ragesPerLevel[level])+"/rest, +"+str(rageDamagePerLevel[level])+" dmg)","Thick Hide"],
+   featureList = [["Rage ("+str(ragesPerLevel[level])+"/rest, +"+str(rageDamagePerLevel[level-1])+" dmg)","Thick Hide"],
                   ["Feral Instinct","Reckless Attack"],
                   ["Barbarian Path"],
                   ["Ability Score Improvement"],
@@ -115,29 +121,29 @@ class Barbarian(BaseClass):
                   ["Ability Score Improvement"],
                   ["Primal Might"],
                   ["Death-Defying Rage"]]
-   featureListDescriptions = [[["Advantage on Strength checks and Saving throws","Gain a bonus to melee damage","Gain temporary hitpoints = 2*Barbarian level"],["if no armor: AC = 10 + DexMod + ConMod"]],
-                              [["Advantage on Initiative"],["Advantage on Attack rolls, If not raging: opponents get advantage on attack rolls against you"]],
+   featureListDescriptions = [[["ADV on Strength checks and Saving throws","Gain temporary hitpoints = 2*Barbarian level"],["if no armor: AC = 10 + DexMod + ConMod"]],
+                              [["ADV on Initiative"],["ADV on Attack rolls, if not raging: enemies get ADV on attack rolls"]],
                               [["Path of Beserker", "Path of Totem Warrior"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
-                              [["You can attack an extra time"],["You gain 10 Speed while wearing Light, medium, or no armor"]],
+                              [["You can attack an extra time"],["You gain 10 Speed while wearing light, medium, or no armor"]],
                               [[""]],
                               [["Take a turn during a surprise round if you rage that round"]],
                               [["Roll an additional damage die for critical hits"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
                               [[""]],
                               [["Raging + drop to 0 hp and don't die, DC10 Con check: pass = 1 hp instead"]],
-                              [["Advantage on raging saving throws"]],
+                              [["ADV on raging saving throws"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
                               [[""]],
                               [["Rage can last through a full boring turn"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
-                              [["Advantage on death rolls"]],
+                              [["ADV on death rolls"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
                               [["Minimum total for any Strength check or saving throw is your strength score"]],
                               [["Raging prevents unconsciousness", "6 death roll failures required to die during this"]]]
    def updateFeatures(self):   
-      self.featureList[0] = ["Rage ("+str(self.ragesPerLevel[self.level])+"/rest, +"+str(self.rageDamagePerLevel[self.level])+" dmg)","Thick Hide"]
-   pathsToChoose = ["Path of the Berserker","Path of the Totem Warrior: Bear","Path of the Totem Warrior: Cougar","Path of the Totem Warrior: Hawk","Path of the Totem Warrior: Wolf"]
+      self.featureList[0] = ["Rage ("+str(self.ragesPerLevel[self.level-1])+"/rest, +"+str(self.rageDamagePerLevel[self.level-1])+" dmg)","Thick Hide"]
+   pathsToChoose = ["Path of the Berserker","Path of the Totem Warrior"]
    pathChosen = ""
    def choosePath(self,choice): 
       if choice == self.pathsToChoose[0]: # Path of the Berserker
@@ -151,7 +157,7 @@ class Barbarian(BaseClass):
          self.featureList[14] = "Brutal Rage"
          self.featureListDescriptions[14] = "You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"
          
-      elif choice == self.pathsToChoose[1]: # Path of the Totem Warrior: Bear
+      elif choice == self.pathsToChoose[1]: # Path of the Totem Warrior
          self.pathChosen = choice
          self.featureList[3] = "Totem Spirit: " + self.animalChosen[0]
          if self.animalChosen[0] == self.animalToChoose[0]: #Bear
@@ -159,22 +165,22 @@ class Barbarian(BaseClass):
          elif self.animalChosen[0] == self.animalToChoose[1]:#Cougar
             self.featureListDescriptions[3] = ["Speed increases 5","You gain proficiency in acrobatics"]
          elif self.animalChosen[0] == self.animalToChoose[2]:#Hawk
-            self.featureListDescriptions[3] = ["Jump double your normal distance","Raging dex-based attack rolls gain advantage"]
+            self.featureListDescriptions[3] = ["Jump double your normal distance","ADV on Raging dex-based attack rolls"]
          elif self.animalChosen[0] == self.animalToChoose[3]:#Wolf
             self.featureListDescriptions[3] = "You gain proficiency in perception"
          self.featureList[6] = "Spirit Rage: " + self.animalChosen[1]
          if self.animalChosen[1] == self.animalToChoose[0]: #Bear
             self.featureListDescriptions[3] = "You may expend up to 2 hitdice to regain HP when entering rage"
          elif self.animalChosen[1] == self.animalToChoose[1]:#Cougar
-            self.featureListDescriptions[3] = ["While raging, opportunity attacks have disadvantage against you"]
+            self.featureListDescriptions[3] = ["While raging, opportunity attacks have DISADV against you"]
          elif self.animalChosen[1] == self.animalToChoose[2]:#Hawk
-            self.featureListDescriptions[3] = ["Jump double your normal distance","Raging dex-based attack rolls gain advantage"]
+            self.featureListDescriptions[3] = ["While raging, you have resistance to falling damage","Jump triple your normal distance"]
          elif self.animalChosen[1] == self.animalToChoose[3]:#Wolf
-            self.featureListDescriptions[3] = "You gain proficiency in perception"
+            self.featureListDescriptions[3] = "While raging, you sense the location of any creature within 15 feet"
          self.featureList[10] = "Spirit Vitality"
-         self.featureListDescriptions[10] = "If you miss a melee attack, immediately make one retry"
+         self.featureListDescriptions[10] = "While raging, regain 5 HP if you are at less than half health"
          self.featureList[14] = "Guiding Totem"
-         self.featureListDescriptions[14] = "You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"
+         self.featureListDescriptions[14] = ["You gain proficiency in Wisdom saving throws","Hidden threats do not gain ADV on you"]
 
    animalToChoose = ["Bear","Cougar","Hawk","Wolf"]
    animalChosen = [[],[]]
@@ -186,9 +192,11 @@ class Barbarian(BaseClass):
          self.animalChosen[1] = rage
 #
 class Bard(BaseClass):
+   level = 1
    classString = "Bard"
    hitDice = 6
-   spellsKnownPerLevel =         [0,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11]
+   spellsKnownPerLevel =         [0,2,3,3,4,4,5,5,6,6,7,7, 8, 8, 9, 9,10,10,11,11]
+   callToBattleDieUsed =         [4,4,4,4,4,6,6,6,8,8,8,8,10,10,10,10,12,12,12,12]
    armorProficiencies = ["light"]
    weaponProficiencies = ["simple","crossbowHand","crossbowLight","longSword","rapier","shortSword"]
    toolProficiencies = ["musicalInstruments"]
@@ -235,9 +243,63 @@ class Bard(BaseClass):
                   ["Bard College Benefit"],
                   ["Ability Score Improvement"],
                   ["Magical Secrets"]]
+
+   featureListDescriptions = [[["Inteligence checks of 9 or lower are a 10, if they pertain to Arcana, History, Nature, or Religion"],["Call To Battle = + 1d"+str(callToBattleDieUsed[level-1])+" to damage rolls","Inspire Competence = Add your proficiency bonus to one of the 6 abilities","Range: 25ft, Duration: 10m, Needs concentration and voice"]],
+                              [["DC = 8 + CHA mod", "If you hold an instrument, Add proficency bonus to DC","2 Cantrips known"]],
+                              [["College of Valor", "College of Wit"],["Gain +5 bonus to any 4 skill or tool proficiencies"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Add half of your proficiency bonus to skills that you are not proficient in"]],
+                              [[""]],
+                              [["Bardic performance: Affected creatures have advantage on saving throws against charm or fright"]],
+                              [["You can attack an extra time"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Any Bard spell with casting time of 1 action now takes 1 swift action"]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["Learn the dispel magic spell","Double proficiency bonus for this spell"]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Learn 5 spells from any spellbook (cantrip - lvl5 only) as Bard spells"]]]
+   def updateFeatures(self):
+      featureListDescriptions[0] = ["Inteligence checks of 9 or lower are a 10, if they pertain to Arcana, History, Nature, or Religion"],["Call To Battle = + 1d"+self.callToBattleDieUsed[self.level]+" to damage rolls","Inspire Competence = Add your proficiency bonus to one of the 6 abilities","Range: 25ft, Duration: 10m, Needs concentration and voice"]
+      if self.pathChosen == "College of Valor":
+         self.featureListDescriptions[6] = "Give allies = + 1d"+self.callToBattleDieUsed[self.level]+" more HP during short rests"
+         
+   pathsToChoose = ["College of Valor", "College of Wit"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # College of Valor
+         self.pathChosen = choice
+         self.featureList[3] = "Bonus Proficiencies", "War College Training", "Expertise"
+         self.featureListDescriptions[3] = ["Gain proficiency with medium armor and martial weapons"],["Per turn you can use the help action as part of the attack action"],["Gain +5 bonus to any 4 skill or tool proficiencies"]
+         self.featureList[6] = "Song of Rest"
+         self.featureListDescriptions[6] = "Give allies = + 1d"+self.callToBattleDieUsed[self.level]+" more HP during short rests"
+         self.featureList[12] = "Coordinate Allies"
+         self.featureListDescriptions[12] = "Use reaction to give advantage to attack against a specific creature that has been attacked"
+         self.featureList[15] = "Words of Warning"
+         self.featureListDescriptions[15] = "Use reaction to give advantage to allies Strength, Dexterity, or Wisdom saving throw"
+         self.featureList[18] = "Rally"
+         self.featureListDescriptions[18] = ["Learn cure mass wounds, cast it 1/day for free","This spell removes charm, fright, paralysis, and stun. Everyone can stand up or move its speed"]
+         
+      elif choice == self.pathsToChoose[1]: # College of Wit
+         self.pathChosen = choice
+         self.featureList[3] = "Fascinating Performance", "Expertise"
+         self.featureListDescriptions[3] = ["Charm non-hostile creatures within 50ft","Combat breaks effect"],["Gain +5 bonus to any 4 skill or tool proficiencies"]
+         self.featureList[6] = "Eviscerating Wit"
+         self.featureListDescriptions[6] = ["Plant doubt (disadvantage on all ability checks) to all hostile creatures in 50ft","Cha saving throw breaks spell"]
+         self.featureList[12] = "Seeds of Doubt"
+         self.featureListDescriptions[12] = ["Target creature must succeed Wisdom saving throw to attack you directly", "New attack/spell ends the effect, charm immunity is affects this spell"]
+         self.featureList[15] = "Inspire Dread"
+         self.featureListDescriptions[15] = "All hostile creatures on the start of their turn must succeed a Wisdom saving throw or be frightened"
+         self.featureList[18] = "Seeds of Confusion"
+         self.featureListDescriptions[18] = ["Learn the confusion spell, cast it 1/day for free", "Choose the creatures affected, use an action to choose the behavior of the confusion"]
 #
 class Cleric(BaseClass):
-   level = 0
+   level = 1
    classString = "Cleric"
    hitDice = 8
    channelDivinityPerLevel =     [0,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3]
@@ -269,13 +331,13 @@ class Cleric(BaseClass):
                            [4,3,3,3,2,1,1,1,1],
                            [4,3,3,3,2,1,1,1,1]]
    featureList = [["Divine Domain","Spellcasting"],
-                  ["Channel Divinity ("+str(channelDivinityPerLevel[level])+"/rest)"],
+                  ["Channel Divinity ("+str(channelDivinityPerLevel[level-1])+"/rest)"],
                   [],
                   ["Ability Score Improvement"],
                   [],
                   [],
                   [],
-                  ["Ability Score Improvement", "Divine Strike ("+str(divineStrikeDicePerLevel[level])+"d8)"],
+                  ["Ability Score Improvement", "Divine Strike ("+str(divineStrikeDicePerLevel[level-1])+"d8)"],
                   [],
                   ["Divine Intervention"],
                   [],
@@ -289,7 +351,8 @@ class Cleric(BaseClass):
                   ["Ability Score Improvement"],
                   ["Domain Benefit"]]
    def updateFeatures(self):
-      self.featureList[1] = ["Channel Divinity ("+str(self.channelDivinityPerLevel[self.level])+"/rest)"]
+      self.featureList[1] = ["Channel Divinity ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+      self.featureList[1] = ["Ability Score Improvement", "Divine Strike ("+str(self.divineStrikeDicePerLevel[self.level-1])+"d8)"]
 #
 class Druid(BaseClass):
    classString = "Druid"

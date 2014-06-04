@@ -56,14 +56,15 @@ class Character:
       for i in self.classLevels:
          if isinstance(i,classToLevelUp.__class__):
             found = True
-            i.levelUp()
+            for j in range(classToLevelUp.level):
+               i.levelUp()
             if i.level == 1:
                self.hitPoints = i.hitDice + ((self.con - 10)/2)
             else:
                self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + ((self.con - 10)/2)
       if found == False:
          self.classLevels.append(classToLevelUp)
-         self.classLevels[len(self.classLevels)-1].level = 1
+         self.classLevels[len(self.classLevels)-1].level = classToLevelUp.level
          if self.hitPoints == 0:
             self.hitPoints = self.classLevels[0].hitDice + ((self.con - 10)/2)
          else:
@@ -112,10 +113,41 @@ class Character:
       self.background = choice
       for i in self.background.skills:
          self.skills.append(i)
+   def addToAbility(self,choice):
+      incremented = False
+      #make sure you can do it
+      abilityScoreIncreasesSum = 0
+      for i in self.classLevels:
+         abilityScoreIncreasesSum = abilityScoreIncreasesSum + i.numberOfAbilitiesToIncrease
+      if abilityScoreIncreasesSum != 0:
+         #it's valid
+         if choice == "str" and self.str < 20:
+            self.str = self.str + 1
+            incremented = True
+         if choice == "con" and self.con < 20:
+            self.con = self.con + 1
+            incremented = True
+         if choice == "dex" and self.dex < 20:
+            self.dex = self.dex + 1
+            incremented = True
+         if choice == "int" and self.int < 20:
+            self.int = self.int + 1
+            incremented = True
+         if choice == "wis" and self.wis < 20:
+            self.wis = self.wis + 1
+            incremented = True
+         if choice == "cha" and self.cha < 20:
+            self.cha = self.cha + 1
+            incremented = True
+      if incremented:
+         for i in self.classLevels:
+            if i.numberOfAbilitiesToIncrease > 0:
+               i.numberOfAbilitiesToIncrease = i.numberOfAbilitiesToIncrease - 1
+      
    def combineProficiencies(self):
       #proficiency bonus
       for i in self.classLevels:
-         self.proficiency = self.proficiency + i.proficiencyBonusPerLevel[i.level]
+         self.proficiency = self.proficiency + i.proficiencyBonusPerLevel[i.level-1]
             
       #armor
       for i in self.classLevels:
@@ -158,6 +190,11 @@ class Character:
       print "INT:" + str(self.int) + " (" + str((self.int - 10)/2) + ")"
       print "WIS:" + str(self.wis) + " (" + str((self.wis - 10)/2) + ")"
       print "CHA:" + str(self.cha) + " (" + str((self.cha - 10)/2) + ")"
+      abilityScoreIncreasesSum = 0
+      for i in self.classLevels:
+         abilityScoreIncreasesSum = abilityScoreIncreasesSum + i.numberOfAbilitiesToIncrease
+      if abilityScoreIncreasesSum != 0:
+         print "Ability score increases available = " + str(abilityScoreIncreasesSum)
       print "----------------------------------"
       print "Traits: "
       for i in self.race.traits:
@@ -171,9 +208,10 @@ class Character:
             #print i.featureList
             #print i.featureListDescriptions
             for feature,descriptions in zip(i.featureList[j],i.featureListDescriptions[j]):
-               print feature
-               for descriptionLine in descriptions:
-                  print "-" + descriptionLine
+               if feature != "Ability Score Improvement":
+                  print feature
+                  for descriptionLine in descriptions:
+                     print " -" + descriptionLine
       print "----------------------------------"
       print "Proficiencies (+" + str(self.proficiency) + ")"
       print "-Skills"
@@ -189,9 +227,14 @@ class Character:
       for i in self.toolProficiencies:
          print " " + i
 #
-orderOfStats = ["con","str","dex","wis","int","cha"]
-listOfClasses = [Barbarian(),Barbarian()]
-listOfSkills = ["insight"]
+orderOfStats = ["str","con","dex","wis","int","cha"]
+listOfClasses = [Barbarian(2)]
+listOfSkills = ["athletics"]
 race = Dwarf("Mountain Dwarf")
 c = Character(orderOfStats, listOfClasses, race, Sage, listOfSkills)
+c.printStats()
+c.addToAbility("str")
+c.addToAbility("str")
+c.printStats()
+c.addClassLevel(Barbarian(5))
 c.printStats()
