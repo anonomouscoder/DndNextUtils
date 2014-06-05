@@ -53,22 +53,23 @@ class Character:
    #
    def addClassLevel(self,classToLevelUp):
       found = False
-      for i in self.classLevels:
+      foundAt = 0
+      for index,i in enumerate(self.classLevels):
          if isinstance(i,classToLevelUp.__class__):
             found = True
-            for j in range(classToLevelUp.level):
-               i.levelUp()
-            if i.level == 1:
-               self.hitPoints = i.hitDice + ((self.con - 10)/2)
-            else:
-               self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + ((self.con - 10)/2)
+            foundAt = index
       if found == False:
-         self.classLevels.append(classToLevelUp)
-         self.classLevels[len(self.classLevels)-1].level = classToLevelUp.level
-         if self.hitPoints == 0:
-            self.hitPoints = self.classLevels[0].hitDice + ((self.con - 10)/2)
+         self.classLevels.append(classToLevelUp.__class__())   #add the class (level 1)
+         classToLevelUp.level = classToLevelUp.level -1        #reduce the amount leveled up by 1
+         foundAt = len(self.classLevels)-1
+      i = self.classLevels[foundAt]
+      for j in range(classToLevelUp.level):
+         i.levelUp()
+         if i.level == 1:
+            self.hitPoints = i.hitDice + ((self.con - 10)/2)
          else:
             self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + ((self.con - 10)/2)
+
    def choosePath(self,classToChooseFrom,path):
       for i in self.classLevels:
          if isinstance(i,classToChooseFrom.__class__):
@@ -147,7 +148,9 @@ class Character:
          for i in self.classLevels:
             if i.numberOfAbilitiesToIncrease > 0:
                i.numberOfAbilitiesToIncrease = i.numberOfAbilitiesToIncrease - 1
-   
+   def callClassFunction(self,function,arguments):
+      if function == "chooseAnimals":
+         self.classLevels[0].chooseAnimals(arguments)
    def combineProficiencies(self):
       #proficiency bonus
       for i in self.classLevels:
@@ -236,8 +239,9 @@ listOfClasses = [Barbarian(2)]
 listOfSkills = ["athletics"]
 race = Dwarf("Mountain Dwarf")
 c = Character(orderOfStats, listOfClasses, race, Sage, listOfSkills)
-c.choosePath(Barbarian(),"Path of the Berserker")
-c.printStats()
+c.choosePath(Barbarian(),"Path of the Totem Warrior")
+c.callClassFunction("chooseAnimals",["Cougar","Cougar"])
+#c.printStats()
 c.addClassLevel(Barbarian(5))
 c.combineProficiencies()
-c.printStats()
+#c.printStats()

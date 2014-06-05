@@ -1,3 +1,6 @@
+import unitTest,time,calendar
+from unitTest import UnitTest
+
 class BaseClass:
    classString = "BaseClass"
    hitDice = 8
@@ -164,36 +167,38 @@ class Barbarian(BaseClass):
          
       elif choice == self.pathsToChoose[1]: # Path of the Totem Warrior
          self.pathChosen = choice
-         self.featureList[3] = "Totem Spirit: " + self.animalChosen[0]
+         self.featureList[2] = ["Totem Spirit: " + str(self.animalChosen[0])]
+         self.featureListDescriptions[2] = ["Bear","Cougar","Hawk","Wolf"]
          if self.animalChosen[0] == self.animalToChoose[0]: #Bear
-            self.featureListDescriptions[2] = "Roll hitdice twice when regaining health"
+            self.featureListDescriptions[2] = [["Roll hitdice twice when regaining health"]]
          elif self.animalChosen[0] == self.animalToChoose[1]:#Cougar
-            self.featureListDescriptions[2] = ["Speed increases 5","You gain proficiency in acrobatics"]
+            self.featureListDescriptions[2] = [["Speed increases 5","You gain proficiency in acrobatics"]]
          elif self.animalChosen[0] == self.animalToChoose[2]:#Hawk
-            self.featureListDescriptions[2] = ["Jump double your normal distance","ADV on Raging dex-based attack rolls"]
+            self.featureListDescriptions[2] = [["Jump double your normal distance","ADV on Raging dex-based attack rolls"]]
          elif self.animalChosen[0] == self.animalToChoose[3]:#Wolf
-            self.featureListDescriptions[2] = "You gain proficiency in perception"
-         self.featureList[5] = "Spirit Rage: " + self.animalChosen[1]
+            self.featureListDescriptions[2] = [["You gain proficiency in perception"]]
+         self.featureList[5] = ["Spirit Rage: " + str(self.animalChosen[1])]
+         self.featureListDescriptions[5] = ["Bear","Cougar","Hawk","Wolf"]
          if self.animalChosen[1] == self.animalToChoose[0]: #Bear
-            self.featureListDescriptions[5] = "You may expend up to 2 hitdice to regain HP when entering rage"
+            self.featureListDescriptions[5] = [["You may expend up to 2 hitdice to regain HP when entering rage"]]
          elif self.animalChosen[1] == self.animalToChoose[1]:#Cougar
-            self.featureListDescriptions[5] = ["While raging, opportunity attacks have DISADV against you"]
+            self.featureListDescriptions[5] = [["While raging, opportunity attacks have DISADV against you"]]
          elif self.animalChosen[1] == self.animalToChoose[2]:#Hawk
-            self.featureListDescriptions[5] = ["While raging, you have resistance to falling damage","Jump triple your normal distance"]
+            self.featureListDescriptions[5] = [["While raging, you have resistance to falling damage","Jump triple your normal distance"]]
          elif self.animalChosen[1] == self.animalToChoose[3]:#Wolf
-            self.featureListDescriptions[5] = "While raging, you sense the location of any creature within 15 feet"
-         self.featureList[9] = "Spirit Vitality"
-         self.featureListDescriptions[9] = "While raging, regain 5 HP if you are at less than half health"
-         self.featureList[13] = "Guiding Totem"
-         self.featureListDescriptions[13] = ["You gain proficiency in Wisdom saving throws","Hidden threats do not gain ADV on you"]
+            self.featureListDescriptions[5] = [["While raging, you sense the location of any creature within 15 feet"]]
+         self.featureList[9] = ["Spirit Vitality"]
+         self.featureListDescriptions[9] = [["While raging, regain 5 HP if you are at less than half health"]]
+         self.featureList[13] = ["Guiding Totem"]
+         self.featureListDescriptions[13] = [["You gain proficiency in Wisdom saving throws","Hidden threats do not gain ADV on you"]]
 
    animalToChoose = ["Bear","Cougar","Hawk","Wolf"]
-   animalChosen = [[],[]]
+   animalChosen = ["",""]
    def chooseAnimals(self,choices):
       totem,rage = choices
-      if totem == animalToChoose[0] or totem == animalToChoose[1] or totem == animalToChoose[2] or totem == animalToChoose[3]:
+      if totem == self.animalToChoose[0] or totem == self.animalToChoose[1] or totem == self.animalToChoose[2] or totem == self.animalToChoose[3]:
          self.animalChosen[0] = totem
-      if rage == animalToChoose[0] or rage == animalToChoose[1] or rage == animalToChoose[2] or rage == animalToChoose[3]:
+      if rage == self.animalToChoose[0] or rage == self.animalToChoose[1] or rage == self.animalToChoose[2] or rage == self.animalToChoose[3]:
          self.animalChosen[1] = rage
 #
 class Bard(BaseClass):
@@ -270,38 +275,40 @@ class Bard(BaseClass):
                               [["2 +1's to abilities OR choose 1 feat"]],
                               [["Learn 5 spells from any spellbook (cantrip - lvl5 only) as Bard spells"]]]
    def updateFeatures(self):
-      featureListDescriptions[0] = ["Inteligence checks of 9 or lower are a 10, if they pertain to Arcana, History, Nature, or Religion"],["Call To Battle = + 1d"+self.callToBattleDieUsed[self.level]+" to damage rolls","Inspire Competence = Add your proficiency bonus to one of the 6 abilities","Range: 25ft, Duration: 10m, Needs concentration and voice"]
+      self.featureListDescriptions[0] = [["Inteligence checks of 9 or lower are a 10, if they pertain to Arcana, History, Nature, or Religion"],["Call To Battle = + 1d"+str(self.callToBattleDieUsed[self.level])+" to damage rolls","Inspire Competence = Add your proficiency bonus to one of the 6 abilities","Range: 25ft, Duration: 10m, Needs concentration and voice"]]
       if self.pathChosen == "College of Valor":
-         self.featureListDescriptions[6] = "Give allies = + 1d"+self.callToBattleDieUsed[self.level]+" more HP during short rests"
+         self.featureListDescriptions[5] = [["Give allies = + 1d"+str(self.callToBattleDieUsed[self.level])+" more HP during short rests"]]
          
    pathsToChoose = ["College of Valor", "College of Wit"]
    pathChosen = ""
    def choosePath(self,choice): 
       if choice == self.pathsToChoose[0]: # College of Valor
          self.pathChosen = choice
-         self.featureList[3] = "Bonus Proficiencies", "War College Training", "Expertise"
-         self.featureListDescriptions[3] = ["Gain proficiency with medium armor and martial weapons"],["Per turn you can use the help action as part of the attack action"],["Gain +5 bonus to any 4 skill or tool proficiencies"]
-         self.featureList[6] = "Song of Rest"
-         self.featureListDescriptions[6] = "Give allies = + 1d"+self.callToBattleDieUsed[self.level]+" more HP during short rests"
-         self.featureList[12] = "Coordinate Allies"
-         self.featureListDescriptions[12] = "Use reaction to give advantage to attack against a specific creature that has been attacked"
-         self.featureList[15] = "Words of Warning"
-         self.featureListDescriptions[15] = "Use reaction to give advantage to allies Strength, Dexterity, or Wisdom saving throw"
-         self.featureList[18] = "Rally"
-         self.featureListDescriptions[18] = ["Learn cure mass wounds, cast it 1/day for free","This spell removes charm, fright, paralysis, and stun. Everyone can stand up or move its speed"]
+         self.armorProficiencies = ["light","medium"]
+         self.weaponProficiencies = ["simple","martial"]
+         self.featureList[2] = ["War College Training", "Expertise"]
+         self.featureListDescriptions[2] = [["Per turn you can use the help action as part of the attack action"],["Gain +5 bonus to any 4 skill or tool proficiencies"]]
+         self.featureList[5] = ["Song of Rest"]
+         self.featureListDescriptions[5] = [["Give allies = + 1d"+str(self.callToBattleDieUsed[self.level])+" more HP during short rests"]]
+         self.featureList[11] = ["Coordinate Allies"]
+         self.featureListDescriptions[11] = [["Use reaction to give advantage to attack against a specific creature that has been attacked"]]
+         self.featureList[14] = ["Words of Warning"]
+         self.featureListDescriptions[14] = [["Use reaction to give advantage to allies Strength, Dexterity, or Wisdom saving throw"]]
+         self.featureList[17] = ["Rally"]
+         self.featureListDescriptions[17] = [["Learn cure mass wounds, cast it 1/day for free","This spell removes charm, fright, paralysis, and stun. Everyone can stand up or move its speed"]]
          
       elif choice == self.pathsToChoose[1]: # College of Wit
          self.pathChosen = choice
-         self.featureList[3] = "Fascinating Performance", "Expertise"
-         self.featureListDescriptions[3] = ["Charm non-hostile creatures within 50ft","Combat breaks effect"],["Gain +5 bonus to any 4 skill or tool proficiencies"]
-         self.featureList[6] = "Eviscerating Wit"
-         self.featureListDescriptions[6] = ["Plant doubt (disadvantage on all ability checks) to all hostile creatures in 50ft","Cha saving throw breaks spell"]
-         self.featureList[12] = "Seeds of Doubt"
-         self.featureListDescriptions[12] = ["Target creature must succeed Wisdom saving throw to attack you directly", "New attack/spell ends the effect, charm immunity is affects this spell"]
-         self.featureList[15] = "Inspire Dread"
-         self.featureListDescriptions[15] = "All hostile creatures on the start of their turn must succeed a Wisdom saving throw or be frightened"
-         self.featureList[18] = "Seeds of Confusion"
-         self.featureListDescriptions[18] = ["Learn the confusion spell, cast it 1/day for free", "Choose the creatures affected, use an action to choose the behavior of the confusion"]
+         self.featureList[2] = ["Fascinating Performance", "Expertise"]
+         self.featureListDescriptions[2] = [["Charm non-hostile creatures within 50ft","Combat breaks effect"],["Gain +5 bonus to any 4 skill or tool proficiencies"]]
+         self.featureList[5] = ["Eviscerating Wit"]
+         self.featureListDescriptions[5] = [["Plant doubt (disadvantage on all ability checks) to all hostile creatures in 50ft","Cha saving throw breaks spell"]]
+         self.featureList[11] = ["Seeds of Doubt"]
+         self.featureListDescriptions[11] = [["Target creature must succeed Wisdom saving throw to attack you directly", "New attack/spell ends the effect, charm immunity is affects this spell"]]
+         self.featureList[14] = ["Inspire Dread"]
+         self.featureListDescriptions[14] = [["All hostile creatures on the start of their turn must succeed a Wisdom saving throw or be frightened"]]
+         self.featureList[17] = ["Seeds of Confusion"]
+         self.featureListDescriptions[17] = [["Learn the confusion spell, cast it 1/day for free", "Choose the creatures affected, use an action to choose the behavior of the confusion"]]
 #
 class Cleric(BaseClass):
    level = 1
@@ -383,9 +390,9 @@ class Cleric(BaseClass):
          self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
       elif self.pathChosen == self.pathsToChoose[2]: # Light
          self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
-         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureList[5] = ["Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
       elif self.pathChosen == self.pathsToChoose[4]: # War
-         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
       self.featureList[7] = ["Ability Score Improvement", "Divine Strike ("+str(self.divineStrikeDicePerLevel[self.level-1])+"d8)"]
    pathsToChoose = ["Knowledge", "Life","Light","Nature","War"]
    pathChosen = ""
@@ -394,63 +401,61 @@ class Cleric(BaseClass):
          self.pathChosen = choice
       elif choice == self.pathsToChoose[1]: # Life
          self.pathChosen = choice
-         self.featureList[1] = "Domain Spells","Disciple of Life","Spellcasting"
-         self.featureListDescriptions[1] = ["Bless","Cure Wounds"],["Healing spells gain an addition 2 + spell level"]["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]
-         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-         self.featureListDescriptions[2] = ["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Heal HP equal to 5 * Cleric Level","Only affects living creatures at less than half HP"]
-         self.featureList[3] = "Domain Spells"
-         self.featureListDescriptions[3] = ["Lesser Restoration","Spiritual Weapon"]
-         self.featureList[5] = "Domain Spells"
-         self.featureListDescriptions[5] = ["Beacon of Hope","Prayer"]
-         self.featureList[7] = "Domain Spells"
-         self.featureListDescriptions[7] = ["Death Ward","Guardian of Faith"]
-         self.featureList[9] = "Domain Spells"
-         self.featureListDescriptions[9] = ["Mass Cure Wounds","Raise Dead"]
-         self.featureList[20] = "Supreme Healing"
-         self.featureListDescriptions[20] = ["Maximize all die rolls while healing"]
+         self.featureList[0] = ["Domain Spells","Disciple of Life","Spellcasting"]
+         self.featureListDescriptions[0] = [["Bless","Cure Wounds"],["Healing spells gain an addition 2 + spell level"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]]
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+         self.featureListDescriptions[1] = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Heal HP equal to 5 * Cleric Level","Only affects living creatures at less than half HP"]]
+         self.featureList[2] = ["Domain Spells"]
+         self.featureListDescriptions[2] = [["Lesser Restoration","Spiritual Weapon"]]
+         self.featureList[4] = ["Domain Spells"]
+         self.featureListDescriptions[4] = [["Beacon of Hope","Prayer"]]
+         self.featureList[6] = ["Domain Spells"]
+         self.featureListDescriptions[6] = [["Death Ward","Guardian of Faith"]]
+         self.featureList[8] = ["Domain Spells"]
+         self.featureListDescriptions[8] = [["Mass Cure Wounds","Raise Dead"]]
+         self.featureList[19] = ["Supreme Healing"]
+         self.featureListDescriptions[19] = [["Maximize all die rolls while healing"]]
          self.armorProficiencies = ["light","medium","heavy","shields"]
       elif choice == self.pathsToChoose[2]: # Light
          self.pathChosen = choice
-         self.featureList[1] = "Bonus Spells","Domain Spells","Flare","Spellcasting"
-         self.featureListDescriptions[1] = ["Gain the light and sacred flame cantrips"],["Burning Hands","Faerie Fire"],["Use reaction to cause attacker to have DISADV"]["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]
-         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-         self.featureListDescriptions[2] = ["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Dispel magical darkness in 25ft","Enemies make a Constitution save, fail = 2d10+ Cleric Level radiant damage, success = half damage"]
-         self.featureList[3] = "Domain Spells"
-         self.featureListDescriptions[3] = ["Flaming Sphere","Scorching Ray"]
-         self.featureList[5] = "Domain Spells"
-         self.featureListDescriptions[5] = ["Daylight","Fireball"]
-         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-         self.featureListDescriptions[6] = ["Any Illusion within 25ft is dispelled if it's level <= Cleric level / 2"]
-         self.featureList[7] = "Domain Spells"
-         self.featureListDescriptions[7] = ["Guardian of Faith","Wall of Fire"]
-         self.featureList[9] = "Domain Spells"
-         self.featureListDescriptions[9] = ["Flame Strike","True Seeing"]
-         self.featureList[11] = "Domain Spells"
-         self.featureListDescriptions[11] = ["Sunbeam"]
-         self.featureList[15] = "Domain Spells"
-         self.featureListDescriptions[15] = ["Sunburst"]
-         self.featureList[20] = "Corona of Light"
-         self.featureListDescriptions[20] = ["Bright light - 50ft radius (Enemies take DISADV against Fire/Radiant damage)","Dim light - 25ft beyond","1 minute duration"]
+         self.featureList[0] = ["Bonus Spells","Domain Spells","Flare","Spellcasting"]
+         self.featureListDescriptions[0] = [["Gain the light and sacred flame cantrips"],["Burning Hands","Faerie Fire"],["Use reaction to cause attacker to have DISADV"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]]
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+         self.featureListDescriptions[1] = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Dispel magical darkness in 25ft","Enemies make a Constitution save, fail = 2d10+ Cleric Level radiant damage, success = half damage"]]
+         self.featureList[2] = ["Domain Spells"]
+         self.featureListDescriptions[2] = [["Flaming Sphere","Scorching Ray"]]
+         self.featureList[4] = ["Domain Spells"]
+         self.featureListDescriptions[4] = [["Daylight","Fireball"]]
+         self.featureList[5] = ["Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+         self.featureListDescriptions[5] = [["Any Illusion within 25ft is dispelled if it's level <= Cleric level / 2"]]
+         self.featureList[6] = ["Domain Spells"]
+         self.featureListDescriptions[6] = [["Guardian of Faith","Wall of Fire"]]
+         self.featureList[8] = ["Domain Spells"]
+         self.featureListDescriptions[8] = [["Flame Strike","True Seeing"]]
+         self.featureList[10] = ["Domain Spells"]
+         self.featureListDescriptions[10] = [["Sunbeam"]]
+         self.featureList[14] = ["Domain Spells"]
+         self.featureListDescriptions[14] = [["Sunburst"]]
+         self.featureList[19] = ["Corona of Light"]
+         self.featureListDescriptions[19] = [["Bright light - 50ft radius (Enemies take DISADV against Fire/Radiant damage)","Dim light - 25ft beyond","1 minute duration"]]
       elif choice == self.pathsToChoose[3]: # Nature
          self.pathChosen = choice
       elif choice == self.pathsToChoose[4]: # War
          self.pathChosen = choice
-         self.featureList[1] = "Domain Spells","War Priest","Spellcasting"
-         self.featureListDescriptions[1] = ["Divine Favor","Shield of Faith"],["Attack a single extra time in a turn","Can be used up to WISMOD"]["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]
-         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-         self.featureListDescriptions[2] = ["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["After making attack roll, add +10 to roll"]
-         self.featureList[3] = "Domain Spells"
-         self.featureListDescriptions[3] = ["Magic Weapon","Spiritual Weapon"]
-         self.featureList[5] = "Domain Spells"
-         self.featureListDescriptions[5] = ["Holy Vigor","Prayer"]
-         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-         self.featureListDescriptions[6] = ["Any Illusion within 25ft is dispelled if it's level <= Cleric level / 2"]
-         self.featureList[7] = "Domain Spells"
-         self.featureListDescriptions[7] = ["Divine Power","Freedom of Movement"]
-         self.featureList[9] = "Domain Spells"
-         self.featureListDescriptions[9] = ["Flame Strike","Hold Monster"]
-         self.featureList[20] = "Avatar of Battle"
-         self.featureListDescriptions[20] = ["Gain resistance to Bludgeoning, Piercing, and Slashing damage"]
+         self.featureList[0] = ["Domain Spells","War Priest","Spellcasting"]
+         self.featureListDescriptions[0] = [["Divine Favor","Shield of Faith"],["Attack a single extra time in a turn","Can be used up to WISMOD"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]]
+         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
+         self.featureListDescriptions[1] = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["After making attack roll, add +10 to roll"]]
+         self.featureList[2] = ["Domain Spells"]
+         self.featureListDescriptions[2] = [["Magic Weapon","Spiritual Weapon"]]
+         self.featureList[4] = ["Domain Spells"]
+         self.featureListDescriptions[4] = [["Holy Vigor","Prayer"]]
+         self.featureList[6] = ["Domain Spells"]
+         self.featureListDescriptions[6] = [["Divine Power","Freedom of Movement"]]
+         self.featureList[8] = ["Domain Spells"]
+         self.featureListDescriptions[8] = [["Flame Strike","Hold Monster"]]
+         self.featureList[19] = ["Avatar of Battle"]
+         self.featureListDescriptions[19] = [["Gain resistance to Bludgeoning, Piercing, and Slashing damage"]]
          self.armorProficiencies = ["light","medium","heavy","shields"]
          weaponProficiencies = ["simple","martial"]
 #
@@ -523,17 +528,6 @@ class Druid(BaseClass):
                               [["For every 10 years that pass, you age only 1 year"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
                               [["Cast spells in Wild shape. Apply proficiency bonus if you had focus when you used Wild Shape"]]]
-   def updateFeatures(self):
-      if self.pathChosen == "": 
-         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
-      if self.pathChosen == self.pathsToChoose[1]: # Life
-         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Restore Health ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
-      elif self.pathChosen == self.pathsToChoose[2]: # Light
-         self.featureList[1] = ["Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Radiance of the Dawn ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"]
-         self.featureList[6] = "Channel Divinity: Revelation of Truth ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-      elif self.pathChosen == self.pathsToChoose[4]: # War
-         self.featureList[2] = "Turn Undead("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)","Channel Divinity: Guided Strike ("+str(self.channelDivinityPerLevel[self.level-1])+"/rest)"
-      self.featureList[7] = ["Ability Score Improvement", "Divine Strike ("+str(self.divineStrikeDicePerLevel[self.level-1])+"d8)"]
    pathsToChoose = ["Circle of the Land", "Circle of the Moon"]
    pathChosen = ""
    def choosePath(self,choice): 
@@ -623,10 +617,10 @@ class Druid(BaseClass):
       if choice == self.landToChoose[0] or choice == self.landToChoose[1] or choice == self.landToChoose[2] or choice == self.landToChoose[3] or choice == self.landToChoose[4] or choice == self.landToChoose[5] or choice == self.landToChoose[6]:
          self.landChosen = choice
 #
-
 class Fighter(BaseClass):
    classString = "Fighter"
    hitDice = 10
+   superiorityDicePerLevel =  [0,0,2,2,2,2,3,3,3,4,4,4,4,4,4,4,4,4,4,4]
    armorProfenciencies = ["all","shields"]
    weaponProfenciencies = ["simple","martial"]
    toolProfenciencies = ["landMount"]
@@ -653,7 +647,102 @@ class Fighter(BaseClass):
                   ["Ability Score Improvement"],
                   ["Martial Path benefit"],
                   ["Extra Attack"]]
+   featureListDescriptions = [[["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["Gain temporary (1d6 + Figher Level) HP "]],
+                              [["Once per rest, use an extra action"]],
+                              [["Path of the Weaponmaster", "Path of the Warrior"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["You can attack an extra time"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Make a DC 15 Con save if you go to 0 HP, success gives you 1 HP"]],
+                              [[""]],
+                              [["You can attack an extra time"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["ADV on all saving throws"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Action Surge gains an additional use per rest"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["You can attack an extra time"]]]
+   fightingStyleOptions = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+   fightingStylesChosen = ["",""]
+   def chooseFightingStyle(self,choices):
+      first, second = choices
+      if first == self.fightingStyleOptions[0]:   # Archery
+         self.fightingStylesChosen[0] = first
+         self.featureList[0] = ["Fighting Style: Archery","Second Wind"]
+         self.featureListDescriptions[0] = ["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Figher Level) HP "]
+      elif first == self.fightingStyleOptions[1]: # Defense
+         self.fightingStylesChosen[0] = first
+         self.featureList[0] = ["Fighting Style: Defense","Second Wind"]
+         self.featureListDescriptions[0] = ["+1 to AC while wearing armor"],["Gain temporary (1d6 + Figher Level) HP "]
+      elif first == self.fightingStyleOptions[2]: # Great Weapon Fighting
+         self.fightingStylesChosen[0] = first
+         self.featureList[0] = ["Fighting Style: Great Weapon Fighting","Second Wind"]
+         self.featureListDescriptions[0] = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],["Gain temporary (1d6 + Figher Level) HP "]
+      elif first == self.fightingStyleOptions[3]: # Protection
+         self.fightingStylesChosen[0] = first
+         self.featureList[0] = ["Fighting Style: Protection","Second Wind"]
+         self.featureListDescriptions[0] = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],["Gain temporary (1d6 + Figher Level) HP "]
+      elif first == self.fightingStyleOptions[4]: # Two-Weapon Fighting
+         self.fightingStylesChosen[0] = first
+         self.featureList[0] = ["Fighting Style: Two-Weapon Fighting","Second Wind"]
+         self.featureListDescriptions[0] = ["Add your ability mod to the damage of the second attack"],["Gain temporary (1d6 + Figher Level) HP "]
+      if self.pathChosen == pathsToChoose[1]:
+         if second == self.fightingStyleOptions[0]:   # Archery
+            self.fightingStylesChosen[1] = second
+            self.featureList[0] = ["Fighting Style: Archery","Second Wind"]
+            self.featureListDescriptions[0] = ["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Figher Level) HP "]
+         elif second == self.fightingStyleOptions[1]: # Defense
+            self.fightingStylesChosen[1] = second
+            self.featureList[9] = ["Additional Fighting Style: Defense"]
+            self.featureListDescriptions[9] = ["+1 to AC while wearing armor"]
+         elif second == self.fightingStyleOptions[2]: # Great Weapon Fighting
+            self.fightingStylesChosen[1] = second
+            self.featureList[9] = ["Additional Fighting Style: Great Weapon Fighting"]
+            self.featureListDescriptions[9] = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"]
+         elif second == self.fightingStyleOptions[3]: # Protection
+            self.fightingStylesChosen[1] = second
+            self.featureList[9] = ["Additional Fighting Style: Protection","Second Wind"]
+            self.featureListDescriptions[9] = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"]
+         elif second == self.fightingStyleOptions[4]: # Two-Weapon Fighting
+            self.fightingStylesChosen[1] = second
+            self.featureList[9] = ["Additional Fighting Style: Two-Weapon Fighting"]
+            self.featureListDescriptions[9] = ["Add your ability mod to the damage of the second attack"]
+      
+   def updateFeatures(self):
+      if choice == self.pathsToChoose[0]: # Path of the Weaponmaster
+         self.featureListDescriptions[2] = ["Gain "+str(self.superiorityDicePerLevel[self.level-1])+"d6 superiority dice to use on maneuvers, Compare die roll to (MOD)","Dirty Trick:(WIS) gain ADV on attack","Spring Away:(DEX) move half speed","Trip:(STR) target is prone","If roll is less than mod, add pips to damage"]
+      return
+   pathsToChoose = ["Path of the Weaponmaster", "Path of the Warrior"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Path of the Weaponmaster
+         self.pathChosen = choice
+         self.featureList[2] = "Combat Superiority"
+         self.featureListDescriptions[2] = ["Gain "+str(self.superiorityDicePerLevel[self.level-1])+"d6 superiority dice to use on maneuvers, Compare die roll to (MOD)","Dirty Trick:(WIS) gain ADV on attack","Spring Away:(DEX) move half speed","Trip:(STR) target is prone","If roll is less than mod, add pips to damage"]
+         self.featureList[6] = "Advanced Maneuvers"
+         self.featureListDescriptions[6] = ["Bell Ringer:(CON) target loses reactions, has DISADV on next attack","Drive Back:(STR) Push target 15ft","Hamstring:(DEX) Reduce target speed 15ft, all attacks against target gain ADV"]
+         self.featureList[9] = "Improved Combat Superiority"
+         self.featureListDescriptions[9] = ["Use d10s for superiority dice"]
+         self.featureList[14] = "Relentless"
+         self.featureListDescriptions[14] = ["If you start the turn no superiority dice, gain 2 at the end of it"]
+
+      elif choice == self.pathsToChoose[1]: # Path of the Warrior
+         self.pathChosen = choice
+         self.featureList[2] = "Improved Critical"
+         self.featureListDescriptions[2] = ["Count rolls of 19 as criticals"]
+         self.featureList[6] = "Superior Critical"
+         self.featureListDescriptions[6] = ["Count rolls of 18 as criticals"]
+         self.featureList[14] = "Devastating Critical"
+         self.featureListDescriptions[14] = ["Impose a secondary effect on critical hits, based on damage type:","Bludgeoning:Stun target on a CON save of DC 10+STR mod","Slashing:Target's speed drops to 0","Piercing:Target takes 1d6+(FighterLvl/2) damage per turn, tending to the wound stops this"]
+         self.featureList[18] = "Survivor"
+         self.featureListDescriptions[18] = ["Recover 5+CON mod HP at the start of your turn if you are at less than half HP"]
 #
+
 class Mage(BaseClass):
    classString = "Mage"
    hitDice = 6
@@ -868,3 +957,272 @@ class Rogue(BaseClass):
    def updateFeatures(self):
       self.featureList[0] = ["Expertise, Sneak Attack ("+str(self.sneakAttackDice[self.level])+"d6)"]
 #
+class classUnitTest(UnitTest):
+   def run(self):
+      self.BaseClassTests()
+      self.BarbarianClassTests()
+      self.BardClassTests()
+      self.ClericClassTests()
+   def common_updateFeatures(self,c,level,index,expectedFeatures,expectedFeatureDescriptions):
+      c.level = level
+      c.updateFeatures()
+      if c.featureList[index] != expectedFeatures:
+         self.failTest("Class->common->updateFeatures->"+c.classString+"->level" + str(level)+"->index"+str(index)+": '"+str(c.featureList[index])+"' found, '" + str(expectedFeatures) + "' expected")
+      if c.featureListDescriptions[index] != expectedFeatureDescriptions:
+         self.failTest("Class->common->updateFeatures->"+c.classString+"->level" + str(level)+"->index"+str(index)+": '"+str(c.featureListDescriptions[index])+"' found, '" + str(expectedFeatureDescriptions) + "' expected")
+   def common_choosePath(self,c,choice,indicesList,expectedFeatureList,expectedFeatureDescriptionsList):
+      c.choosePath(choice)
+      if c.pathChosen != choice:
+         self.failTest("Class->common->choosePath->"+c.classString+": chosen path '"+c.pathChosen+"' seen + '"+choice+"'expected")
+      for i,index in enumerate(indicesList):
+         if c.featureList[index] != expectedFeatureList[i]:
+            self.failTest("Class->common->choosePath->"+c.classString+"->index"+str(index)+": '"+str(c.featureList[index])+"' found, '" + str(expectedFeatureList[i]) + "' expected")
+         if c.featureListDescriptions[index] != expectedFeatureDescriptionsList[i]:
+            self.failTest("Class->common->choosePath->"+c.classString+"->index"+str(index)+": '"+str(c.featureListDescriptions[index])+"' found, '" + str(expectedFeatureDescriptionsList[i]) + "' expected")
+   def BaseClassTests(self):
+      c = BaseClass()
+      #levelUp
+      c.levelUp()
+      if c.level != 2:
+         self.failTest("Class->BaseClass->Levelup test")
+      c.featureList =  [[],
+                        [],
+                        ["Ability Score Improvement"],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        []]   
+      c.levelUp()
+      if c.numberOfAbilitiesToIncrease != 2:
+         self.failTest("Class->BaseClass->AbilityModIncreases test")
+      
+      #__init__
+      for i in range(1,20):
+         c = BaseClass(i)
+         if c.level != i:
+            self.failTest("Class->BaseClass->__init__ failure on index " + str(i))
+   #
+   def BarbarianClassTests(self):
+      c = Barbarian()
+      #updateFeatures
+      index = 0
+      levelList =    [1,3,6,9,12,16,17,20]
+      newEntryList =   [["Rage (2/rest, +2 dmg)","Thick Hide"],
+                        ["Rage (3/rest, +2 dmg)","Thick Hide"],
+                        ["Rage (4/rest, +2 dmg)","Thick Hide"],
+                        ["Rage (4/rest, +3 dmg)","Thick Hide"],
+                        ["Rage (5/rest, +3 dmg)","Thick Hide"],
+                        ["Rage (5/rest, +4 dmg)","Thick Hide"],
+                        ["Rage (6/rest, +4 dmg)","Thick Hide"],
+                        ["Rage (99/rest, +4 dmg)","Thick Hide"]]
+      rageDes = ["ADV on Strength checks and Saving throws","Gain temporary hitpoints = 2*Barbarian level"]
+      thickHideDes = ["if no armor: AC = 10 + DexMod + ConMod"]
+      
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],[rageDes,thickHideDes])
+      #choosePath
+      c = Barbarian()
+      #-Path of the Berserker
+      indicesList = [2,5,9,13]
+      expectedFeatureList =  [["Fearless Rage"],
+                              ["Mindless Rage"],
+                              ["Unchecked Fury"],
+                              ["Brutal Rage"]]
+      expectedFeatureDescriptionsList =  [[["Immune to fear while raging"]],
+                                          [["Immune to charm while raging"]],
+                                          [["If you miss a melee attack, immediately make one retry"]],
+                                          [["You may take 5 damage at start of a raging turn. If you do, add another weapon damage die"]]]
+      self.common_choosePath(c,"Path of the Berserker",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      #-Path of the Totem Warrior
+      spiritVitalityDes =  [["While raging, regain 5 HP if you are at less than half health"]]
+      guidingTotemDes =    [["You gain proficiency in Wisdom saving throws","Hidden threats do not gain ADV on you"]]
+      totemRageDefault =   ["Bear","Cougar","Hawk","Wolf"]
+      
+      c = Barbarian()
+      indicesList = [2,5,9,13]
+      expectedFeatureList =  [["Totem Spirit: "], ["Spirit Rage: "], ["Spirit Vitality"], ["Guiding Totem"]]
+      expectedFeatureDescriptionsList =  [totemRageDefault, totemRageDefault, spiritVitalityDes, guidingTotemDes]
+      self.common_choosePath(c,"Path of the Totem Warrior",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      #chooseAnimals
+      indicesList = [2,5,9,13]
+      animalPairList = [["Bear","Bear"],["Cougar","Cougar"],["Hawk","Hawk"],["Wolf","Wolf"],["Bear","Wolf"]]
+      expectedFeatureList =  [[["Totem Spirit: Bear"],  ["Spirit Rage: Bear"],  ["Spirit Vitality"],["Guiding Totem"]],
+                              [["Totem Spirit: Cougar"],["Spirit Rage: Cougar"],["Spirit Vitality"],["Guiding Totem"]],
+                              [["Totem Spirit: Hawk"],  ["Spirit Rage: Hawk"],  ["Spirit Vitality"],["Guiding Totem"]],
+                              [["Totem Spirit: Wolf"],  ["Spirit Rage: Wolf"],  ["Spirit Vitality"],["Guiding Totem"]],
+                              [["Totem Spirit: Bear"],  ["Spirit Rage: Wolf"],  ["Spirit Vitality"],["Guiding Totem"]]]
+      
+      totemBearDes =       [["Roll hitdice twice when regaining health"]]
+      rageBearDes =        [["You may expend up to 2 hitdice to regain HP when entering rage"]]
+      totemCougarDes =     [["Speed increases 5","You gain proficiency in acrobatics"]]
+      rageCougarDes =      [["While raging, opportunity attacks have DISADV against you"]]
+      totemHawkDes =       [["Jump double your normal distance","ADV on Raging dex-based attack rolls"]]
+      rageHawkDes =        [["While raging, you have resistance to falling damage","Jump triple your normal distance"]]
+      totemWolfDes =       [["You gain proficiency in perception"]]
+      rageWolfDes =        [["While raging, you sense the location of any creature within 15 feet"]]
+      expectedFeatureDescriptionsList =  [[totemBearDes,  rageBearDes,  spiritVitalityDes,guidingTotemDes],
+                                          [totemCougarDes,rageCougarDes,spiritVitalityDes,guidingTotemDes],
+                                          [totemHawkDes,  rageHawkDes,  spiritVitalityDes,guidingTotemDes],
+                                          [totemWolfDes,  rageWolfDes,  spiritVitalityDes,guidingTotemDes],
+                                          [totemBearDes,  rageWolfDes,  spiritVitalityDes,guidingTotemDes]]
+      for i,pair in enumerate(animalPairList):
+         c.chooseAnimals(pair)
+         if c.animalChosen != pair:
+            self.failTest("Class->common->chooseAnimal->"+c.classString+": chosen animals '"+str(c.animalChosen)+"' seen + '"+str(pair)+"'expected")
+            
+         self.common_choosePath(c,"Path of the Totem Warrior",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+   #
+   def BardClassTests(self):
+      #updateFeatures
+      c = Bard()
+      c.choosePath("College of Valor")
+      #callToBattleDieUsed =         [4,4,4,4,4,6,6,6,8,8,8,8,10,10,10,10,12,12,12,12]
+      index = 0
+      levelList =    [1,6,9,13,17]
+      bardicKnowledgeDes = ["Inteligence checks of 9 or lower are a 10, if they pertain to Arcana, History, Nature, or Religion"]
+      inspireCompetenceDes = "Inspire Competence = Add your proficiency bonus to one of the 6 abilities"
+      bardicPerformanceDetails = "Range: 25ft, Duration: 10m, Needs concentration and voice"
+
+      newEntryList =   [[bardicKnowledgeDes,["Call To Battle = + 1d4 to damage rolls", inspireCompetenceDes,bardicPerformanceDetails]],
+                        [bardicKnowledgeDes,["Call To Battle = + 1d6 to damage rolls", inspireCompetenceDes,bardicPerformanceDetails]],
+                        [bardicKnowledgeDes,["Call To Battle = + 1d8 to damage rolls", inspireCompetenceDes,bardicPerformanceDetails]],
+                        [bardicKnowledgeDes,["Call To Battle = + 1d10 to damage rolls",inspireCompetenceDes,bardicPerformanceDetails]],
+                        [bardicKnowledgeDes,["Call To Battle = + 1d12 to damage rolls",inspireCompetenceDes,bardicPerformanceDetails]]]
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,["Bardic Knowledge","Bardic Performance"],newEntryList[i])
+      index = 5
+      newEntryList =   [[["Give allies = + 1d4 more HP during short rests"]],
+                        [["Give allies = + 1d6 more HP during short rests"]],
+                        [["Give allies = + 1d8 more HP during short rests"]],
+                        [["Give allies = + 1d10 more HP during short rests"]],
+                        [["Give allies = + 1d12 more HP during short rests"]]]
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,["Song of Rest"],newEntryList[i])
+      #choosePath
+      # College of Valor
+      c = Bard()
+      indicesList = [2,5,11,14,17]
+      expectedFeatureList =  [["War College Training", "Expertise"],
+                              ["Song of Rest"],
+                              ["Coordinate Allies"],
+                              ["Words of Warning"],
+                              ["Rally"]]
+      expectedFeatureDescriptionsList =  [[["Per turn you can use the help action as part of the attack action"],["Gain +5 bonus to any 4 skill or tool proficiencies"]],
+                                          [["Give allies = + 1d4 more HP during short rests"]],
+                                          [["Use reaction to give advantage to attack against a specific creature that has been attacked"]],
+                                          [["Use reaction to give advantage to allies Strength, Dexterity, or Wisdom saving throw"]],
+                                          [["Learn cure mass wounds, cast it 1/day for free","This spell removes charm, fright, paralysis, and stun. Everyone can stand up or move its speed"]]]
+      self.common_choosePath(c,"College of Valor",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      expectedArmorProficiencies = ["light","medium"]
+      if c.armorProficiencies != expectedArmorProficiencies:
+         self.failTest("Class->Bard->College of Valor->ArmorProficiencies: '"+str(c.armorProficiencies)+"' found, '"+str(expectedArmorProficiencies)+"' expected")
+      expectedWeaponProficiencies = ["simple","martial"]
+      if c.weaponProficiencies != expectedWeaponProficiencies:
+         self.failTest("Class->Bard->College of Valor->WeaponProficiencies: '"+str(c.weaponProficiencies)+"' found, '"+str(expectedWeaponProficiencies)+"' expected")
+      
+      # College of Wit
+      c = Bard()
+      indicesList = [2,5,11,14,17]
+      expectedFeatureList =  [["Fascinating Performance", "Expertise"],
+                              ["Eviscerating Wit"],
+                              ["Seeds of Doubt"],
+                              ["Inspire Dread"],
+                              ["Seeds of Confusion"]]
+      expectedFeatureDescriptionsList =  [[["Charm non-hostile creatures within 50ft","Combat breaks effect"],["Gain +5 bonus to any 4 skill or tool proficiencies"]],
+                                          [["Plant doubt (disadvantage on all ability checks) to all hostile creatures in 50ft","Cha saving throw breaks spell"]],
+                                          [["Target creature must succeed Wisdom saving throw to attack you directly", "New attack/spell ends the effect, charm immunity is affects this spell"]],
+                                          [["All hostile creatures on the start of their turn must succeed a Wisdom saving throw or be frightened"]],
+                                          [["Learn the confusion spell, cast it 1/day for free", "Choose the creatures affected, use an action to choose the behavior of the confusion"]]]
+      self.common_choosePath(c,"College of Wit",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+   #
+   def ClericClassTests(self):
+      #updateFeatures
+      c = Cleric()
+      #  channelDivinityPerLevel =  [0,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3]
+      index = 1
+      levelList =    [1,2,6,18]
+      newEntryList =   [["Turn Undead(0/rest)","Channel Divinity (0/rest)"],
+                        ["Turn Undead(1/rest)","Channel Divinity (1/rest)"],
+                        ["Turn Undead(2/rest)","Channel Divinity (2/rest)"],
+                        ["Turn Undead(3/rest)","Channel Divinity (3/rest)"]]
+      newEntryDescription = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],[""]]
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
+      #  divineStrikeDicePerLevel = [0,0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,2]
+      index = 7
+      levelList = [1,8,14]
+      newEntryList =   [["Ability Score Improvement", "Divine Strike (0d8)"],
+                        ["Ability Score Improvement", "Divine Strike (1d8)"],
+                        ["Ability Score Improvement", "Divine Strike (2d8)"]]
+      newEntryDescription = [["2 +1's to abilities OR choose 1 feat"],["Once per turn, deal bonus (radiant/necrotic) damage"]]
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
+      c.choosePath("Life")
+      index = 1
+      levelList =    [1,2,6,18]
+      newEntryList =   [["Turn Undead(0/rest)","Channel Divinity: Restore Health (0/rest)"],
+                        ["Turn Undead(1/rest)","Channel Divinity: Restore Health (1/rest)"],
+                        ["Turn Undead(2/rest)","Channel Divinity: Restore Health (2/rest)"],
+                        ["Turn Undead(3/rest)","Channel Divinity: Restore Health (3/rest)"]]
+      newEntryDescription = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Heal HP equal to 5 * Cleric Level","Only affects living creatures at less than half HP"]]
+      
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
+      
+      c = Cleric()
+      c.choosePath("Light")
+      index = 1
+      levelList =    [1,2,6,18]
+      newEntryList =   [["Turn Undead(0/rest)","Channel Divinity: Radiance of the Dawn (0/rest)"],
+                        ["Turn Undead(1/rest)","Channel Divinity: Radiance of the Dawn (1/rest)"],
+                        ["Turn Undead(2/rest)","Channel Divinity: Radiance of the Dawn (2/rest)"],
+                        ["Turn Undead(3/rest)","Channel Divinity: Radiance of the Dawn (3/rest)"]]
+      newEntryDescription = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["Dispel magical darkness in 25ft","Enemies make a Constitution save, fail = 2d10+ Cleric Level radiant damage, success = half damage"]]
+      
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
+      index = 5
+      newEntryList =   [["Channel Divinity: Revelation of Truth (0/rest)"],
+                        ["Channel Divinity: Revelation of Truth (1/rest)"],
+                        ["Channel Divinity: Revelation of Truth (2/rest)"],
+                        ["Channel Divinity: Revelation of Truth (3/rest)"]]
+      newEntryDescription = [["Any Illusion within 25ft is dispelled if it's level <= Cleric level / 2"]]
+      
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
+      c = Cleric()
+      c.choosePath("War")
+      index = 1
+      levelList =    [1,2,6,18]
+      newEntryList =   [["Turn Undead(0/rest)","Channel Divinity: Guided Strike (0/rest)"],
+                        ["Turn Undead(1/rest)","Channel Divinity: Guided Strike (1/rest)"],
+                        ["Turn Undead(2/rest)","Channel Divinity: Guided Strike (2/rest)"],
+                        ["Turn Undead(3/rest)","Channel Divinity: Guided Strike (3/rest)"]]
+      newEntryDescription = [["All undead in 25ft must succeed WIS save (DC 10 + WIS + spellcasing bonus)","if target hitpoints <= cleric lvl * 5: target is destroyed else: target runs"],["After making attack roll, add +10 to roll"]]
+      
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
+      
+      #choosePath
+
+   #
+unitTestFramework = classUnitTest()
+
+start = int(round(time.time() * 1000))
+unitTestFramework.run()
+stop = int(round(time.time() * 1000))
+print "Class unit tests took " + str(stop-start) + " milliseconds"
