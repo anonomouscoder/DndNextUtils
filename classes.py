@@ -80,7 +80,9 @@ class BaseClass:
       if "Ability Score Improvement" in self.featureList[self.level-1]:
          self.numberOfAbilitiesToIncrease = self.numberOfAbilitiesToIncrease + 2
       self.updateFeatures()
-   
+   def setFeatureList(self,index,value,description):
+      self.featureList[index] = value
+      self.featureListDescriptions[index] = description
    #used for classes that have numerical amounts in features that increase based on level (sneak attack goes from 1d6 to 7d6)
    def updateFeatures(self):
       return
@@ -533,83 +535,83 @@ class Druid(BaseClass):
    def choosePath(self,choice): 
       if choice == self.pathsToChoose[0]: # Circle of the Land
          self.pathChosen = choice
-         self.featureList[2] = "Circle Spells","Natural Recovery"
-         self.featureListDescriptions[2] = ["Gain a cantrip"],["Once a day: short rest to recover spell slots up to Druid Level/2 of spell levels"]
-         self.featureList[6] = "Land's Stride"
-         self.featureListDescriptions[6] = ["Move through non-magical difficult terrain without extra movement","ADV on magic plants to impede movement"]
-         self.featureList[10] = "Nature's Ward"
-         self.featureListDescriptions[10] = ["Immune to Charm/Fright from elemental/fey creatures"],["Immune to poison and disease"]
+         self.featureList[1] = ["Circle Spells","Natural Recovery","Wild Shape"]
+         self.featureListDescriptions[1] = [["Gain a cantrip"],["Once a day: short rest to recover spell slots up to Druid Level/2 of spell levels"],["Transform into a bat, cat, deer, dog, fish, hawk, horse, owl, raven, snake, toad, or weasel"]]
+         self.featureList[5] = ["Land's Stride"]
+         self.featureListDescriptions[5] = [["Move through non-magical difficult terrain without extra movement","ADV on magic plants to impede movement"]]
+         self.featureList[9] = ["Nature's Ward"]
+         self.featureListDescriptions[9] = [["Immune to Charm/Fright from elemental/fey creatures"],["Immune to poison and disease"]]
          if self.landChosen == self.landToChoose[0]: #Coast
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Augury","Mirror Image"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Water Breathing","Water Walk"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Freedom of Movement","Solid Fog"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Scrying","True Seeing"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Augury","Mirror Image"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Water Breathing","Water Walk"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Freedom of Movement","Solid Fog"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Scrying","True Seeing"]]
          elif self.landChosen == self.landToChoose[1]: #Desert
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Blur","Silence"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Create Food and Water","Protection from Energy"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Blight","Hallucinatory Terrain"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Control Winds","Wall of Stone"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Blur","Silence"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Create Food and Water","Protection from Energy"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Blight","Hallucinatory Terrain"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Control Winds","Wall of Stone"]]
          elif self.landChosen == self.landToChoose[2]: #Forest
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Augury","Barkskin"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Call Lightning","Plant Growth"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Divination","Freedom of Movement"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Commune with Nature","Plant Door"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Augury","Barkskin"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Call Lightning","Plant Growth"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Divination","Freedom of Movement"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Commune with Nature","Plant Door"]]
          elif self.landChosen == self.landToChoose[3]: #Grassland
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Augury","Pass without Trace"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Daylight","Haste"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Air Walk","Divination"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Dream","Insect Plague"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Augury","Pass without Trace"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Daylight","Haste"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Air Walk","Divination"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Dream","Insect Plague"]]
          elif self.landChosen == self.landToChoose[4]: #Mountain
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Spider Climb","Spike Growth"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Elemental Mantle","Meld into Stone"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Confusion","Stoneskin"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Passwall","Wall of Stone"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Spider Climb","Spike Growth"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Elemental Mantle","Meld into Stone"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Confusion","Stoneskin"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Passwall","Wall of Stone"]]
          elif self.landChosen == self.landToChoose[5]: #Swamp
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Augury","Locate Object"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Water Walk","Stinking Cloud"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Freedom of Movement","Locate Creature"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Insect Plague","Scrying"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Augury","Locate Object"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Water Walk","Stinking Cloud"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Freedom of Movement","Locate Creature"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Insect Plague","Scrying"]]
          elif self.landChosen == self.landToChoose[6]: #Tundra
-            self.featureList[3] = "Circle Spells"
-            self.featureListDescriptions[3] = ["Augury","Spike Growth"]
-            self.featureList[5] = "Circle Spells"
-            self.featureListDescriptions[5] = ["Sleet Storm","Slow"]
-            self.featureList[7] = "Circle Spells"
-            self.featureListDescriptions[7] = ["Freedom of Movement","Ice Storm"]
-            self.featureList[9] = "Circle Spells"
-            self.featureListDescriptions[9] = ["Commune with Nature","Cone of Cold"]
+            self.featureList[2] = ["Circle Spells"]
+            self.featureListDescriptions[2] = [["Augury","Spike Growth"]]
+            self.featureList[4] = ["Circle Spells"]
+            self.featureListDescriptions[4] = [["Sleet Storm","Slow"]]
+            self.featureList[6] = ["Circle Spells"]
+            self.featureListDescriptions[6] = [["Freedom of Movement","Ice Storm"]]
+            self.featureList[8] = ["Circle Spells"]
+            self.featureListDescriptions[8] = [["Commune with Nature","Cone of Cold"]]
       elif choice == self.pathsToChoose[1]: # Circle of the Moon
          self.pathChosen = choice
-         self.featureList[2] = "Battle Wild Shape"
-         self.featureListDescriptions[2] = ["Use Wild Shape as part of any action except spell casting","Gain ability to change into a dire wolf or panther"]
-         self.featureList[6] = "Mauler Shapes"
-         self.featureListDescriptions[6] = ["Gain ability to change into a brown bear or tiger"]
-         self.featureList[10] = "Monstrous Shapes"
-         self.featureListDescriptions[10] = ["Gain ability to change into a cave bear or triceratops"]
+         self.featureList[1] = ["Battle Wild Shape","Wild Shape"]
+         self.featureListDescriptions[1] = [["Use Wild Shape as part of any action except spell casting","Gain ability to change into a dire wolf or panther"],["Transform into a bat, cat, deer, dog, fish, hawk, horse, owl, raven, snake, toad, or weasel"]]
+         self.featureList[5] = ["Mauler Shapes"]
+         self.featureListDescriptions[5] = [["Gain ability to change into a brown bear or tiger"]]
+         self.featureList[9] = ["Monstrous Shapes"]
+         self.featureListDescriptions[9] = [["Gain ability to change into a cave bear or triceratops"]]
 
    landToChoose = ["Coast","Desert","Forest","Grassland","Mountain","Swamp","Tundra"]
    landChosen = ""
@@ -671,78 +673,75 @@ class Fighter(BaseClass):
    fightingStylesChosen = ["",""]
    def chooseFightingStyle(self,choices):
       first, second = choices
-      if first == self.fightingStyleOptions[0]:   # Archery
-         self.fightingStylesChosen[0] = first
-         self.featureList[0] = ["Fighting Style: Archery","Second Wind"]
-         self.featureListDescriptions[0] = ["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Figher Level) HP "]
+      firstIndex = 0
+      secondIndex = 9
+      if first == "":
+         self.fightingStylesChosen[firstIndex] = first
+         self.setFeatureList(firstIndex, ["Fighting style","Second Wind"],[["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["Gain temporary (1d6 + Figher Level) HP "]])
+      elif first == self.fightingStyleOptions[0]: # Archery
+         self.fightingStylesChosen[firstIndex] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Archery","Second Wind"],[["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Figher Level) HP "]])
       elif first == self.fightingStyleOptions[1]: # Defense
-         self.fightingStylesChosen[0] = first
-         self.featureList[0] = ["Fighting Style: Defense","Second Wind"]
-         self.featureListDescriptions[0] = ["+1 to AC while wearing armor"],["Gain temporary (1d6 + Figher Level) HP "]
+         self.fightingStylesChosen[firstIndex] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Defense","Second Wind"],[["+1 to AC while wearing armor"],["Gain temporary (1d6 + Figher Level) HP "]])
       elif first == self.fightingStyleOptions[2]: # Great Weapon Fighting
-         self.fightingStylesChosen[0] = first
-         self.featureList[0] = ["Fighting Style: Great Weapon Fighting","Second Wind"]
-         self.featureListDescriptions[0] = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],["Gain temporary (1d6 + Figher Level) HP "]
+         self.fightingStylesChosen[firstIndex] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Great Weapon Fighting","Second Wind"],[["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],["Gain temporary (1d6 + Figher Level) HP "]])
       elif first == self.fightingStyleOptions[3]: # Protection
-         self.fightingStylesChosen[0] = first
-         self.featureList[0] = ["Fighting Style: Protection","Second Wind"]
-         self.featureListDescriptions[0] = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],["Gain temporary (1d6 + Figher Level) HP "]
+         self.fightingStylesChosen[firstIndex] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Protection","Second Wind"],[["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],["Gain temporary (1d6 + Figher Level) HP "]])
       elif first == self.fightingStyleOptions[4]: # Two-Weapon Fighting
-         self.fightingStylesChosen[0] = first
-         self.featureList[0] = ["Fighting Style: Two-Weapon Fighting","Second Wind"]
-         self.featureListDescriptions[0] = ["Add your ability mod to the damage of the second attack"],["Gain temporary (1d6 + Figher Level) HP "]
-      if self.pathChosen == pathsToChoose[1]:
-         if second == self.fightingStyleOptions[0]:   # Archery
-            self.fightingStylesChosen[1] = second
-            self.featureList[0] = ["Fighting Style: Archery","Second Wind"]
-            self.featureListDescriptions[0] = ["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Figher Level) HP "]
-         elif second == self.fightingStyleOptions[1]: # Defense
-            self.fightingStylesChosen[1] = second
-            self.featureList[9] = ["Additional Fighting Style: Defense"]
-            self.featureListDescriptions[9] = ["+1 to AC while wearing armor"]
-         elif second == self.fightingStyleOptions[2]: # Great Weapon Fighting
-            self.fightingStylesChosen[1] = second
-            self.featureList[9] = ["Additional Fighting Style: Great Weapon Fighting"]
-            self.featureListDescriptions[9] = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"]
-         elif second == self.fightingStyleOptions[3]: # Protection
-            self.fightingStylesChosen[1] = second
-            self.featureList[9] = ["Additional Fighting Style: Protection","Second Wind"]
-            self.featureListDescriptions[9] = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"]
-         elif second == self.fightingStyleOptions[4]: # Two-Weapon Fighting
-            self.fightingStylesChosen[1] = second
-            self.featureList[9] = ["Additional Fighting Style: Two-Weapon Fighting"]
-            self.featureListDescriptions[9] = ["Add your ability mod to the damage of the second attack"]
+         self.fightingStylesChosen[firstIndex] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Two-Weapon Fighting","Second Wind"],[["Add your ability mod to the damage of the second attack"],["Gain temporary (1d6 + Figher Level) HP "]])
       
+      if second == "":
+         self.fightingStylesChosen[1] = second
+      elif second == self.fightingStyleOptions[0]: # Archery
+         self.fightingStylesChosen[1] = second
+      elif second == self.fightingStyleOptions[1]: # Defense
+         self.fightingStylesChosen[1] = second
+      elif second == self.fightingStyleOptions[2]: # Great Weapon Fighting
+         self.fightingStylesChosen[1] = second
+      elif second == self.fightingStyleOptions[3]: # Protection
+         self.fightingStylesChosen[1] = second
+      elif second == self.fightingStyleOptions[4]: # Two-Weapon Fighting
+         self.fightingStylesChosen[1] = second
+
+      #if Path of Warrior is chosen, change the features and descriptions
+      if self.pathChosen == self.pathsToChoose[1]:
+         if second == "":
+            self.setFeatureList(secondIndex, ["Martial Path benefit"],[[""]])
+         elif second == self.fightingStyleOptions[0]: # Archery
+            self.setFeatureList(secondIndex, ["Additional Fighting Style: Archery"],[["+1 to attack rolls with ranged weapons"]])
+         elif second == self.fightingStyleOptions[1]: # Defense
+            self.setFeatureList(secondIndex, ["Additional Fighting Style: Defense"],[["+1 to AC while wearing armor"]])
+         elif second == self.fightingStyleOptions[2]: # Great Weapon Fighting
+            self.setFeatureList(secondIndex, ["Additional Fighting Style: Great Weapon Fighting"],[["If you miss with a 2 handed weapon, enemy takes STR mod as damage"]])
+         elif second == self.fightingStyleOptions[3]: # Protection
+            self.setFeatureList(secondIndex, ["Additional Fighting Style: Protection"],[["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"]])
+         elif second == self.fightingStyleOptions[4]: # Two-Weapon Fighting
+            self.setFeatureList(secondIndex, ["Additional Fighting Style: Two-Weapon Fighting"],[["Add your ability mod to the damage of the second attack"]])
    def updateFeatures(self):
-      if choice == self.pathsToChoose[0]: # Path of the Weaponmaster
-         self.featureListDescriptions[2] = ["Gain "+str(self.superiorityDicePerLevel[self.level-1])+"d6 superiority dice to use on maneuvers, Compare die roll to (MOD)","Dirty Trick:(WIS) gain ADV on attack","Spring Away:(DEX) move half speed","Trip:(STR) target is prone","If roll is less than mod, add pips to damage"]
+      if self.pathChosen == self.pathsToChoose[0]: # Path of the Weaponmaster
+         self.featureListDescriptions[2] = [["Gain "+str(self.superiorityDicePerLevel[self.level-1])+"d6 superiority dice to use on maneuvers, Compare die roll to (MOD)","Dirty Trick:(WIS) gain ADV on attack","Spring Away:(DEX) move half speed","Trip:(STR) target is prone","If roll is less than mod, add pips to damage"]]
       return
    pathsToChoose = ["Path of the Weaponmaster", "Path of the Warrior"]
    pathChosen = ""
    def choosePath(self,choice): 
       if choice == self.pathsToChoose[0]: # Path of the Weaponmaster
          self.pathChosen = choice
-         self.featureList[2] = "Combat Superiority"
-         self.featureListDescriptions[2] = ["Gain "+str(self.superiorityDicePerLevel[self.level-1])+"d6 superiority dice to use on maneuvers, Compare die roll to (MOD)","Dirty Trick:(WIS) gain ADV on attack","Spring Away:(DEX) move half speed","Trip:(STR) target is prone","If roll is less than mod, add pips to damage"]
-         self.featureList[6] = "Advanced Maneuvers"
-         self.featureListDescriptions[6] = ["Bell Ringer:(CON) target loses reactions, has DISADV on next attack","Drive Back:(STR) Push target 15ft","Hamstring:(DEX) Reduce target speed 15ft, all attacks against target gain ADV"]
-         self.featureList[9] = "Improved Combat Superiority"
-         self.featureListDescriptions[9] = ["Use d10s for superiority dice"]
-         self.featureList[14] = "Relentless"
-         self.featureListDescriptions[14] = ["If you start the turn no superiority dice, gain 2 at the end of it"]
+         self.setFeatureList(2,  ["Combat Superiority"],          [["Gain "+str(self.superiorityDicePerLevel[self.level-1])+"d6 superiority dice to use on maneuvers, Compare die roll to (MOD)","Dirty Trick:(WIS) gain ADV on attack","Spring Away:(DEX) move half speed","Trip:(STR) target is prone","If roll is less than mod, add pips to damage"]])
+         self.setFeatureList(6,  ["Advanced Maneuvers"],          [["Bell Ringer:(CON) target loses reactions, has DISADV on next attack","Drive Back:(STR) Push target 15ft","Hamstring:(DEX) Reduce target speed 15ft, all attacks against target gain ADV"]])
+         self.setFeatureList(9,  ["Improved Combat Superiority"], [["Use d10s for superiority dice"]])
+         self.setFeatureList(14, ["Relentless"],                  [["If you start the turn no superiority dice, gain 2 at the end of it"]])
 
       elif choice == self.pathsToChoose[1]: # Path of the Warrior
          self.pathChosen = choice
-         self.featureList[2] = "Improved Critical"
-         self.featureListDescriptions[2] = ["Count rolls of 19 as criticals"]
-         self.featureList[6] = "Superior Critical"
-         self.featureListDescriptions[6] = ["Count rolls of 18 as criticals"]
-         self.featureList[14] = "Devastating Critical"
-         self.featureListDescriptions[14] = ["Impose a secondary effect on critical hits, based on damage type:","Bludgeoning:Stun target on a CON save of DC 10+STR mod","Slashing:Target's speed drops to 0","Piercing:Target takes 1d6+(FighterLvl/2) damage per turn, tending to the wound stops this"]
-         self.featureList[18] = "Survivor"
-         self.featureListDescriptions[18] = ["Recover 5+CON mod HP at the start of your turn if you are at less than half HP"]
+         self.setFeatureList(2,  ["Improved Critical"],    [["Count rolls of 19 as criticals"]])
+         self.setFeatureList(6,  ["Superior Critical"],    [["Count rolls of 18 as criticals"]])
+         self.setFeatureList(14,  ["Devastating Critical"], [["Impose a secondary effect on critical hits, based on damage type:","Bludgeoning:Stun target on a CON save of DC 10+STR mod","Slashing:Target's speed drops to 0","Piercing:Target takes 1d6+(FighterLvl/2) damage per turn, tending to the wound stops this"]])
+         self.setFeatureList(18, ["Survivor"],             [["Recover 5+CON mod HP at the start of your turn if you are at less than half HP"]])
 #
-
 class Mage(BaseClass):
    classString = "Mage"
    hitDice = 6
@@ -792,10 +791,57 @@ class Mage(BaseClass):
                   ["Spell Mastery"],
                   ["Ability Score Improvement"],
                   ["Tradition benefit"]]
+   featureListDescriptions = [[["3 Cantrips, 4 level 1 spells, each level add 2 valid spells","DC 8 + INT mod (+proficiency if holding a magic focus)"]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [[""]],
+                              [["Choose a level 1 and level 2 Mage spell to cast at will","Spend 8 hours of rest to change either, or both"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]]]
+   pathsToChoose = ["School of Enchantment", "School of Evocation","School of Illusion"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # School of Enchantment
+         self.pathChosen = choice
+         self.setFeatureList(1, ["Aura of Antipathy"],[["Any creature within 10ft has DISADV to attack you"]])
+         self.setFeatureList(4, ["Instinctive Charm"],[["Change attack target of any creature within 50ft to be closest target","WIS saving throw negates effect"]])
+         self.setFeatureList(11,["Split Enchantment"],[["Single-target enchantment spells, can now target a 2nd target"]])
+         self.setFeatureList(15,["Rapid Enchantment"],[["Casting time of a enchantment reduced from 1 action to 1 swift action"]])
+         self.setFeatureList(19,["Alter Memories"],   [["Charmed creatures think behavior is non-magical","Use an action to force creature to forget (1+CHA mod) hours (INT save negates)","Even it can't forget, make a deception(CHA) check (DC = its INT save roll) to add new memories"]])
+      elif choice == self.pathsToChoose[1]: # School of Evocation
+         self.pathChosen = choice
+         self.setFeatureList(1, ["Scult Spells"],        [["Evocation spells can now target (spell level + 1) number of targets","They automatically pass saving throws","They take no damage if they would normally take only half"]])
+         self.setFeatureList(4, ["Potent Cantrip"],      [["If an evocation cantrip fails, the creature takes half damage and no effect"]])
+         self.setFeatureList(11,["Overchannel"],         [["Deal maximum damage with a spell of level 3 or lower","Upon 2nd time casting this without rest make a DC 15(+5 each subsequent time) CON check", "Failure drops you to 0 HP"]])
+         self.setFeatureList(15,["Empowered Evocation"], [["Add your INT mod to damage of evocation spells"]])
+         self.setFeatureList(19,["Evocation Master"],    [["Fireball and Lightning bolt spells are free to cast"]])
+      elif choice == self.pathsToChoose[2]: # School of Illusion
+         self.pathChosen = choice
+         self.setFeatureList(1, ["Improved Minor Tricks"], [["Learn minor illusion cantrip, and use with ghost sound and silent image as a single spell"]])
+         self.setFeatureList(4, ["Disappearing Trick"],    [["Always have the invisibility spell prepared","Use your reaction after taking damage to cast invisibility"]])
+         self.setFeatureList(11,["Illusionary Self"],      [["You can create an illusionary copy of yourself instantly","If you are attacked before your first turn, this is cast and you take no damage"]])
+         self.setFeatureList(15,["Illusionary Reality"],   [["Choose one inanimate, nonmagical object that is part of an illusion to make real","Remains real until end of your next turn, cannot directly harm anyone"]])
+         self.setFeatureList(19,["Illusion Master"],       [["You can cast major image for free"]])
 #
 class Monk(BaseClass):
+   level = 1
    classString = "Monk"
    hitDice = 8
+   unarmedStrkeDiePerLevel =  [6,6,6,6,8,8,8,8,8,8,10,10,10,10,10,10,12,12,12,12]
+   kiPointsPerLevel =         [2,2,3,3,3,4,4,4,5,5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8]
    armorProfenciencies = []
    weaponProfenciencies = ["club","dagger","handaxe","crossbowLight","longspear","quarterstaff","shortSword","sling","spear","unarmedStrike"]
    toolProfenciencies = []
@@ -822,6 +868,87 @@ class Monk(BaseClass):
                   ["Ability Score Improvement"],
                   ["Empty Body"],
                   ["Perfect Self"]]
+   featureListDescriptions = [[["Use your attack action to make 2 unarmed attacks","Spend an Ki point to make an additional attack"],["Unarmed strike is a finesse weapon that deals 1d"+str(unarmedStrkeDiePerLevel[level-1])+" bludgeoning damage"],["While wearing no armor, AC = 10 + DEX mod + WIS mod"]],
+                              [["Use a Ki point to gain ADV on all attacks this turn"],["Reduce fall damage by Monk Level","Use a Ki point to reduce fall damage by 5 * Monk Level instead"]],
+                              [[""],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Critical hits may cause creature to be stunned (CON save DC 8 + WIS + proficiency negates)"]],
+                              [[""]],
+                              [["On a DEX saving throw to only take half damage, take none on success, half on failure"]],
+                              [["Flurry of Blows now gives 2 extra attacks"],["Step of the Wind's Ki power allows vertical movement or over liquids"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Immune to disease and poison"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["You understand all languages, and all speaking creatures understand you"]],
+                              [["ADV on all saving throws against spells"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["You no longer suffer the drawbacks of old age, and cannot age magically","You no longer need food or water"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Use 4 Ki points to become incorporeal and invisible for 1 minute"]],
+                              [["Regain 1 Ki point at the beginning of each turn"]]]
+   def updateFeatures(self):
+      self.featureListDescriptions[0] = [["Use your attack action to make 2 unarmed attacks","Spend an Ki point to make an additional attack"],["Unarmed strike is a finesse weapon that deals 1d"+str(self.unarmedStrkeDiePerLevel[self.level-1])+" bludgeoning damage"],["While wearing no armor, AC = 10 + DEX mod + WIS mod"]]
+   elementsToChoose = ["Fire","Air","Earth","Water"]
+   elementsChosen = ["","",""]
+   def chooseElements(self,choices):
+      disciple,power,master = choices
+      if disciple == self.elementsToChoose[0] or disciple == self.elementsToChoose[1] or disciple == self.elementsToChoose[2] or disciple == self.elementsToChoose[3]:
+         self.elementsChosen[0] = disciple
+      if power == self.elementsToChoose[0] or power == self.elementsToChoose[1] or power == self.elementsToChoose[2] or power == self.elementsToChoose[3]:
+         self.elementsChosen[1] = power
+      if master == self.elementsToChoose[0] or master == self.elementsToChoose[1] or master == self.elementsToChoose[2] or master == self.elementsToChoose[3]:
+         self.elementsChosen[2] = master
+#
+   pathsToChoose = ["Way of the Four Elements", "Way of the Open Hand"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Way of the Four Elements
+         self.pathChosen = choice
+         index = 2
+         if   self.elementsChosen[0] == "": 
+            self.setFeatureList(index, ["Disciple of the Elements","Step of the Wind"],                              [[""],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]])
+         elif self.elementsChosen[0] == self.elementsToChoose[0]: # Fire
+            self.setFeatureList(index, ["Disciple of the Elements: Fire Riposte","Step of the Wind"],                [["Hit by a melee attack, Use reaction and a Ki point to give 1d10+Monk Level fire damage to attacker","DEX save halves damage"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]])
+         elif self.elementsChosen[0] == self.elementsToChoose[1]: # Air
+            self.setFeatureList(index, ["Disciple of the Elements: Wind Riposte","Step of the Wind"],                [["Hit by a melee attack, Use reaction and a Ki point to push attacker 20 feet (STR save halves distance)"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]])
+         elif self.elementsChosen[0] == self.elementsToChoose[2]: # Earth
+            self.setFeatureList(index, ["Disciple of the Elements:Iron Root Defense","Step of the Wind"],            [["Spend a Ki point to root yourself and reduce damage by Monk Level"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]])
+         elif self.elementsChosen[0] == self.elementsToChoose[3]: # Water
+            self.setFeatureList(index, ["Disciple of the Elements:Shelter of the Flowing River","Step of the Wind"], [["Spend a Ki point to gain ADV on STR, DEX, or CON saving throw"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]])
+         
+         index = 5
+         if   self.elementsChosen[1] == "": 
+            self.setFeatureList(index, ["Elemental Power"],                       [[""]])
+         elif self.elementsChosen[1] == self.elementsToChoose[0]: # Fire
+            self.setFeatureList(index, ["Elemental Power:Flames of the Phoenix"], [["Spend 1 Ki point to emit 15ft cone of 1d10 + Monk Level fire damage (DEX halves)"]])
+         elif self.elementsChosen[1] == self.elementsToChoose[1]: # Air
+            self.setFeatureList(index, ["Elemental Power:Vortex Punch"],          [["Spend 1 Ki point to emit a 50ft line of 1d6 + Monk Level bludgeoning damage (STR halves)", "Knock all hit targets prone (STR negates)"]])
+         elif self.elementsChosen[1] == self.elementsToChoose[2]: # Earth
+            self.setFeatureList(index, ["Elemental Power:Grasp of Stone"],        [["When you hit, spend a Ki point to grapple enemy (STR negates)","Your unarmed attacks automatically hit while grappled"]])
+         elif self.elementsChosen[1] == self.elementsToChoose[3]: # Water
+            self.setFeatureList(index, ["Elemental Power:Crashing Waves"],        [["When you hit, spend a Ki point to push enemy 20ft (STR halves)"]])
+         
+         index = 10
+         if   self.elementsChosen[2] == "": 
+            self.setFeatureList(index, ["Elemental Master"],                       [[""]])
+         elif self.elementsChosen[2] == self.elementsToChoose[0]: # Fire
+            self.setFeatureList(index, ["Elemental Master:Vengeful Flame"],        [["When you drop to 0 HP, spend a Ki point: every creature in 25ft takes 1d10 + Monk Level fire damage (DEX halves)"]])
+         elif self.elementsChosen[2] == self.elementsToChoose[1]: # Air
+            self.setFeatureList(index, ["Elemental Master:Warrior's Gale"],        [["Spend a Ki point to gain a flight speed of 50ft"]])
+         elif self.elementsChosen[2] == self.elementsToChoose[2]: # Earth
+            self.setFeatureList(index, ["Elemental Master:Touch of Stony Doom"],   [["When you hit, spend a Ki point to make the target vulnerable to bludgeoning damage for 1 minute (CON negates)"]])
+         elif self.elementsChosen[2] == self.elementsToChoose[3]: # Water
+            self.setFeatureList(index, ["Elemental Master:Spirit of the Tsunami"], [["Spend 1 Ki point to emit 15ft cone of 1d10 + Monk Level bludgeoning damage, and is knocked prone (CON halves)"]])
+         
+         self.setFeatureList(16, ["Fist of the Four Elements"], [["Spend 1 Ki point to add 1d10 of cold, fire, lightning, or thunder damage to your melee attack"]])
+      elif choice == self.pathsToChoose[1]: # Way of the Open Hand
+         self.pathChosen = choice
+         self.setFeatureList(2, ["Deflect Missles"],          [["Use reaction to reduce damage from ranged attack by 1d10+DEX mod, if 0 you may catch it","Use a Ki point to reduce by a further 1d10"]])
+         self.setFeatureList(5, ["Wholeness of Body"],        [["Regain HP by 2 * Monk Level"]])
+         self.setFeatureList(10,["Improved Flurry of Blows"], [["Spending a Ki point on Flurry of Blows also gains you an effect:","Sweep: If it hits, knock the target prone","Knockback: If it hits, push the target up to 10ft away","Daze: if it hits, target cannot make reactions"]])
+         self.setFeatureList(16,["Quivering Palm"],           [["Spend 3 Ki points to mark a target for death","Use an action any time in at most (Monk Level) days","CON save DC = 8 + WIS + proficiency: failure causes target to die","Cooldown is 1 week"]])
 #
 class Paladin(BaseClass):
    classString = "Paladin"
@@ -963,6 +1090,10 @@ class classUnitTest(UnitTest):
       self.BarbarianClassTests()
       self.BardClassTests()
       self.ClericClassTests()
+      self.DruidClassTests()
+      self.FighterClassTests()
+      self.MageClassTests()
+      self.MonkClassTests()
    def common_updateFeatures(self,c,level,index,expectedFeatures,expectedFeatureDescriptions):
       c.level = level
       c.updateFeatures()
@@ -976,9 +1107,9 @@ class classUnitTest(UnitTest):
          self.failTest("Class->common->choosePath->"+c.classString+": chosen path '"+c.pathChosen+"' seen + '"+choice+"'expected")
       for i,index in enumerate(indicesList):
          if c.featureList[index] != expectedFeatureList[i]:
-            self.failTest("Class->common->choosePath->"+c.classString+"->index"+str(index)+": '"+str(c.featureList[index])+"' found, '" + str(expectedFeatureList[i]) + "' expected")
+            self.failTest("Class->common->choosePath->"+c.classString+"->path:"+str(c.pathChosen)+"index"+str(index)+": '"+str(c.featureList[index])+"' found, '" + str(expectedFeatureList[i]) + "' expected")
          if c.featureListDescriptions[index] != expectedFeatureDescriptionsList[i]:
-            self.failTest("Class->common->choosePath->"+c.classString+"->index"+str(index)+": '"+str(c.featureListDescriptions[index])+"' found, '" + str(expectedFeatureDescriptionsList[i]) + "' expected")
+            self.failTest("Class->common->choosePath->"+c.classString+"->path:"+str(c.pathChosen)+"->index"+str(index)+": '"+str(c.featureListDescriptions[index])+"' found, '" + str(expectedFeatureDescriptionsList[i]) + "' expected")
    def BaseClassTests(self):
       c = BaseClass()
       #levelUp
@@ -1218,7 +1349,369 @@ class classUnitTest(UnitTest):
          self.common_updateFeatures(c,level,index,newEntryList[i],newEntryDescription)
       
       #choosePath
+      #Life
+      c = Cleric()
+      indicesList = [0,2,4,6,8,19]
+      expectedFeatureList =  [["Domain Spells","Disciple of Life","Spellcasting"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Supreme Healing"]]
+      expectedFeatureDescriptionsList =  [[["Bless","Cure Wounds"],["Healing spells gain an addition 2 + spell level"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]],
+                                          [["Lesser Restoration","Spiritual Weapon"]],
+                                          [["Beacon of Hope","Prayer"]],
+                                          [["Death Ward","Guardian of Faith"]],
+                                          [["Mass Cure Wounds","Raise Dead"]],
+                                          [["Maximize all die rolls while healing"]]]
+      self.common_choosePath(c,"Life",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      expectedArmorProficiencies = ["light","medium","heavy","shields"]
+      if c.armorProficiencies != expectedArmorProficiencies:
+         self.failTest("Class->Cleric->Life->ArmorProficiencies: '"+str(c.armorProficiencies)+"' found, '"+str(expectedArmorProficiencies)+"' expected")
+      #Light
+      c = Cleric()
+      indicesList = [0,2,4,6,8,10,14,19]
+      expectedFeatureList =  [["Bonus Spells","Domain Spells","Flare","Spellcasting"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Corona of Light"]]
+      expectedFeatureDescriptionsList =  [[["Gain the light and sacred flame cantrips"],["Burning Hands","Faerie Fire"],["Use reaction to cause attacker to have DISADV"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]],
+                                          [["Flaming Sphere","Scorching Ray"]],
+                                          [["Daylight","Fireball"]],
+                                          [["Guardian of Faith","Wall of Fire"]],
+                                          [["Flame Strike","True Seeing"]],
+                                          [["Sunbeam"]],
+                                          [["Sunburst"]],
+                                          [["Bright light - 50ft radius (Enemies take DISADV against Fire/Radiant damage)","Dim light - 25ft beyond","1 minute duration"]]]
+      self.common_choosePath(c,"Light",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      #War
+      c = Cleric()
+      indicesList = [0,2,4,6,8,19]
+      expectedFeatureList =  [["Domain Spells","War Priest","Spellcasting"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Domain Spells"],
+                              ["Avatar of Battle"]]
+      expectedFeatureDescriptionsList =  [[["Divine Favor","Shield of Faith"],["Attack a single extra time in a turn","Can be used up to WISMOD"],["3 cantrips","DC = 8 + WISmod","Present holy symbol to add proficiency bonus to DC"]],
+                                          [["Magic Weapon","Spiritual Weapon"]],
+                                          [["Holy Vigor","Prayer"]],
+                                          [["Divine Power","Freedom of Movement"]],
+                                          [["Flame Strike","Hold Monster"]],
+                                          [["Gain resistance to Bludgeoning, Piercing, and Slashing damage"]]]
+      self.common_choosePath(c,"War",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      expectedArmorProficiencies = ["light","medium","heavy","shields"]
+      if c.armorProficiencies != expectedArmorProficiencies:
+         self.failTest("Class->Cleric->War->ArmorProficiencies: '"+str(c.armorProficiencies)+"' found, '"+str(expectedArmorProficiencies)+"' expected")
+         
+      expectedWeaponProficiencies = ["simple","martial"]
+      if c.armorProficiencies != expectedArmorProficiencies:
+         self.failTest("Class->Cleric->War->WeaponProficiencies: '"+str(c.weaponProficiencies)+"' found, '"+str(expectedWeaponProficiencies)+"' expected")
+   #
+   def DruidClassTests(self):
+      #updateFeatures
+      # Druid doesn't have any features that update with level
+      
+      #choosePath
+      #Circle of the Moon
+      c = Druid()
+      indicesList = [1,5,9]
+      expectedFeatureList =  [["Battle Wild Shape","Wild Shape"],
+                              ["Mauler Shapes"],
+                              ["Monstrous Shapes"]]
+      expectedFeatureDescriptionsList =  [[["Use Wild Shape as part of any action except spell casting","Gain ability to change into a dire wolf or panther"],["Transform into a bat, cat, deer, dog, fish, hawk, horse, owl, raven, snake, toad, or weasel"]],
+                                          [["Gain ability to change into a brown bear or tiger"]],
+                                          [["Gain ability to change into a cave bear or triceratops"]]]
+      self.common_choosePath(c,"Circle of the Moon",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      #Circle of the Land
+      c = Druid()
+      indicesList = [1,5,9]
+      expectedFeatureList =  [["Circle Spells","Natural Recovery","Wild Shape"],
+                              ["Land's Stride"],
+                              ["Nature's Ward"]]
+      expectedFeatureDescriptionsList =  [[["Gain a cantrip"],["Once a day: short rest to recover spell slots up to Druid Level/2 of spell levels"],["Transform into a bat, cat, deer, dog, fish, hawk, horse, owl, raven, snake, toad, or weasel"]],
+                                          [["Move through non-magical difficult terrain without extra movement","ADV on magic plants to impede movement"]],
+                                          [["Immune to Charm/Fright from elemental/fey creatures"],["Immune to poison and disease"]]]
+      self.common_choosePath(c,"Circle of the Land",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      #chooseLand
+      indicesList = [2,4,6,8]
+      landList =              ["Coast","Desert","Forest","Grassland","Mountain","Swamp","Tundra"]
+      expectedFeatureList =  [[["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]],
+                              [["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]],
+                              [["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]],
+                              [["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]],
+                              [["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]],
+                              [["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]],
+                              [["Circle Spells"], ["Circle Spells"], ["Circle Spells"], ["Circle Spells"]]]
+      
+      expectedFeatureDescriptionsList =  [[[["Augury","Mirror Image"]],       [["Water Breathing","Water Walk"]],                   [["Freedom of Movement","Solid Fog"]],       [["Scrying","True Seeing"]]],
+                                          [[["Blur","Silence"]],              [["Create Food and Water","Protection from Energy"]], [["Blight","Hallucinatory Terrain"]],        [["Control Winds","Wall of Stone"]]],
+                                          [[["Augury","Barkskin"]],           [["Call Lightning","Plant Growth"]],                  [["Divination","Freedom of Movement"]],      [["Commune with Nature","Plant Door"]]],
+                                          [[["Augury","Pass without Trace"]], [["Daylight","Haste"]],                               [["Air Walk","Divination"]],                 [["Dream","Insect Plague"]]],
+                                          [[["Spider Climb","Spike Growth"]], [["Elemental Mantle","Meld into Stone"]],             [["Confusion","Stoneskin"]],                 [["Passwall","Wall of Stone"]]],
+                                          [[["Augury","Locate Object"]],      [["Water Walk","Stinking Cloud"]],                    [["Freedom of Movement","Locate Creature"]], [["Insect Plague","Scrying"]]],
+                                          [[["Augury","Spike Growth"]],       [["Sleet Storm","Slow"]],                             [["Freedom of Movement","Ice Storm"]],       [["Commune with Nature","Cone of Cold"]]]]
+      for i,land in enumerate(landList):
+         c.chooseLand(land)
+         if c.landChosen != land:
+            self.failTest("Class->common->chooseLand->"+c.classString+": chosen land '"+str(c.landChosen)+"' seen + '"+str(land)+"'expected")
+            
+         self.common_choosePath(c,"Circle of the Land",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+   #
+   def FighterClassTests(self):
+      #updateFeatures
+      #superiorityDicePerLevel =  [0,0,2,2,2,2,3,3,3,4,4,4,4,4,4,4,4,4,4,4]
+      c = Fighter()
+      c.choosePath("Path of the Weaponmaster")
+      index = 2
+      levelList =    [1,3,7,10]
+      dirtyTrickString = "Dirty Trick:(WIS) gain ADV on attack"
+      springAwayString = "Spring Away:(DEX) move half speed"
+      tripString = "Trip:(STR) target is prone"
+      failString = "If roll is less than mod, add pips to damage"
+      newEntryList =   [[["Gain 0d6 superiority dice to use on maneuvers, Compare die roll to (MOD)",dirtyTrickString,springAwayString,tripString,failString]],
+                        [["Gain 2d6 superiority dice to use on maneuvers, Compare die roll to (MOD)",dirtyTrickString,springAwayString,tripString,failString]],
+                        [["Gain 3d6 superiority dice to use on maneuvers, Compare die roll to (MOD)",dirtyTrickString,springAwayString,tripString,failString]],
+                        [["Gain 4d6 superiority dice to use on maneuvers, Compare die roll to (MOD)",dirtyTrickString,springAwayString,tripString,failString]]]
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,["Combat Superiority"],newEntryList[i])
+      
+      #choosePath
+      #Path of the Weaponmaster
+      c = Fighter()
+      indicesList = [6,9,14]
+      expectedFeatureList =  [["Advanced Maneuvers"],
+                              ["Improved Combat Superiority"],
+                              ["Relentless"]]
+      expectedFeatureDescriptionsList =  [[["Bell Ringer:(CON) target loses reactions, has DISADV on next attack","Drive Back:(STR) Push target 15ft","Hamstring:(DEX) Reduce target speed 15ft, all attacks against target gain ADV"]],
+                                          [["Use d10s for superiority dice"]],
+                                          [["If you start the turn no superiority dice, gain 2 at the end of it"]]]
+      self.common_choosePath(c,"Path of the Weaponmaster",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      #Path of the Warrior
+      c = Fighter()
+      indicesList = [2,6,14,18]
+      expectedFeatureList =  [["Improved Critical"],
+                              ["Superior Critical"],
+                              ["Devastating Critical"],
+                              ["Survivor"]]
+      expectedFeatureDescriptionsList =  [[["Count rolls of 19 as criticals"]],
+                                          [["Count rolls of 18 as criticals"]],
+                                          [["Impose a secondary effect on critical hits, based on damage type:","Bludgeoning:Stun target on a CON save of DC 10+STR mod","Slashing:Target's speed drops to 0","Piercing:Target takes 1d6+(FighterLvl/2) damage per turn, tending to the wound stops this"]],
+                                          [["Recover 5+CON mod HP at the start of your turn if you are at less than half HP"]]]
+      self.common_choosePath(c,"Path of the Warrior",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      #chooseStyle    fightingStyleOptions = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+      #Path of the Weaponmaster
+      indicesList = [0,9]
+      styleList =             [["Archery",""], ["Defense",""], ["Great Weapon Fighting",""], ["Protection",""],["Two-Weapon Fighting",""],["","Archery"]]
+      expectedFeatureList =  [[["Fighting Style: Archery","Second Wind"],               ["Improved Combat Superiority"]],
+                              [["Fighting Style: Defense","Second Wind"],               ["Improved Combat Superiority"]],
+                              [["Fighting Style: Great Weapon Fighting","Second Wind"], ["Improved Combat Superiority"]],
+                              [["Fighting Style: Protection","Second Wind"],            ["Improved Combat Superiority"]],
+                              [["Fighting Style: Two-Weapon Fighting","Second Wind"],   ["Improved Combat Superiority"]],
+                              [["Fighting style","Second Wind"],                        ["Improved Combat Superiority"]]]
+      defaultDes = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+      secondWindDes = ["Gain temporary (1d6 + Figher Level) HP "]
+      improvedCombatSuperiorityDes = ["Use d10s for superiority dice"]
+      archeryDes = ["+1 to attack rolls with ranged weapons"]
+      defenseDes = ["+1 to AC while wearing armor"]
+      greatWeaponFightingDes = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"]
+      protectionDes = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"]
+      twoWeaponFightingDes = ["Add your ability mod to the damage of the second attack"]
+      expectedFeatureDescriptionsList =  [[[archeryDes,secondWindDes],             [improvedCombatSuperiorityDes]],
+                                          [[defenseDes,secondWindDes],             [improvedCombatSuperiorityDes]],
+                                          [[greatWeaponFightingDes,secondWindDes], [improvedCombatSuperiorityDes]],
+                                          [[protectionDes,secondWindDes],          [improvedCombatSuperiorityDes]],
+                                          [[twoWeaponFightingDes,secondWindDes],   [improvedCombatSuperiorityDes]],
+                                          [[defaultDes,secondWindDes],             [improvedCombatSuperiorityDes]]]
+      for i,style in enumerate(styleList):
+         c = Fighter()
+         c.choosePath("Path of the Weaponmaster")
+         c.chooseFightingStyle(style)
+         if c.fightingStylesChosen != style:
+            self.failTest("Class->common->chooseStyle->"+c.classString+": '"+str(c.fightingStylesChosen)+"' seen + '"+str(style)+"'expected")
+            
+         self.common_choosePath(c,"Path of the Warrior",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+      #Path of the Warrior
+      indicesList = [0,9]
+      styleList =             [["Archery","Defense"], ["Defense","Great Weapon Fighting"], ["Great Weapon Fighting","Protection"], ["Protection","Two-Weapon Fighting"],["Two-Weapon Fighting","Archery"],["Archery",""],["","Archery"]]
+      expectedFeatureList =  [[["Fighting Style: Archery","Second Wind"],               ["Additional Fighting Style: Defense"]],
+                              [["Fighting Style: Defense","Second Wind"],               ["Additional Fighting Style: Great Weapon Fighting"]],
+                              [["Fighting Style: Great Weapon Fighting","Second Wind"], ["Additional Fighting Style: Protection"]],
+                              [["Fighting Style: Protection","Second Wind"],            ["Additional Fighting Style: Two-Weapon Fighting"]],
+                              [["Fighting Style: Two-Weapon Fighting","Second Wind"],   ["Additional Fighting Style: Archery"]],
+                              [["Fighting Style: Archery","Second Wind"],               ["Martial Path benefit"]],
+                              [["Fighting style","Second Wind"],                        ["Additional Fighting Style: Archery"]]]
+      expectedFeatureDescriptionsList =  [[[archeryDes,secondWindDes],             [defenseDes]],
+                                          [[defenseDes,secondWindDes],             [greatWeaponFightingDes]],
+                                          [[greatWeaponFightingDes,secondWindDes], [protectionDes]],
+                                          [[protectionDes,secondWindDes],          [twoWeaponFightingDes]],
+                                          [[twoWeaponFightingDes,secondWindDes],   [archeryDes]],
+                                          [[archeryDes,secondWindDes],             [[""]]],
+                                          [[defaultDes,secondWindDes],             [archeryDes]]]
+      for i,style in enumerate(styleList):
+         c = Fighter()
+         c.choosePath("Path of the Warrior")
+         c.chooseFightingStyle(style)
+         if c.fightingStylesChosen != style:
+            self.failTest("Class->common->chooseStyle->"+c.classString+": '"+str(c.fightingStylesChosen)+"' seen + '"+str(style)+"'expected")
+            
+         self.common_choosePath(c,"Path of the Warrior",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+   #
+   def MageClassTests(self):
+      #updateFeatures
+      #choosePath
+      # School of Enchantment
+      c = Mage()
+      indicesList = [1,4,11,15,19]
+      expectedFeatureList =  [["Aura of Antipathy"],
+                              ["Instinctive Charm"],
+                              ["Split Enchantment"],
+                              ["Rapid Enchantment"],
+                              ["Alter Memories"]]
+      expectedFeatureDescriptionsList =  [[["Any creature within 10ft has DISADV to attack you"]],
+                                          [["Change attack target of any creature within 50ft to be closest target","WIS saving throw negates effect"]],
+                                          [["Single-target enchantment spells, can now target a 2nd target"]],
+                                          [["Casting time of a enchantment reduced from 1 action to 1 swift action"]],
+                                          [["Charmed creatures think behavior is non-magical","Use an action to force creature to forget (1+CHA mod) hours (INT save negates)","Even it can't forget, make a deception(CHA) check (DC = its INT save roll) to add new memories"]]]
+      self.common_choosePath(c,"School of Enchantment",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
 
+      # School of Evocation
+      c = Mage()
+      indicesList = [1,4,11,15,19]
+      expectedFeatureList =  [["Scult Spells"],
+                              ["Potent Cantrip"],
+                              ["Overchannel"],
+                              ["Empowered Evocation"],
+                              ["Evocation Master"]]
+      expectedFeatureDescriptionsList =  [[["Evocation spells can now target (spell level + 1) number of targets","They automatically pass saving throws","They take no damage if they would normally take only half"]],
+                                          [["If an evocation cantrip fails, the creature takes half damage and no effect"]],
+                                          [["Deal maximum damage with a spell of level 3 or lower","Upon 2nd time casting this without rest make a DC 15(+5 each subsequent time) CON check", "Failure drops you to 0 HP"]],
+                                          [["Add your INT mod to damage of evocation spells"]],
+                                          [["Fireball and Lightning bolt spells are free to cast"]]]
+      self.common_choosePath(c,"School of Evocation",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      # School of Illusion
+      c = Mage()
+      indicesList = [1,4,11,15,19]
+      expectedFeatureList =  [["Improved Minor Tricks"],
+                              ["Disappearing Trick"],
+                              ["Illusionary Self"],
+                              ["Illusionary Reality"],
+                              ["Illusion Master"]]
+      expectedFeatureDescriptionsList =  [[["Learn minor illusion cantrip, and use with ghost sound and silent image as a single spell"]],
+                                          [["Always have the invisibility spell prepared","Use your reaction after taking damage to cast invisibility"]],
+                                          [["You can create an illusionary copy of yourself instantly","If you are attacked before your first turn, this is cast and you take no damage"]],
+                                          [["Choose one inanimate, nonmagical object that is part of an illusion to make real","Remains real until end of your next turn, cannot directly harm anyone"]],
+                                          [["You can cast major image for free"]]]
+      self.common_choosePath(c,"School of Illusion",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+   #
+   def MonkClassTests(self):
+      #updateFeatures
+      #   unarmedStrkeDiePerLevel =  [6,6,6,6,8,8,8,8,8,8,10,10,10,10,10,10,12,12,12,12]
+      c = Monk()
+      index = 0
+      levelList =    [1,5,11,17]
+      flurryOfBlowsDes = ["Use your attack action to make 2 unarmed attacks","Spend an Ki point to make an additional attack"]
+      unarmoredDefenseDes = ["While wearing no armor, AC = 10 + DEX mod + WIS mod"]
+      newEntryList =   [[flurryOfBlowsDes,["Unarmed strike is a finesse weapon that deals 1d6 bludgeoning damage"],unarmoredDefenseDes],
+                        [flurryOfBlowsDes,["Unarmed strike is a finesse weapon that deals 1d8 bludgeoning damage"],unarmoredDefenseDes],
+                        [flurryOfBlowsDes,["Unarmed strike is a finesse weapon that deals 1d10 bludgeoning damage"],unarmoredDefenseDes],
+                        [flurryOfBlowsDes,["Unarmed strike is a finesse weapon that deals 1d12 bludgeoning damage"],unarmoredDefenseDes]]
+      
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,["Flurry of Blows","Unarmed Strike","Unarmored Defense"],newEntryList[i])
+      #choosePath
+      # Way of the Four Elements
+      c = Monk()
+      indicesList = [2,5,10,16]
+      
+      expectedFeatureList =  [["Disciple of the Elements","Step of the Wind"],
+                              ["Elemental Power"],
+                              ["Elemental Master"],
+                              ["Fist of the Four Elements"]]
+      expectedFeatureDescriptionsList =  [[[""],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]],
+                                          [[""]],
+                                          [[""]],
+                                          [["Spend 1 Ki point to add 1d10 of cold, fire, lightning, or thunder damage to your melee attack"]]]
+      
+      self.common_choosePath(c,"Way of the Four Elements",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      # Way of the Open Hand
+      c = Monk()
+      indicesList = [2,5,10,16]
+      
+      expectedFeatureList =  [["Deflect Missles"],
+                              ["Wholeness of Body"],
+                              ["Improved Flurry of Blows"],
+                              ["Quivering Palm"]]
+      expectedFeatureDescriptionsList =  [[["Use reaction to reduce damage from ranged attack by 1d10+DEX mod, if 0 you may catch it","Use a Ki point to reduce by a further 1d10"]],
+                                          [["Regain HP by 2 * Monk Level"]],
+                                          [["Spending a Ki point on Flurry of Blows also gains you an effect:","Sweep: If it hits, knock the target prone","Knockback: If it hits, push the target up to 10ft away","Daze: if it hits, target cannot make reactions"]],
+                                          [["Spend 3 Ki points to mark a target for death","Use an action any time in at most (Monk Level) days","CON save DC = 8 + WIS + proficiency: failure causes target to die","Cooldown is 1 week"]]]
+      
+      self.common_choosePath(c,"Way of the Open Hand",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      #chooseElements   
+      #elementsToChoose = ["Fire","Air","Earth","Water"]
+      #elementsChosen = ["","",""]
+      c = Monk()
+      elementTripletList = [["Fire","Air","Earth"],["Water","Fire","Air"],["Earth","Water","Fire"],["Air","Earth","Water"]]
+      
+      discipleFire = ["Disciple of the Elements: Fire Riposte","Step of the Wind"]
+      discipleFireDes = [["Hit by a melee attack, Use reaction and a Ki point to give 1d10+Monk Level fire damage to attacker","DEX save halves damage"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]]
+      discipleAir =["Disciple of the Elements: Wind Riposte","Step of the Wind"]
+      discipleAirDes = [["Hit by a melee attack, Use reaction and a Ki point to push attacker 20 feet (STR save halves distance)"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]]
+      discipleEarth = ["Disciple of the Elements:Iron Root Defense","Step of the Wind"]
+      discipleEarthDes = [["Spend a Ki point to root yourself and reduce damage by Monk Level"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]]
+      discipleWater = ["Disciple of the Elements:Shelter of the Flowing River","Step of the Wind"]
+      discipleWaterDes = [["Spend a Ki point to gain ADV on STR, DEX, or CON saving throw"],["Speed increase by 5ft","Use a Ki point to increase by 15ft"]]
+      
+      powerFire = ["Elemental Power:Flames of the Phoenix"]
+      powerFireDes = [["Spend 1 Ki point to emit 15ft cone of 1d10 + Monk Level fire damage (DEX halves)"]]
+      powerAir = ["Elemental Power:Vortex Punch"]
+      powerAirDes = [["Spend 1 Ki point to emit a 50ft line of 1d6 + Monk Level bludgeoning damage (STR halves)", "Knock all hit targets prone (STR negates)"]]
+      powerEarth = ["Elemental Power:Grasp of Stone"]
+      powerEarthDes = [["When you hit, spend a Ki point to grapple enemy (STR negates)","Your unarmed attacks automatically hit while grappled"]]
+      powerWater = ["Elemental Power:Crashing Waves"]
+      powerWaterDes = [["When you hit, spend a Ki point to push enemy 20ft (STR halves)"]]
+      
+      masterFire = ["Elemental Master:Vengeful Flame"]
+      masterFireDes = [["When you drop to 0 HP, spend a Ki point: every creature in 25ft takes 1d10 + Monk Level fire damage (DEX halves)"]]
+      masterAir = ["Elemental Master:Warrior's Gale"]
+      masterAirDes = [["Spend a Ki point to gain a flight speed of 50ft"]]
+      masterEarth = ["Elemental Master:Touch of Stony Doom"]
+      masterEarthDes = [["When you hit, spend a Ki point to make the target vulnerable to bludgeoning damage for 1 minute (CON negates)"]]
+      masterWater = ["Elemental Master:Spirit of the Tsunami"]
+      masterWaterDes = [["Spend 1 Ki point to emit 15ft cone of 1d10 + Monk Level bludgeoning damage, and is knocked prone (CON halves)"]]
+      
+      fist = ["Fist of the Four Elements"]
+      fistDes = [["Spend 1 Ki point to add 1d10 of cold, fire, lightning, or thunder damage to your melee attack"]]
+                
+      
+      expectedFeatureList =  [[discipleFire,  powerAir,   masterEarth, fist],
+                              [discipleWater, powerFire,  masterAir,   fist],
+                              [discipleEarth, powerWater, masterFire,  fist],
+                              [discipleAir,   powerEarth, masterWater, fist]]
+      
+      expectedFeatureDescriptionsList =  [[discipleFireDes,  powerAirDes,   masterEarthDes, fistDes],
+                                          [discipleWaterDes, powerFireDes,  masterAirDes,   fistDes],
+                                          [discipleEarthDes, powerWaterDes, masterFireDes,  fistDes],
+                                          [discipleAirDes,   powerEarthDes, masterWaterDes, fistDes]]
+      for i,triplet in enumerate(elementTripletList):
+         c.chooseElements(triplet)
+         if c.elementsChosen != triplet:
+            self.failTest("Class->common->chooseAnimal->"+c.classString+": chosen animals '"+str(c.elementsChosen)+"' seen + '"+str(triplet)+"'expected")
+            
+         self.common_choosePath(c,"Way of the Four Elements",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+      
    #
 unitTestFramework = classUnitTest()
 

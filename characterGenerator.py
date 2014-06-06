@@ -235,13 +235,12 @@ class Character:
          print " " + i
 #
 orderOfStats = ["str","con","dex","wis","int","cha"]
-listOfClasses = [Barbarian(2)]
+listOfClasses = [Fighter(2)]
 listOfSkills = ["athletics"]
 race = Dwarf("Mountain Dwarf")
 c = Character(orderOfStats, listOfClasses, race, Sage, listOfSkills)
-c.choosePath(Barbarian(),"Path of the Totem Warrior")
-c.callClassFunction("chooseAnimals",["Cougar","Cougar"])
+c.choosePath(Fighter(),"Path of the Weaponmaster")
 #c.printStats()
-c.addClassLevel(Barbarian(5))
+c.addClassLevel(Fighter(5))
 c.combineProficiencies()
 #c.printStats()
