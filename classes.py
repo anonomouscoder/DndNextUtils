@@ -80,9 +80,13 @@ class BaseClass:
       if "Ability Score Improvement" in self.featureList[self.level-1]:
          self.numberOfAbilitiesToIncrease = self.numberOfAbilitiesToIncrease + 2
       self.updateFeatures()
-   def setFeatureList(self,index,value,description):
-      self.featureList[index] = value
-      self.featureListDescriptions[index] = description
+   def setFeatureList(self,index,value,description,secondIndex=""):
+      if secondIndex != "":
+         (self.featureList[index])[secondIndex] = value
+         (self.featureListDescriptions[index])[secondIndex] = description
+      else:
+         self.featureList[index] = value
+         self.featureListDescriptions[index] = description
    #used for classes that have numerical amounts in features that increase based on level (sneak attack goes from 1d6 to 7d6)
    def updateFeatures(self):
       return
@@ -649,7 +653,7 @@ class Fighter(BaseClass):
                   ["Ability Score Improvement"],
                   ["Martial Path benefit"],
                   ["Extra Attack"]]
-   featureListDescriptions = [[["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["Gain temporary (1d6 + Figher Level) HP "]],
+   featureListDescriptions = [[["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["Gain temporary (1d6 + Fighter Level) HP "]],
                               [["Once per rest, use an extra action"]],
                               [["Path of the Weaponmaster", "Path of the Warrior"]],
                               [["2 +1's to abilities OR choose 1 feat"]],
@@ -676,23 +680,23 @@ class Fighter(BaseClass):
       firstIndex = 0
       secondIndex = 9
       if first == "":
-         self.fightingStylesChosen[firstIndex] = first
-         self.setFeatureList(firstIndex, ["Fighting style","Second Wind"],[["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["Gain temporary (1d6 + Figher Level) HP "]])
+         self.fightingStylesChosen[0] = first
+         self.setFeatureList(firstIndex, ["Fighting style","Second Wind"],[["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["Gain temporary (1d6 + Fighter Level) HP "]])
       elif first == self.fightingStyleOptions[0]: # Archery
-         self.fightingStylesChosen[firstIndex] = first
-         self.setFeatureList(firstIndex, ["Fighting Style: Archery","Second Wind"],[["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Figher Level) HP "]])
+         self.fightingStylesChosen[0] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Archery","Second Wind"],[["+1 to attack rolls with ranged weapons"],["Gain temporary (1d6 + Fighter Level) HP "]])
       elif first == self.fightingStyleOptions[1]: # Defense
-         self.fightingStylesChosen[firstIndex] = first
-         self.setFeatureList(firstIndex, ["Fighting Style: Defense","Second Wind"],[["+1 to AC while wearing armor"],["Gain temporary (1d6 + Figher Level) HP "]])
+         self.fightingStylesChosen[0] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Defense","Second Wind"],[["+1 to AC while wearing armor"],["Gain temporary (1d6 + Fighter Level) HP "]])
       elif first == self.fightingStyleOptions[2]: # Great Weapon Fighting
-         self.fightingStylesChosen[firstIndex] = first
-         self.setFeatureList(firstIndex, ["Fighting Style: Great Weapon Fighting","Second Wind"],[["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],["Gain temporary (1d6 + Figher Level) HP "]])
+         self.fightingStylesChosen[0] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Great Weapon Fighting","Second Wind"],[["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],["Gain temporary (1d6 + Fighter Level) HP "]])
       elif first == self.fightingStyleOptions[3]: # Protection
-         self.fightingStylesChosen[firstIndex] = first
-         self.setFeatureList(firstIndex, ["Fighting Style: Protection","Second Wind"],[["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],["Gain temporary (1d6 + Figher Level) HP "]])
+         self.fightingStylesChosen[0] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Protection","Second Wind"],[["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],["Gain temporary (1d6 + Fighter Level) HP "]])
       elif first == self.fightingStyleOptions[4]: # Two-Weapon Fighting
-         self.fightingStylesChosen[firstIndex] = first
-         self.setFeatureList(firstIndex, ["Fighting Style: Two-Weapon Fighting","Second Wind"],[["Add your ability mod to the damage of the second attack"],["Gain temporary (1d6 + Figher Level) HP "]])
+         self.fightingStylesChosen[0] = first
+         self.setFeatureList(firstIndex, ["Fighting Style: Two-Weapon Fighting","Second Wind"],[["Add your ability mod to the damage of the second attack"],["Gain temporary (1d6 + Fighter Level) HP "]])
       
       if second == "":
          self.fightingStylesChosen[1] = second
@@ -900,7 +904,6 @@ class Monk(BaseClass):
          self.elementsChosen[1] = power
       if master == self.elementsToChoose[0] or master == self.elementsToChoose[1] or master == self.elementsToChoose[2] or master == self.elementsToChoose[3]:
          self.elementsChosen[2] = master
-#
    pathsToChoose = ["Way of the Four Elements", "Way of the Open Hand"]
    pathChosen = ""
    def choosePath(self,choice): 
@@ -980,7 +983,7 @@ class Paladin(BaseClass):
                            [4,3,3,3,2],
                            [4,3,3,3,2]]
    featureList = [["Divine Sense","Lay on Hands"],
-                  ["Divine Smite","Fighting Style", "Spellcasting"],
+                  ["Divine Smite","Fighting Style","Spellcasting"],
                   ["Divine Health","Oath"],
                   ["Ability Score Improvement"],
                   ["Extra Attack"],
@@ -999,6 +1002,75 @@ class Paladin(BaseClass):
                   ["Oath feature"],
                   ["Ability Score Improvement"],
                   ["Oath feature"]]
+   featureListDescriptions = [[["Within 50ft you can sense celestial, fiendish, or undead creatures, or con/desecrated land"],["Heal up to 5*Paladin Level of HP or spend 5 of this HP to cure a disease/neutralize a poison"]],
+                              [["Expend 1 paladin spell to deal (1+spell level)d8","Deals 1d8 extra for undead or fiendish creatures"],["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],["DC = 8 + CHA mod, + proficiency if holy symbol present"]],
+                              [["You are immune to disease"],["Oath of Devotion", "Oath of Vengeance"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["You can attack an extra time"]],
+                              [["If a creatrure must make a saving throw within 10ft, you may grant your CHA bonus to its roll"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [["Friendly creatures within 10ft cannot be frightened"]],
+                              [["You gain +1d8 damage to all attacks"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["Use action to end one magical effect on yourself or creature that you touch"]],
+                              [["Friendly creatures within 10ft cannot be charmed"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]]]
+   fightingStyleOptions = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+   fightingStylesChosen = ""
+   def chooseFightingStyle(self,first):
+      firstIndex = 1
+      divineSmiteDes = ["Expend 1 paladin spell to deal (1+spell level)d8","Deals 1d8 extra for undead or fiendish creatures"]
+      spellCastingDes = ["DC = 8 + CHA mod, + proficiency if holy symbol present"]
+      if first == "":
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, ["Divine Smite","Fighting Style", "Spellcasting"], [divineSmiteDes,["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],spellCastingDes])
+      elif first == self.fightingStyleOptions[0]: # Archery
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, ["Divine Smite","Fighting Style: Archery", "Spellcasting"], [divineSmiteDes,["+1 to attack rolls with ranged weapons"],spellCastingDes])
+      elif first == self.fightingStyleOptions[1]: # Defense
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, ["Divine Smite","Fighting Style: Defense", "Spellcasting"], [divineSmiteDes,["+1 to AC while wearing armor"],spellCastingDes])
+      elif first == self.fightingStyleOptions[2]: # Great Weapon Fighting
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, ["Divine Smite","Fighting Style: Great Weapon Fighting", "Spellcasting"], [divineSmiteDes,["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],spellCastingDes])
+      elif first == self.fightingStyleOptions[3]: # Protection
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, ["Divine Smite","Fighting Style: Protection", "Spellcasting"], [divineSmiteDes,["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],spellCastingDes])
+      elif first == self.fightingStyleOptions[4]: # Two-Weapon Fighting
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, ["Divine Smite","Fighting Style: Two-Weapon Fighting", "Spellcasting"], [divineSmiteDes,["Add your ability mod to the damage of the second attack"],spellCastingDes])
+      
+   pathsToChoose = ["Oath of Devotion", "Oath of Vengeance"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Oath of Devotion
+         self.pathChosen = choice
+         self.setFeatureList(2, ["Divine Health","Oath Spells","Channel Divinity"], [["You are immune to disease"],["Protection from Evil","Sanctuary"],["Sacred Weapon: weapon is gains magical +CHA to attack, emits 20ft bright light 20ft dim","Turn Undead: Undead within 25ft make WIS save, or are turned"]])
+         self.setFeatureList(4, ["Extra Attack","Oath Spells"],                     [["You can attack an extra time"],["Lesser Restoration, Zone of Truth"]])
+         self.setFeatureList(7, ["Turn Fiends"],                                    [["Turn Undead also affects fiends"]])
+         self.setFeatureList(8, ["Oath Spells"],                                    [["Beacon of Hope","Dispel magic"]])
+         self.setFeatureList(12,["Oath Spells"],                                    [["Freedom of Movement","Guardian of Faith"]])
+         self.setFeatureList(16,["Oath Spells"],                                    [["Commune","Flame Strike"]])
+         self.setFeatureList(17,["Banishing Strike"],                               [["Smite feature banishes fiends who fail a CHA saving throw"]])
+         self.setFeatureList(19,["Channel Divinity:Holy Nimbus"],                   [["Emit bright sunlight in 25ft, dim sunlight in 25ft beyond. enemies take 10 damage on turn start in bright light","While active, gain ADV on saves against fiends/undead spell casting"]])
+         
+      elif choice == self.pathsToChoose[1]: # Oath of Vengeance
+         self.pathChosen = choice
+         self.setFeatureList(2, ["Divine Health","Oath Spells","Channel Divinity"], [["You are immune to disease"],["Cause Fear","Hunter's Mark"],["Abjure Enemy:Frighten one enemy in 60ft, Undead/fiend have DISADV (WIS causes speed to be halved)","Vow of Enmity:Creature is hit within 10ft, Gain ADV on attack against attacker"]])
+         self.setFeatureList(4, ["Extra Attack","Oath Spells"],                     [["You can attack an extra time"],["Hold Person","Misty Step"]])
+         self.setFeatureList(7, ["Relentless Avenger"],                             [["Hitting a creature with an opportuntity attack allows you to move half your speed"]])
+         self.setFeatureList(8, ["Oath Spells"],                                    [["Haste","Protection from Energy"]])
+         self.setFeatureList(12,["Oath Spells"],                                    [["Air Walk","Dimension Door"]])
+         self.setFeatureList(16,["Oath Spells"],                                    [["Hold Monster","Scrying"]])
+         self.setFeatureList(17,["Soul of Vengeance"],                              [["When the creature under Vow of Enmity makes an attack, use reaction to make an attack"]])
+         self.setFeatureList(19,["Channel Divinity:Avenging Angel"],                [["Undergo a transformation to gain flight (60ft), and frighten enemies in 30ft range (WIS negates)","Attacks versus the frightened creature have ADV"]])
 #
 class Ranger(BaseClass):
    classString = "Ranger"
@@ -1049,19 +1121,78 @@ class Ranger(BaseClass):
                   ["Unmatched Hunter"],
                   ["Ferral Senses"],
                   ["Terrain Superiority"]]
+   featureListDescriptions = [[["Track other creatures using WIS check"]],
+                              [["Colossus Slayer", "Horde Breaker"],["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]],
+                              [["DC = 8 + WIS mod"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["You can attack an extra time"]],
+                              [["You explore Wilderness at twice the normal rate, and cannot become lost","You find 1 days worth of food and mounts for up to 11 people"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"],["Move through non-magical terrain at no extra movement","Take no damage from thorns or other hazards plants possess"]],
+                              [[""]],
+                              [["Take 1 minute to add +10 to stealth checks as long as you remain still"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["Make a stealth check to hide without using an action","May choose to move silently, be tracked, be detected with tremorsense or with magic (if they can't see you)"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [[""]],
+                              [["The first time you hit a surprised creature on the first round, triple the damage"]],
+                              [["Being unable to see a target doesn't give you DISADV","You are aware of invisible creatures within 25ft"]],
+                              [["Gain ADV on attacks and saves in wilderness environments"]]]
+   fightingStyleOptions = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+   fightingStylesChosen = ""
+   def chooseFightingStyle(self,first):
+      firstIndex = 1
+      if first == "":
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, "Fighting Style", ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"],1)
+      elif first == self.fightingStyleOptions[0]: # Archery
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, "Fighting Style: Archery", ["+1 to attack rolls with ranged weapons"],1)
+      elif first == self.fightingStyleOptions[1]: # Defense
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, "Fighting Style: Defense", ["+1 to AC while wearing armor"],1)
+      elif first == self.fightingStyleOptions[2]: # Great Weapon Fighting
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, "Fighting Style: Great Weapon Fighting", ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"],1)
+      elif first == self.fightingStyleOptions[3]: # Protection
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, "Fighting Style: Protection", ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"],1)
+      elif first == self.fightingStyleOptions[4]: # Two-Weapon Fighting
+         self.fightingStylesChosen = first
+         self.setFeatureList(firstIndex, "Fighting Style: Two-Weapon Fighting", ["Add your ability mod to the damage of the second attack"],1)
+      
+   pathsToChoose = ["Path of the Colossus Slayer", "Path of the Horde Breaker"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Path of the Colossus Slayer
+         self.pathChosen = choice
+         self.setFeatureList(1, "Slayer's Momentum",     ["If you damage a creature with a weapon attack, deal +1d6 to that creature next attack"],0)
+         self.setFeatureList(6, ["Steel Will"],          [["Gain ADV on saves versus being frightened"]])
+         self.setFeatureList(10,["Staggering Attack"],   [["When you hit a creature with a weapon attack, gain ADV on all other attacks to that target this turn"]])
+         self.setFeatureList(14,["Uncanny Dodge"],       [["On a DEX saving throw to only take half damage, take none on success, half on failure"]])
+         
+      elif choice == self.pathsToChoose[1]: # Path of the Horde Breaker
+         self.pathChosen = choice
+         self.setFeatureList(1, "Hordeslayer",           ["If you damage a creature with a weapon attack, deal +1d8 to each other creature you attack"],0)
+         self.setFeatureList(6, ["Hunter's Mobility"],   [["Opportunity attacks against you have DISADV"]])
+         self.setFeatureList(10,["Whirlwind Attack"],    [["Use your action to make a melee attack against each enemy creature within 5ft of you"]])
+         self.setFeatureList(14,["Pack Awareness"],      [["If you are not surprised at the start of combat, allies within 25ft are not either"]])
 #
 class Rogue(BaseClass):
-   level = 0
+   level = 1
    classString = "Rogue"
    hitDice = 6
-   sneakAttackDice =             [1,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7]
+   sneakAttackDice = [1,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7]
    armorProficiencies = ["light","medium"]
    weaponProficiencies = ["simple","crossbowHand","crossbowLight","longSword","rapier","shortSword"]
    toolProficiencies = ["kitThief"]
    savingThrows = ["dex"]
    possibleSkills = ["athletics","deception","insight","intimitation","perception","performance","persuasion","search","sleight of hand","stealth"]
    skillsToChoose = 4
-   featureList = [["Expertise, Sneak Attack ("+str(sneakAttackDice[level])+"d6)"],
+   featureList = [["Expertise", "Sneak Attack ("+str(sneakAttackDice[level-1])+"d6)"],
                   ["Cunning Action","Thieves' Cant"],
                   ["Rogue Style"],
                   ["Ability Score Improvement"],
@@ -1081,9 +1212,48 @@ class Rogue(BaseClass):
                   ["Elusive"],
                   ["Ability Score Improvement"],
                   ["Ace in the Hole"]]
+   featureListDescriptions = [[["Gain +5 to all checks using up to 4 of your skill or tool proficiencies"],["Add damage to a strike if you have ADV or an able enemy of target is within 5ft"]],
+                              [["You may take a second action on your turn to disengage, hide, or hustle"],["Hide messages in normal conversation"]],
+                              [["Assassination", "Thievery"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Use your reaction to half the damage taken from a seen attack"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["On a DEX saving throw to only take half damage, take none on success, half on failure"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Treat rolls of 9 or lower as a 10 on proficiencies"]],
+                              [["You are aware (through hearing) of the location of hidden/invisible creatures within 10ft"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Gain proficiency in Wisdom saving throws"]],
+                              [[""]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Creatures can't gain advantage on you for attack rolls"]],
+                              [["2 +1's to abilities OR choose 1 feat"]],
+                              [["Once/rest, treat a roll failure as a roll of 20"]]]
    def updateFeatures(self):
-      self.featureList[0] = ["Expertise, Sneak Attack ("+str(self.sneakAttackDice[self.level])+"d6)"]
-#
+      self.setFeatureList(0, "Sneak Attack ("+str(self.sneakAttackDice[self.level-1])+"d6)", ["Add damage to a strike if you have ADV or an able enemy of target is within 5ft"],1)
+
+   pathsToChoose = ["Assassination", "Thievery"]
+   pathChosen = ""
+   def choosePath(self,choice): 
+      if choice == self.pathsToChoose[0]: # Assassination
+         self.pathChosen = choice
+         self.setFeatureList(2, ["Assassinate"],            [["On first turn, gain ADV on any creature not yet taken a turn","Score an automatic critical against surprised enemies, use max result for sneak attack"]])
+         self.setFeatureList(5, ["Poison Mastery"],         [["Spend 1 hour to make a tasteless, colorless, odorless liquid to do 1 of 3 things (CON save DC 10+INT mod)","Unconsciousness for 2d6+4 hours","Intoxication for 24 hours, HP max is halved","As if it was under a non-magical confusion spell"]])
+         self.setFeatureList(8, ["Infiltration Expertise"], [["You can create false identities for yourself, takes 1 week and 25gp"]])
+         self.setFeatureList(12,["Impostor"],               [["Spend 1 hour studying person to mimic them","You have advantage on any deception checks made to avoid detection"]])
+         self.setFeatureList(15,["Death Strike"],           [["If you make an attack against a surprised creature, deal double the damage (CON save DC 10+DEX mod negates doubling)"]])
+         toolProficiencies = ["kitThief","kitDisguise","kitPoisoners"]
+      elif choice == self.pathsToChoose[1]: # Thievery
+         self.pathChosen = choice
+         self.setFeatureList(2, ["Burglary","Fast Hands"], [["Climbing doesn't half your speed","Long jump distance increases by 10ft, high jump by 5ft"],["Use your Cunning Action to make sleight of hand checks"]])
+         self.setFeatureList(5, ["Decipher Script"],       [["Study a page of text for a minute to puzzle out the meaning","1 hour of text to discover the full meaning"]])
+         self.setFeatureList(8, ["Supreme Sneak"],         [["Gain ADV on any ability check to hide if you move no more than half speed"]])
+         self.setFeatureList(12,["Use Magic Device"],      [["Ignore all class, race, and level requirements on the use of magic items"]])
+         self.setFeatureList(15,["Thief's Reflexes"],      [["Take 2 turns at the beginning of a battle (2nd is at initiative - 10)"]])
+
 class classUnitTest(UnitTest):
    def run(self):
       self.BaseClassTests()
@@ -1094,6 +1264,8 @@ class classUnitTest(UnitTest):
       self.FighterClassTests()
       self.MageClassTests()
       self.MonkClassTests()
+      self.PaladinClassTests()
+      self.RangerClassTests()
    def common_updateFeatures(self,c,level,index,expectedFeatures,expectedFeatureDescriptions):
       c.level = level
       c.updateFeatures()
@@ -1107,9 +1279,9 @@ class classUnitTest(UnitTest):
          self.failTest("Class->common->choosePath->"+c.classString+": chosen path '"+c.pathChosen+"' seen + '"+choice+"'expected")
       for i,index in enumerate(indicesList):
          if c.featureList[index] != expectedFeatureList[i]:
-            self.failTest("Class->common->choosePath->"+c.classString+"->path:"+str(c.pathChosen)+"index"+str(index)+": '"+str(c.featureList[index])+"' found, '" + str(expectedFeatureList[i]) + "' expected")
+            self.failTest("Class->common->choosePath->"+c.classString+"->path:"+str(c.pathChosen)+"->index "+str(index)+": '"+str(c.featureList[index])+"' found, '" + str(expectedFeatureList[i]) + "' expected")
          if c.featureListDescriptions[index] != expectedFeatureDescriptionsList[i]:
-            self.failTest("Class->common->choosePath->"+c.classString+"->path:"+str(c.pathChosen)+"->index"+str(index)+": '"+str(c.featureListDescriptions[index])+"' found, '" + str(expectedFeatureDescriptionsList[i]) + "' expected")
+            self.failTest("Class->common->choosePath->"+c.classString+"->path:"+str(c.pathChosen)+"->index "+str(index)+": '"+str(c.featureListDescriptions[index])+"' found, '" + str(expectedFeatureDescriptionsList[i]) + "' expected")
    def BaseClassTests(self):
       c = BaseClass()
       #levelUp
@@ -1518,7 +1690,7 @@ class classUnitTest(UnitTest):
                               [["Fighting Style: Two-Weapon Fighting","Second Wind"],   ["Improved Combat Superiority"]],
                               [["Fighting style","Second Wind"],                        ["Improved Combat Superiority"]]]
       defaultDes = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
-      secondWindDes = ["Gain temporary (1d6 + Figher Level) HP "]
+      secondWindDes = ["Gain temporary (1d6 + Fighter Level) HP "]
       improvedCombatSuperiorityDes = ["Use d10s for superiority dice"]
       archeryDes = ["+1 to attack rolls with ranged weapons"]
       defenseDes = ["+1 to AC while wearing armor"]
@@ -1711,7 +1883,214 @@ class classUnitTest(UnitTest):
             self.failTest("Class->common->chooseAnimal->"+c.classString+": chosen animals '"+str(c.elementsChosen)+"' seen + '"+str(triplet)+"'expected")
             
          self.common_choosePath(c,"Way of the Four Elements",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+   #
+   def PaladinClassTests(self):
+      #updateFeatures
+      #choosePath
+      # Oath of Devotion
+      c = Paladin()
+      indicesList = [2,4,7,8,12,16,17,19]
       
+      expectedFeatureList =  [["Divine Health","Oath Spells","Channel Divinity"],
+                              ["Extra Attack","Oath Spells"],
+                              ["Turn Fiends"],
+                              ["Oath Spells"],
+                              ["Oath Spells"],
+                              ["Oath Spells"],
+                              ["Banishing Strike"],
+                              ["Channel Divinity:Holy Nimbus"]]
+      expectedFeatureDescriptionsList =  [[["You are immune to disease"],["Protection from Evil","Sanctuary"],["Sacred Weapon: weapon is gains magical +CHA to attack, emits 20ft bright light 20ft dim","Turn Undead: Undead within 25ft make WIS save, or are turned"]],
+                                          [["You can attack an extra time"],["Lesser Restoration, Zone of Truth"]],
+                                          [["Turn Undead also affects fiends"]],
+                                          [["Beacon of Hope","Dispel magic"]],
+                                          [["Freedom of Movement","Guardian of Faith"]],
+                                          [["Commune","Flame Strike"]],
+                                          [["Smite feature banishes fiends who fail a CHA saving throw"]],
+                                          [["Emit bright sunlight in 25ft, dim sunlight in 25ft beyond. enemies take 10 damage on turn start in bright light","While active, gain ADV on saves against fiends/undead spell casting"]]]
+      
+      self.common_choosePath(c,"Oath of Devotion",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      # Oath of Vengeance
+      c = Paladin()
+      indicesList = [2,4,7,8,12,16,17,19]
+      
+      
+      
+      expectedFeatureList =  [["Divine Health","Oath Spells","Channel Divinity"],
+                              ["Extra Attack","Oath Spells"],
+                              ["Relentless Avenger"],
+                              ["Oath Spells"],
+                              ["Oath Spells"],
+                              ["Oath Spells"],
+                              ["Soul of Vengeance"],
+                              ["Channel Divinity:Avenging Angel"]]
+      expectedFeatureDescriptionsList =  [[["You are immune to disease"],["Cause Fear","Hunter's Mark"],["Abjure Enemy:Frighten one enemy in 60ft, Undead/fiend have DISADV (WIS causes speed to be halved)","Vow of Enmity:Creature is hit within 10ft, Gain ADV on attack against attacker"]],
+                                          [["You can attack an extra time"],["Hold Person","Misty Step"]],
+                                          [["Hitting a creature with an opportuntity attack allows you to move half your speed"]],
+                                          [["Haste","Protection from Energy"]],
+                                          [["Air Walk","Dimension Door"]],
+                                          [["Hold Monster","Scrying"]],
+                                          [["When the creature under Vow of Enmity makes an attack, use reaction to make an attack"]],
+                                          [["Undergo a transformation to gain flight (60ft), and frighten enemies in 30ft range (WIS negates)","Attacks versus the frightened creature have ADV"]]]
+      
+      self.common_choosePath(c,"Oath of Vengeance",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      # chooseStyle
+      indicesList = [1]
+      styleList =             ["","Archery", "Defense", "Great Weapon Fighting", "Protection","Two-Weapon Fighting"]
+      
+      expectedFeatureList =  [[["Divine Smite","Fighting Style","Spellcasting"]],
+                              [["Divine Smite","Fighting Style: Archery","Spellcasting"]],
+                              [["Divine Smite","Fighting Style: Defense","Spellcasting"]],
+                              [["Divine Smite","Fighting Style: Great Weapon Fighting","Spellcasting"]],
+                              [["Divine Smite","Fighting Style: Protection","Spellcasting"]],
+                              [["Divine Smite","Fighting Style: Two-Weapon Fighting","Spellcasting"]]]
+                              
+      divineSmiteDes = ["Expend 1 paladin spell to deal (1+spell level)d8","Deals 1d8 extra for undead or fiendish creatures"]
+      defaultDes = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+      spellcastingDes = ["DC = 8 + CHA mod, + proficiency if holy symbol present"]
+      improvedCombatSuperiorityDes = ["Use d10s for superiority dice"]
+      archeryDes = ["+1 to attack rolls with ranged weapons"]
+      defenseDes = ["+1 to AC while wearing armor"]
+      greatWeaponFightingDes = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"]
+      protectionDes = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"]
+      twoWeaponFightingDes = ["Add your ability mod to the damage of the second attack"]
+      expectedFeatureDescriptionsList =  [[[divineSmiteDes,defaultDes,spellcastingDes]],
+                                          [[divineSmiteDes,archeryDes,spellcastingDes]],
+                                          [[divineSmiteDes,defenseDes,spellcastingDes]], 
+                                          [[divineSmiteDes,greatWeaponFightingDes,spellcastingDes]],
+                                          [[divineSmiteDes,protectionDes,spellcastingDes]],  
+                                          [[divineSmiteDes,twoWeaponFightingDes,spellcastingDes]]]
+      for i,style in enumerate(styleList):
+         c = Paladin()
+         c.chooseFightingStyle(style)
+         if c.fightingStylesChosen != style:
+            self.failTest("Class->common->chooseStyle->"+c.classString+": '"+str(c.fightingStylesChosen)+"' seen + '"+str(style)+"'expected")
+            
+         self.common_choosePath(c,"Oath of Vengeance",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+   #
+   def RangerClassTests(self):
+      #updateFeatures
+      #choosePath
+      # Colossus Slayer
+      c = Ranger()
+      indicesList = [1,6,10,14]
+      
+      expectedFeatureList =  [["Slayer's Momentum","Fighting Style"],
+                              ["Steel Will"],
+                              ["Staggering Attack"],
+                              ["Uncanny Dodge"]]
+      expectedFeatureDescriptionsList =  [[["If you damage a creature with a weapon attack, deal +1d6 to that creature next attack"],["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]],
+                                          [["Gain ADV on saves versus being frightened"]],
+                                          [["When you hit a creature with a weapon attack, gain ADV on all other attacks to that target this turn"]],
+                                          [["On a DEX saving throw to only take half damage, take none on success, half on failure"]]]
+      
+      self.common_choosePath(c,"Path of the Colossus Slayer",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      # Horde Breaker
+      c = Ranger()
+      indicesList = [1,6,10,14]
+      
+      expectedFeatureList =  [["Hordeslayer","Fighting Style"],
+                              ["Hunter's Mobility"],
+                              ["Whirlwind Attack"],
+                              ["Pack Awareness"]]
+      expectedFeatureDescriptionsList =  [[["If you damage a creature with a weapon attack, deal +1d8 to each other creature you attack"],["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]],
+                                          [["Opportunity attacks against you have DISADV"]],
+                                          [["Use your action to make a melee attack against each enemy creature within 5ft of you"]],
+                                          [["If you are not surprised at the start of combat, allies within 25ft are not either"]]]
+      
+      self.common_choosePath(c,"Path of the Horde Breaker",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      
+      # chooseStyle
+      indicesList = [1]
+      styleList =             ["","Archery", "Defense", "Great Weapon Fighting", "Protection","Two-Weapon Fighting"]
+      
+      expectedFeatureList =  [[["Slayer's Momentum","Fighting Style"]],
+                              [["Slayer's Momentum","Fighting Style: Archery"]],
+                              [["Slayer's Momentum","Fighting Style: Defense"]],
+                              [["Slayer's Momentum","Fighting Style: Great Weapon Fighting"]],
+                              [["Slayer's Momentum","Fighting Style: Protection"]],
+                              [["Slayer's Momentum","Fighting Style: Two-Weapon Fighting"]]]
+                              
+      slayersMomentumDes = ["If you damage a creature with a weapon attack, deal +1d6 to that creature next attack"]
+      defaultDes = ["Archery", "Defense","Great Weapon Fighting","Protection","Two-Weapon Fighting"]
+      spellcastingDes = ["DC = 8 + CHA mod, + proficiency if holy symbol present"]
+      improvedCombatSuperiorityDes = ["Use d10s for superiority dice"]
+      archeryDes = ["+1 to attack rolls with ranged weapons"]
+      defenseDes = ["+1 to AC while wearing armor"]
+      greatWeaponFightingDes = ["If you miss with a 2 handed weapon, enemy takes STR mod as damage"]
+      protectionDes = ["In 5ft, if visible creature makes attack roll, use reaction to give it DISADV"]
+      twoWeaponFightingDes = ["Add your ability mod to the damage of the second attack"]
+      expectedFeatureDescriptionsList =  [[[slayersMomentumDes,defaultDes]],
+                                          [[slayersMomentumDes,archeryDes]],
+                                          [[slayersMomentumDes,defenseDes]], 
+                                          [[slayersMomentumDes,greatWeaponFightingDes]],
+                                          [[slayersMomentumDes,protectionDes]],  
+                                          [[slayersMomentumDes,twoWeaponFightingDes]]]
+      for i,style in enumerate(styleList):
+         c = Ranger()
+         c.chooseFightingStyle(style)
+         if c.fightingStylesChosen != style:
+            self.failTest("Class->common->chooseStyle->"+c.classString+": '"+str(c.fightingStylesChosen)+"' seen + '"+str(style)+"'expected")
+            
+         self.common_choosePath(c,"Path of the Colossus Slayer",indicesList,expectedFeatureList[i],expectedFeatureDescriptionsList[i])
+   #
+   def RogueClassTests(self):
+      #updateFeatures
+      #sneakAttackDice = [1,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7]
+      expertiseDes = ["Gain +5 to all checks using up to 4 of your skill or tool proficiencies"]
+      sneakAttackDes = ["Add damage to a strike if you have ADV or an able enemy of target is within 5ft"]
+      c = Rogue()
+      index = 0
+      levelList =    [1,5,8,11,14,17,20]
+      newEntryList =   [["Expertise", "Sneak Attack (1d6)"],
+                        ["Expertise", "Sneak Attack (2d6)"],
+                        ["Expertise", "Sneak Attack (3d6)"],
+                        ["Expertise", "Sneak Attack (4d6)"],
+                        ["Expertise", "Sneak Attack (5d6)"],
+                        ["Expertise", "Sneak Attack (6d6)"],
+                        ["Expertise", "Sneak Attack (7d6)"]]
+      for i,level in enumerate(levelList):
+         self.common_updateFeatures(c,level,index,newEntryList[i],[expertiseDes,sneakAttackDes])
+      
+      #choosePath
+      # Assassination
+      c = Rogue()
+      indicesList = [2,5,8,12,15]
+      
+      expectedFeatureList =  [["Assassinate"],
+                              ["Poison Mastery"],
+                              ["Infiltration Expertise"],
+                              ["Impostor"],
+                              ["Death Strike"]]
+      expectedFeatureDescriptionsList =  [[["On first turn, gain ADV on any creature not yet taken a turn","Score an automatic critical against surprised enemies, use max result for sneak attack"]],
+                                          [["Spend 1 hour to make a tasteless, colorless, odorless liquid to do 1 of 3 things (CON save DC 10+INT mod)","Unconsciousness for 2d6+4 hours","Intoxication for 24 hours, HP max is halved","As if it was under a non-magical confusion spell"]],
+                                          [["You can create false identities for yourself, takes 1 week and 25gp"]],
+                                          [["Spend 1 hour studying person to mimic them","You have advantage on any deception checks made to avoid detection"]],
+                                          [["If you make an attack against a surprised creature, deal double the damage (CON save DC 10+DEX mod negates doubling)"]]]
+      
+      self.common_choosePath(c,"Assassination",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
+      toolProficienciesExpected = ["kitThief","kitDisguise","kitPoisoners"]
+      if c.toolProficiencies != toolProficienciesExpected:
+         self.failTest("Class->common->updateFeatures->"+c.classString+"->ToolProficiencies: '"+str(c.toolProficiencies)+"' found, '" + str(toolProficienciesExpected) + "' expected")
+      
+      # Thievery
+      c = Rogue()
+      indicesList = [2,5,8,12,15]   
+      
+      expectedFeatureList =  [["Burglary","Fast Hands"],
+                              ["Decipher Script"],
+                              ["Supreme Sneak"],
+                              ["Use Magic Device"],
+                              ["Thief's Reflexes"]]
+      expectedFeatureDescriptionsList =  [[["Climbing doesn't half your speed","Long jump distance increases by 10ft, high jump by 5ft"],["Use your Cunning Action to make sleight of hand checks"]],
+                                          [["Study a page of text for a minute to puzzle out the meaning","1 hour of text to discover the full meaning"]],
+                                          [["Gain ADV on any ability check to hide if you move no more than half speed"]],
+                                          [["Ignore all class, race, and level requirements on the use of magic items"]],
+                                          [["Take 2 turns at the beginning of a battle (2nd is at initiative - 10)"]]]
+      
+      self.common_choosePath(c,"Thievery",indicesList,expectedFeatureList,expectedFeatureDescriptionsList)
    #
 unitTestFramework = classUnitTest()
 

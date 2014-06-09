@@ -1,4 +1,4 @@
-import random,classes,race
+import random,classes,race,equipment
 import background
 from classes import *
 from race import *
