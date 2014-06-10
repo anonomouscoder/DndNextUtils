@@ -8,6 +8,7 @@ class Character:
    str = 0;con = 0;dex = 0;int = 0;wis = 0;cha = 0
    hitPoints = 0
    classLevels = []
+   totalLevel = 0
    proficiency = 0
    background = BaseBackground()
    race = BaseRace("")
@@ -17,6 +18,19 @@ class Character:
    armorProficiencies = []
    weaponProficiencies = []
    toolProficiencies = []
+   def getAbilityMod(self,ability):
+      if ability == "str":
+         return (self.str-10)/2
+      if ability == "con":
+         return (self.con-10)/2
+      if ability == "dex":
+         return (self.dex-10)/2
+      if ability == "int":
+         return (self.int-10)/2
+      if ability == "wis":
+         return (self.wis-10)/2
+      if ability == "cha":
+         return (self.cha-10)/2
    def rollDie(self,numberOfSides):
       r = random.randint(1,numberOfSides)
       return r
@@ -50,6 +64,13 @@ class Character:
             self.wis = listOfStats[i]
          elif stat == "cha":
             self.cha = listOfStats[i]
+   def setStats(self,listOfStats):
+      self.str = listOfStats[0]
+      self.con = listOfStats[1]
+      self.dex = listOfStats[2]
+      self.int = listOfStats[3]
+      self.wis = listOfStats[4]
+      self.cha = listOfStats[5]
    #
    def addClassLevel(self,classToLevelUp):
       found = False
@@ -58,18 +79,21 @@ class Character:
          if isinstance(i,classToLevelUp.__class__):
             found = True
             foundAt = index
-      if found == False:
+      if found == True:
+         i = self.classLevels[foundAt]
+      else:
          self.classLevels.append(classToLevelUp.__class__())   #add the class (level 1)
+         i = self.classLevels[len(self.classLevels)-1]
+         if self.totalLevel == 0:
+            self.hitPoints = self.hitPoints + i.hitDice + self.getAbilityMod("con")
+         else:
+            self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + self.getAbilityMod("con")
          classToLevelUp.level = classToLevelUp.level -1        #reduce the amount leveled up by 1
-         foundAt = len(self.classLevels)-1
-      i = self.classLevels[foundAt]
+         self.totalLevel = self.totalLevel + 1
       for j in range(classToLevelUp.level):
          i.levelUp()
-         if i.level == 1:
-            self.hitPoints = i.hitDice + ((self.con - 10)/2)
-         else:
-            self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + ((self.con - 10)/2)
-
+         self.totalLevel = self.totalLevel + 1
+         self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + self.getAbilityMod("con")
    def choosePath(self,classToChooseFrom,path):
       for i in self.classLevels:
          if isinstance(i,classToChooseFrom.__class__):
@@ -177,12 +201,15 @@ class Character:
       for i in self.background.toolProficiencies:
          if i not in self.toolProficiencies:
             self.toolProficiencies.append(i)
-   def __init__(self,orderOfStats,listOfClassesToLevelUp,race,background,listOfSkills):
-      self.rollStats(orderOfStats)
-      for i in listOfClassesToLevelUp:
-         self.addClassLevel(i)
+   def __init__(self,rollForStats,listOfStats,orderOfStats,listOfClassesToLevelUp,race,background,listOfSkills):
+      if rollForStats:
+         self.rollStats(orderOfStats)
+      else:
+         self.setStats(listOfStats)
       self.addRace(race)
       self.addBackground(background)
+      for i in listOfClassesToLevelUp:
+         self.addClassLevel(i)
       for i in listOfSkills:
          self.addSkill(i)
       self.combineProficiencies()
@@ -235,12 +262,10 @@ class Character:
          print " " + i
 #
 orderOfStats = ["str","con","dex","wis","int","cha"]
-listOfClasses = [Fighter(2)]
+listOfClasses = [Fighter()]
 listOfSkills = ["athletics"]
 race = Dwarf("Mountain Dwarf")
-c = Character(orderOfStats, listOfClasses, race, Sage, listOfSkills)
-c.choosePath(Fighter(),"Path of the Weaponmaster")
-#c.printStats()
-c.addClassLevel(Fighter(5))
-c.combineProficiencies()
-#c.printStats()
+c = Character(False,[11,11,11,11,11,11],[], listOfClasses, race, Sage, listOfSkills)
+c.printStats()
+c.addClassLevel(Mage(3))
+c.printStats()

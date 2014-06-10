@@ -76,7 +76,6 @@ class Human(BaseRace):
    abiltyAdjustment = ["str","con","dex","int","wis","cha"]
    languages = ["common"]
    languagesToChoose = 1
-   traits = ["Lucky","Brave","Halfling Nimbleness"]
 #
 class Dragonborn(BaseRace):
    raceString = "Dragonborn"
