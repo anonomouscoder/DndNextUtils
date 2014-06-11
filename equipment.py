@@ -1,491 +1,1136 @@
+import string
+class NotEnoughMoneyException(Exception):
+   def __str__(self):
+      return ""
+class Money():
+   def convertToHighestValueCoins(self):
+      self.convertToCopper()
+      self.pp = self.cp / 1000
+      self.cp = self.cp % 1000
+      self.gp = self.cp / 100
+      self.cp = self.cp % 100
+      if self.useElectrum:
+         self.ep = self.cp / 50
+         self.cp = self.cp % 50
+      self.sp = self.cp / 10
+      self.cp = self.cp % 10
+   def convertToCopper(self):
+      self.cp = self.cp + self.pp*1000
+      self.cp = self.cp + self.gp*100
+      if self.useElectrum:
+         self.cp = self.cp + self.ep*50
+      self.cp = self.cp + self.sp*10
+      self.pp = 0
+      self.gp = 0
+      self.ep = 0
+      self.sp = 0
+   def getTotalInCopper(self):
+      return self.pp*1000 + self.gp*100 + self.ep*50 + self.sp*10 + self.cp
+   def subtract(self,amount):
+      if self.getTotalInCopper() >= amount:
+         self.convertToCopper()
+         self.cp = self.cp - amount
+         self.convertToHighestValueCoins()
+      else:
+         raise NotEnoughMoneyException
+   def __init__(self,cp=0,sp=0,ep=0,gp=0,pp=0,useEp=True):
+      self.cp = cp
+      self.sp = sp
+      self.ep = ep
+      self.gp = gp
+      self.pp = pp
+      self.useElectrum = useEp
 class Item(): 
-   value = 0 #in copper
-   weight = 0 #in pounds
-   size = 0
-   carried = False
+   def __init__(self):
+      self.value = 0 #in copper
+      self.weight = 0 #in pounds
+      self.size = 0
+      self.carried = False
+      self.description = ""
+   def __str__(self):
+      return (string.split(str(self.__class__),".",1))[1]
 class Equipable(Item):
-   slot = ""
-   equipped = False
+   def __init__(self):
+      Item.__init__(self)
+      self.slot = ""
+      self.equipped = False
    def equip():
       equipped = True
 class Weapon(Equipable):
-   slot = "Hand"
-   damageDieType = 6
-   damageDieNumber = 1
-   damageType = "piercing"
-   isFinesse = False
-   isHeavy = False
-   isLight = False
-   specialRules = ""
-   isThrown = False
-   normalRange = 0
-   maxRange = 0
-   isTwoHanded = False
-   isVersatile = False
-   versatileDamageDieType = 8
-   versatileDamageDieNumber = 1
-   versatileDamageType = "slashing"
-   type = "simple"
+   def __init__(self):
+      Equipable.__init__(self)
+      self.slot = "Hand"
+      self.damageDieType = 6
+      self.damageDieNumber = 1
+      self.damageType = "piercing"
+      self.isFinesse = False
+      self.isHeavy = False
+      self.isLight = False
+      self.specialRules = ""
+      self.isThrown = False
+      self.normalRange = 0
+      self.maxRange = 0
+      self.isTwoHanded = False
+      self.isVersatile = False
+      self.versatileDamageDieType = 8
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "slashing"
+      self.type = "simple"
 #Melee Weapons
 class MeleeWeapon(Weapon):
-   isReach = False
-   isMounted = False
+   def __init__(self):
+      Weapon.__init__(self)
+      self.isReach = False
+      self.isMounted = False
 #Simple Melee Weapons
 class Club(MeleeWeapon):
-   value = 10
-   weight = 3
-   damageDieType = 4
-   damageType = "bludgeoning"
-   isLight = True
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 10
+      self.weight = 3
+      self.damageDieType = 4
+      self.damageType = "bludgeoning"
+      self.isLight = True
 class Dagger(MeleeWeapon):
-   value = 200
-   weight = 1
-   damageDieType = 4
-   damageType = "piercing"
-   isFinesse = True
-   isLight = True
-   isThrown = True
-   normalRange = 20
-   maxRange = 60
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 200
+      self.weight = 1
+      self.damageDieType = 4
+      self.damageType = "piercing"
+      self.isFinesse = True
+      self.isLight = True
+      self.isThrown = True
+      self.normalRange = 20
+      self.maxRange = 60
 class GreatClub(MeleeWeapon):
-   value = 20
-   weight = 10
-   damageDieType = 8
-   damageType = "bludgeoning"
-   isTwoHanded = True
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 20
+      self.weight = 10
+      self.damageDieType = 8
+      self.damageType = "bludgeoning"
+      self.isTwoHanded = True
 class HandAxe(MeleeWeapon):
-   value = 500
-   weight = 3
-   damageDieType = 6
-   damageType = "slashing"
-   isLight = True
-   isLight = True
-   isThrown = True
-   normalRange = 20
-   maxRange = 60
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 500
+      self.weight = 3
+      self.damageDieType = 6
+      self.damageType = "slashing"
+      self.isLight = True
+      self.isLight = True
+      self.isThrown = True
+      self.normalRange = 20
+      self.maxRange = 60
 class LightHammer(MeleeWeapon):
-   value = 200
-   weight = 3
-   damageDieType = 4
-   damageType = "bludgeoning"
-   isLight = True
-   isLight = True
-   isThrown = True
-   normalRange = 20
-   maxRange = 60
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 200
+      self.weight = 3
+      self.damageDieType = 4
+      self.damageType = "bludgeoning"
+      self.isLight = True
+      self.isLight = True
+      self.isThrown = True
+      self.normalRange = 20
+      self.maxRange = 60
 class Mace(MeleeWeapon):
-   value = 500
-   weight = 4
-   damageDieType = 6
-   damageType = "bludgeoning"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 500
+      self.weight = 4
+      self.damageDieType = 6
+      self.damageType = "bludgeoning"
 class QuarterStaff(MeleeWeapon):
-   value = 20
-   weight = 4
-   damageDieType = 6
-   damageType = "bludgeoning"
-   isVersatile = True
-   versatileDamageDieType = 8
-   versatileDamageDieNumber = 1
-   versatileDamageType = "bludgeoning"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 20
+      self.weight = 4
+      self.damageDieType = 6
+      self.damageType = "bludgeoning"
+      self.isVersatile = True
+      self.versatileDamageDieType = 8
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "bludgeoning"
 class Sicle(MeleeWeapon):
-   value = 100
-   weight = 2
-   damageDieType = 4
-   damageType = "slashing"
-   isLight = True
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 100
+      self.weight = 2
+      self.damageDieType = 4
+      self.damageType = "slashing"
+      self.isLight = True
 class Spear(MeleeWeapon):
-   value = 100
-   weight = 4
-   damageDieType = 6
-   damageType = "piercing"
-   isThrown = True
-   normalRange = 20
-   maxRange = 60
-   isVersatile = True
-   versatileDamageDieType = 8
-   versatileDamageDieNumber = 1
-   versatileDamageType = "piercing"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 100
+      self.weight = 4
+      self.damageDieType = 6
+      self.damageType = "piercing"
+      self.isThrown = True
+      self.normalRange = 20
+      self.maxRange = 60
+      self.isVersatile = True
+      self.versatileDamageDieType = 8
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "piercing"
 class UnarmedStrike(MeleeWeapon):
-   value = 0
-   weight = 0
-   damageDieType = 1
-   damageType = "bludgeoning"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 0
+      self.weight = 0
+      self.damageDieType = 1
+      self.damageType = "bludgeoning"
 #Martial Melee Weapons
 class BattleAxe(MeleeWeapon):
-   value = 1000
-   weight = 5
-   damageDieType = 8
-   damageType = "slashing"
-   isVersatile = True
-   versatileDamageDieType = 10
-   versatileDamageDieNumber = 1
-   versatileDamageType = "slashing"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 5
+      self.damageDieType = 8
+      self.damageType = "slashing"
+      self.isVersatile = True
+      self.versatileDamageDieType = 10
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "slashing"
+      self.type = "martial"
 class Flail(MeleeWeapon):
-   value = 1000
-   weight = 6
-   damageDieType = 8
-   damageType = "bludgeoning"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 6
+      self.damageDieType = 8
+      self.damageType = "bludgeoning"
+      self.type = "martial"
 class Glaive(MeleeWeapon):
-   value = 1000
-   weight = 9
-   damageDieType = 10
-   damageType = "slashing"
-   isHeavy = True
-   isReach = True
-   isTwoHanded = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 9
+      self.damageDieType = 10
+      self.damageType = "slashing"
+      self.isHeavy = True
+      self.isReach = True
+      self.isTwoHanded = True
+      self.type = "martial"
 class GreatAxe(MeleeWeapon):
-   value = 3000
-   weight = 10
-   damageDieType = 12
-   damageType = "slashing"
-   isHeavy = True
-   isTwoHanded = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 3000
+      self.weight = 10
+      self.damageDieType = 12
+      self.damageType = "slashing"
+      self.isHeavy = True
+      self.isTwoHanded = True
+      self.type = "martial"
 class GreatSword(MeleeWeapon):
-   value = 5000
-   weight = 7
-   damageDieNumber = 2
-   damageDieType = 6
-   damageType = "slashing"
-   isHeavy = True
-   isTwoHanded = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 5000
+      self.weight = 7
+      self.damageDieNumber = 2
+      self.damageDieType = 6
+      self.damageType = "slashing"
+      self.isHeavy = True
+      self.isTwoHanded = True
+      self.type = "martial"
 class Halberd(MeleeWeapon):
-   value = 1000
-   weight = 6
-   damageDieType = 10
-   damageType = "slashing"
-   isHeavy = True
-   isReach = True
-   isTwoHanded = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 6
+      self.damageDieType = 10
+      self.damageType = "slashing"
+      self.isHeavy = True
+      self.isReach = True
+      self.isTwoHanded = True
+      self.type = "martial"
 class Lance(MeleeWeapon):
-   value = 1000
-   weight = 8
-   damageDieType = 12
-   damageType = "piercing"
-   isMounted = True
-   isReach = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 8
+      self.damageDieType = 12
+      self.damageType = "piercing"
+      self.isMounted = True
+      self.isReach = True
+      self.type = "martial"
 class Longsword(MeleeWeapon):
-   value = 1500
-   weight = 4
-   damageDieType = 8
-   damageType = "slashing"
-   isVersatile = True
-   versatileDamageDieType = 10
-   versatileDamageDieNumber = 1
-   versatileDamageType = "slashing"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1500
+      self.weight = 4
+      self.damageDieType = 8
+      self.damageType = "slashing"
+      self.isVersatile = True
+      self.versatileDamageDieType = 10
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "slashing"
+      self.type = "martial"
 class Maul(MeleeWeapon):
-   value = 1000
-   weight = 10
-   damageDieNumber = 2
-   damageDieType = 6
-   damageType = "bludgeoning"
-   isHeavy = True
-   isTwoHanded = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 10
+      self.damageDieNumber = 2
+      self.damageDieType = 6
+      self.damageType = "bludgeoning"
+      self.isHeavy = True
+      self.isTwoHanded = True
+      self.type = "martial"
 class Morningstar(MeleeWeapon):
-   value = 1500
-   weight = 5
-   damageDieType = 8
-   damageType = "piercing"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1500
+      self.weight = 5
+      self.damageDieType = 8
+      self.damageType = "piercing"
+      self.type = "martial"
 class Pike(MeleeWeapon):
-   value = 500
-   weight = 5
-   damageDieType = 10
-   damageType = "piercing"
-   isReach = True
-   isTwoHanded = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 500
+      self.weight = 5
+      self.damageDieType = 10
+      self.damageType = "piercing"
+      self.isReach = True
+      self.isTwoHanded = True
+      self.type = "martial"
 class Rapier(MeleeWeapon):
-   value = 2500
-   weight = 2
-   damageDieType = 8
-   damageType = "piercing"
-   isFinesse = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 2500
+      self.weight = 2
+      self.damageDieType = 8
+      self.damageType = "piercing"
+      self.isFinesse = True
+      self.type = "martial"
 class Scimitar(MeleeWeapon):
-   value = 2500
-   weight = 3
-   damageDieType = 6
-   damageType = "slashing"
-   isFinesse = True
-   isLight = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 2500
+      self.weight = 3
+      self.damageDieType = 6
+      self.damageType = "slashing"
+      self.isFinesse = True
+      self.isLight = True
+      self.type = "martial"
 class ShortSword(MeleeWeapon):
-   value = 1000
-   weight = 2
-   damageDieType = 6
-   damageType = "piercing"
-   isFinesse = True
-   isLight = True
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 2
+      self.damageDieType = 6
+      self.damageType = "piercing"
+      self.isFinesse = True
+      self.isLight = True
+      self.type = "martial"
 class Trident(MeleeWeapon):
-   value = 500
-   weight = 5
-   damageDieType = 6
-   damageType = "piercing"
-   isThrown = True
-   normalRange = 20
-   maxRange = 60
-   isVersatile = True
-   versatileDamageDieType = 8
-   versatileDamageDieNumber = 1
-   versatileDamageType = "piercing"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 500
+      self.weight = 5
+      self.damageDieType = 6
+      self.damageType = "piercing"
+      self.isThrown = True
+      self.normalRange = 20
+      self.maxRange = 60
+      self.isVersatile = True
+      self.versatileDamageDieType = 8
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "piercing"
+      self.type = "martial"
 class WarPick(MeleeWeapon):
-   value = 500
-   weight = 4
-   damageDieType = 6
-   damageType = "piercing"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 500
+      self.weight = 4
+      self.damageDieType = 6
+      self.damageType = "piercing"
+      self.type = "martial"
 class Warhammer(MeleeWeapon):
-   value = 1500
-   weight = 4
-   damageDieType = 8
-   damageType = "bludgeoning"
-   isVersatile = True
-   versatileDamageDieType = 10
-   versatileDamageDieNumber = 1
-   versatileDamageType = "bludgeoning"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 1500
+      self.weight = 4
+      self.damageDieType = 8
+      self.damageType = "bludgeoning"
+      self.isVersatile = True
+      self.versatileDamageDieType = 10
+      self.versatileDamageDieNumber = 1
+      self.versatileDamageType = "bludgeoning"
+      self.type = "martial"
 class Whip(MeleeWeapon):
-   value = 200
-   weight = 4
-   damageDieType = 8
-   damageType = "bludgeoning"
-   isReach = True
-   specialRules = "Use DEX mod for attack, no mod for damage"
-   type = "martial"
+   def __init__(self):
+      MeleeWeapon.__init__(self)
+      self.value = 200
+      self.weight = 4
+      self.damageDieType = 8
+      self.damageType = "bludgeoning"
+      self.isReach = True
+      self.specialRules = "Use DEX mod for attack, no mod for damage"
+      self.type = "martial"
 #Ranged Weapons
 class RangedWeapon(Weapon):
-   needsAmmunition = True
-   isLoading = False
-   damageType = "slashing"
+   def __init__(self):
+      Weapon.__init__(self)
+      self.needsAmmunition = True
+      self.isLoading = False
+      self.damageType = "slashing"
 #Simple Ranged Weapons
 class LightCrossbow(RangedWeapon):
-   value = 2500
-   weight = 6
-   damageDieType = 8
-   normalRange = 80
-   maxRange = 320
-   isTwoHanded = True
-   isLoading = True
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 2500
+      self.weight = 6
+      self.damageDieType = 8
+      self.normalRange = 80
+      self.maxRange = 320
+      self.isTwoHanded = True
+      self.isLoading = True
 class Dart(RangedWeapon):
-   value = 5
-   weight = 1
-   damageDieType = 4
-   needsAmmunition = False
-   isThrown = True
-   normalRange = 30
-   maxRange = 120
-   isFinesse = True
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 5
+      self.weight = 1
+      self.damageDieType = 4
+      self.needsAmmunition = False
+      self.isThrown = True
+      self.normalRange = 30
+      self.maxRange = 120
+      self.isFinesse = True
 class Javelin(RangedWeapon):
-   value = 50
-   weight = 4
-   damageDieType = 6
-   needsAmmunition = False
-   isThrown = True
-   normalRange = 30
-   maxRange = 120
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 50
+      self.weight = 4
+      self.damageDieType = 6
+      self.needsAmmunition = False
+      self.isThrown = True
+      self.normalRange = 30
+      self.maxRange = 120
 class Shortbow(RangedWeapon):
-   value = 2500
-   weight = 2
-   damageDieType = 6
-   normalRange = 80
-   maxRange = 320
-   isTwoHanded = True
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 2500
+      self.weight = 2
+      self.damageDieType = 6
+      self.normalRange = 80
+      self.maxRange = 320
+      self.isTwoHanded = True
 class Sling(RangedWeapon):
-   value = 10
-   weight = 0.5
-   damageDieType = 4
-   damageType = "bludgeoning"
-   normalRange = 30
-   maxRange = 120
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 10
+      self.weight = 0.5
+      self.damageDieType = 4
+      self.damageType = "bludgeoning"
+      self.normalRange = 30
+      self.maxRange = 120
 #Martial Ranged Weapons
 class Blowgun(RangedWeapon):
-   value = 1000
-   weight = 2
-   damageDieType = 1
-   normalRange = 25
-   maxRange = 100
-   isLoading = True
-   special = "???"
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 1000
+      self.weight = 2
+      self.damageDieType = 1
+      self.normalRange = 25
+      self.maxRange = 100
+      self.isLoading = True
+      self.special = "???"
 class Bolas(RangedWeapon):
-   value = 200
-   weight = 1
-   damageDieType = 1
-   damageType = "bludgeoning"
-   needsAmmunition = False
-   isThrown = True
-   normalRange = 30
-   maxRange = 90
-   special = "Large or smaller creature is restrained (DEX save DC 10 prevents, STR save DC 10 or 5 damage frees)"
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 200
+      self.weight = 1
+      self.damageDieType = 1
+      self.damageType = "bludgeoning"
+      self.needsAmmunition = False
+      self.isThrown = True
+      self.normalRange = 30
+      self.maxRange = 90
+      self.special = "Large or smaller creature is restrained (DEX save DC 10 prevents, STR save DC 10 or 5 damage frees)"
 class HandCrossbow(RangedWeapon):
-   value = 7500
-   weight = 3
-   damageDieType = 6
-   normalRange = 30
-   maxRange = 120
-   isLoading = True
-   isLight = True
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 7500
+      self.weight = 3
+      self.damageDieType = 6
+      self.normalRange = 30
+      self.maxRange = 120
+      self.isLoading = True
+      self.isLight = True
 class HeavyCrossbow(RangedWeapon):
-   value = 5000
-   weight = 19
-   damageDieType = 10
-   normalRange = 100
-   maxRange = 400
-   isLoading = True
-   isHeavy = True
-   isTwoHanded = True
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 5000
+      self.weight = 19
+      self.damageDieType = 10
+      self.normalRange = 100
+      self.maxRange = 400
+      self.isLoading = True
+      self.isHeavy = True
+      self.isTwoHanded = True
 class Longbow(RangedWeapon):
-   value = 5000
-   weight = 2
-   damageDieType = 8
-   normalRange = 150
-   maxRange = 600
-   isHeavy = True
-   isTwoHanded = True
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 5000
+      self.weight = 2
+      self.damageDieType = 8
+      self.normalRange = 150
+      self.maxRange = 600
+      self.isHeavy = True
+      self.isTwoHanded = True
 class Net(RangedWeapon):
-   value = 100
-   weight = 3
-   damageDieType = 0
-   needsAmmunition = False
-   isThrown = True
-   normalRange = 20
-   maxRange = 60
-   special = "Target point, Large or smaller creature is restrained (DEX save DC 10 evades, STR save DC 10 or 5 damage frees)"
+   def __init__(self):
+      RangedWeapon.__init__(self)
+      self.value = 100
+      self.weight = 3
+      self.damageDieType = 0
+      self.needsAmmunition = False
+      self.isThrown = True
+      self.normalRange = 20
+      self.maxRange = 60
+      self.special = "Target point, Large or smaller creature is restrained (DEX save DC 10 evades, STR save DC 10 or 5 damage frees)"
 
 #Armor
 class Armor(Equipable):
-   slot = "Torso"
-   maxDexBonus = 4
-   AC = 0
-   type = "light"
-   speedDecrement = 0
-   isStealthAtDisadvantage = False
+   def __init__(self):
+      Equipable.__init__(self)
+      self.slot = "Torso"
+      self.maxDexBonus = 4
+      self.ac = 0
+      self.type = "light"
+      self.speedDecrement = 0
+      self.isStealthAtDisadvantage = False
 class PaddedArmor(Armor):
-   value = 500
-   weight = 5
-   AC = 11
-   isStealthAtDisadvantage = True
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 500
+      self.weight = 5
+      self.ac = 11
+      self.isStealthAtDisadvantage = True
 class LeatherArmor(Armor):
-   value = 1000
-   weight = 8
-   AC = 11
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 1000
+      self.weight = 8
+      self.ac = 11
 class DragonLeather(Armor):
-   value = 50000
-   weight = 15
-   AC = 12
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 50000
+      self.weight = 15
+      self.ac = 12
 class MithralShirt(Armor):
-   value = 500000
-   weight = 10
-   AC = 13
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 500000
+      self.weight = 10
+      self.ac = 13
 #Medium Armor
 class HideArmor(Armor):
-   value = 1000
-   weight = 10
-   AC = 12
-   maxDexBonus = 2
-   type = "medium"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 1000
+      self.weight = 10
+      self.ac = 12
+      self.maxDexBonus = 2
+      self.type = "medium"
 class StuddedLeather(Armor):
-   value = 2500
-   weight = 13
-   AC = 13
-   maxDexBonus = 2
-   type = "medium"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 2500
+      self.weight = 13
+      self.ac = 13
+      self.maxDexBonus = 2
+      self.type = "medium"
 class ScaleMail(Armor):
-   value = 5000
-   weight = 45
-   AC = 14
-   maxDexBonus = 2
-   isStealthAtDisadvantage = True
-   type = "medium"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 5000
+      self.weight = 45
+      self.ac = 14
+      self.maxDexBonus = 2
+      self.isStealthAtDisadvantage = True
+      self.type = "medium"
 class StuddedDragonLeather(Armor):
-   value = 50000
-   weight = 20
-   AC = 14
-   maxDexBonus = 2
-   type = "medium"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 50000
+      self.weight = 20
+      self.ac = 14
+      self.maxDexBonus = 2
+      self.type = "medium"
 class DragonScale(Armor):
-   value = 50000
-   weight = 50
-   AC = 15
-   maxDexBonus = 2
-   isStealthAtDisadvantage = True
-   type = "medium"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 50000
+      self.weight = 50
+      self.ac = 15
+      self.maxDexBonus = 2
+      self.isStealthAtDisadvantage = True
+      self.type = "medium"
 class MithrilScale(Armor):
-   value = 500000
-   weight = 25
-   AC = 15
-   maxDexBonus = 2
-   isStealthAtDisadvantage = True
-   type = "medium"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 500000
+      self.weight = 25
+      self.ac = 15
+      self.maxDexBonus = 2
+      self.isStealthAtDisadvantage = True
+      self.type = "medium"
 # Heavy Armor
 class RingMail(Armor):
-   value = 3000
-   weight = 22
-   AC = 14
-   maxDexBonus = 0
-   speedDecrement = 5
-   isStealthAtDisadvantage = True
-   type = "heavy"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 3000
+      self.weight = 22
+      self.ac = 14
+      self.maxDexBonus = 0
+      self.speedDecrement = 5
+      self.isStealthAtDisadvantage = True
+      self.type = "heavy"
 class ChainMail(Armor):
-   value = 7500
-   weight = 55
-   AC = 16
-   maxDexBonus = 0
-   speedDecrement = 5
-   isStealthAtDisadvantage = True
-   type = "heavy"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 7500
+      self.weight = 55
+      self.ac = 16
+      self.maxDexBonus = 0
+      self.speedDecrement = 5
+      self.isStealthAtDisadvantage = True
+      self.type = "heavy"
 class Splint(Armor):
-   value = 50000
-   weight = 50
-   AC = 17
-   maxDexBonus = 0
-   speedDecrement = 5
-   isStealthAtDisadvantage = True
-   type = "heavy"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 50000
+      self.weight = 50
+      self.ac = 17
+      self.maxDexBonus = 0
+      self.speedDecrement = 5
+      self.isStealthAtDisadvantage = True
+      self.type = "heavy"
 class Banded(Armor):
-   value = 75000
-   weight = 55
-   AC = 17
-   maxDexBonus = 0
-   isStealthAtDisadvantage = True
-   type = "heavy"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 75000
+      self.weight = 55
+      self.ac = 17
+      self.maxDexBonus = 0
+      self.isStealthAtDisadvantage = True
+      self.type = "heavy"
 class Plate(Armor):
-   value = 500000
-   weight = 65
-   AC = 18
-   maxDexBonus = 0
-   speedDecrement = 5
-   isStealthAtDisadvantage = True
-   type = "heavy"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 500000
+      self.weight = 65
+      self.ac = 18
+      self.maxDexBonus = 0
+      self.speedDecrement = 5
+      self.isStealthAtDisadvantage = True
+      self.type = "heavy"
 class MithrilPlate(Armor):
-   value = 600000
-   weight = 40
-   AC = 18
-   maxDexBonus = 0
-   isStealthAtDisadvantage = True
-   type = "heavy"
+   def __init__(self):
+      Armor.__init__(self)
+      self.value = 600000
+      self.weight = 40
+      self.ac = 18
+      self.maxDexBonus = 0
+      self.isStealthAtDisadvantage = True
+      self.type = "heavy"
 #Shields
 class Buckler(Armor):
-   slot = "Hand"
-   value = 500
-   weight = 4
-   AC = 1
-   maxDexBonus = 4
-   type = "shield"
+   def __init__(self):
+      Armor.__init__(self)
+      self.slot = "Hand"
+      self.value = 500
+      self.weight = 4
+      self.ac = 1
+      self.maxDexBonus = 4
+      self.type = "shield"
 class Shield(Armor):
-   slot = "Hand"
-   value = 1000
-   weight = 8
-   AC = 2
-   maxDexBonus = 4
-   type = "shield"
+   def __init__(self):
+      Armor.__init__(self)
+      self.slot = "Hand"
+      self.value = 1000
+      self.weight = 8
+      self.ac = 2
+      self.maxDexBonus = 4
+      self.type = "shield"
+
+#Tool
+class Tool(Item):
+   def __init__(self):
+      Item.__init__(self)
+class ArtisansTools(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 500
+      self.weight = 5
+class ClimbersKit(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 2500
+      self.weight = 5
+class DisguiseKit(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 2500
+      self.weight = 8
+class GamingSet(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 100
+      self.weight = 0.5
+class HealersKit(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 500
+      self.weight = 1
+class MusicalInstrument(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 500
+      self.weight = 3
+class NavigatorsTools(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 2500
+      self.weight = 2
+class PoisonersKit(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 5000
+      self.weight = 2
+class TheivesTools(Tool):
+   def __init__(self):
+      Tool.__init__(self)
+      self.value = 2500
+      self.weight = 1
+
+class Abacus(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 200
+      self.weight = 2
+class AcidVial(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2500
+      self.weight = 1
+class AdventurersKit(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 900
+      self.weight = 39
+class AlchemistsFireFlask(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50000
+      self.weight = 1
+class Ammunition(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.amount = 1
+class Arrow(Ammunition):
+   def __init__(self):
+      Ammunition.__init__(self)
+      self.value = 5
+      self.weight = 0.15
+class Bolts20(Ammunition):
+   def __init__(self):
+      Ammunition.__init__(self)
+      self.value = 5
+      self.weight = 0.15
+class Bullets20(Ammunition):
+   def __init__(self):
+      Ammunition.__init__(self)
+      self.value = 0.2
+      self.weight = 0.1
+class Needles20(Ammunition):
+   def __init__(self):
+      Ammunition.__init__(self)
+      self.value = 5
+      self.weight = 0.05
+class AntitoxinVial(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50000
+      self.weight = 0
+class Backpack(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 200
+      self.weight = 2
+class BallBearing(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1
+      self.weight = 0.01
+class Bedroll(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 5
+class Bell(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 0
+class Blanket(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 3
+class BlockAndTackle(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 5
+class Bucket(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 5
+      self.weight = 2
+class Caltrops(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 2
+class Candle(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1
+      self.weight = 0.1
+class ScrollCase(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 1
+class Chain(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 5
+class Chalk(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1
+      self.weight = 0
+class CommonClothes(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 3
+class CostumeClothes(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 4
+class FineClothes(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1500
+      self.weight = 6
+class TravelersClothes(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 200
+      self.weight = 4
+class ComponentPouch(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2500
+      self.weight = 2
+class Crowbar(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 20
+      self.weight = 5
+class FishingTackle(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 4
+class Flask(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2
+      self.weight = 0
+class GrapplingHook(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 200
+      self.weight = 4
+class Hammer(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 20
+      self.weight = 2
+class Sledgehammer(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 10
+class HolySymbol(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 0
+class HolyWaterFlask(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2500
+      self.weight = 1
+class Horse(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 7500
+      self.weight = 0
+class Hourglass(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 1
+class HuntingTrap(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 15
+class Ink(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 0
+class InkPen(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2
+      self.weight = 0
+class Jug(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2
+      self.weight = 9
+class Ladder(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10
+      self.weight = 20
+class Lantern(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 1
+class BullseyeLantern(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 3
+class Lock(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 1
+class MagnifyingGlass(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10000
+      self.weight = 0
+class Manacles(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 200
+      self.weight = 2
+class MessKit(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10
+      self.weight = 1
+class SteelMirror(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 0.5
+class Oil(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10
+      self.weight = 1
+class Orb(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 2
+class Paper(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 20
+      self.weight = 0
+class Parchment(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10
+      self.weight = 0
+class MinersPick(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 10
+class Piton(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 5
+      self.weight = 0.5
+class BasicPoisonVial(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10000
+      self.weight = 0
+class Pole(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 5
+      self.weight = 8
+class IronPot(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10
+      self.weight = 10
+class PotionOfHealing(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50000
+      self.weight = 1
+class Pouch(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 1
+class PortableRam(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 20
+class DayRation(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 10
+      self.weight = 1
+class Robes(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 4
+class Rod(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 2
+class HempenRope(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 10
+class SilkRope(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 5
+class Sack(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1
+      self.weight = 0.5
+class MerchantScale(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 5
+      self.weight = 3
+class SealingWax(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 1
+class Shovel(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 8
+class SignalWhistle(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 5
+      self.weight = 0
+class SignetRing(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 500
+      self.weight = 0
+class Soap(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2
+      self.weight = 1
+class Spellbook(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 7500
+      self.weight = 3
+class IronSpike(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 0.2
+      self.weight = 0.5
+class Spyglass(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100000
+      self.weight = 1
+class Staff(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 4
+class Tent(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 200
+      self.weight = 20
+class Tinderbox(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 50
+      self.weight = 1
+class Tome(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 2500
+      self.weight = 5
+class Torch(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1
+      self.weight = 1
+class Vial(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 100
+      self.weight = 0
+class Wand(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1000
+      self.weight = 0.5
+class Waterskin(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 20
+      self.weight = 4
+class Whetstone(Item):
+   def __init__(self):
+      Item.__init__(self)
+      self.value = 1
+      self.weight = 1

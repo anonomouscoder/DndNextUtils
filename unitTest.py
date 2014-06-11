@@ -4,6 +4,7 @@ class UnitTestException(Exception):
    def __str__(self):
       return repr(self.string)
 class UnitTest():
+   name = ""
    def run(self):
       return
    def passTest(self):
