@@ -1,5 +1,4 @@
-import unitTest,string
-from unitTest import UnitTest
+import string
 
 class BaseClass:
    def __str__(self):

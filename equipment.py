@@ -710,6 +710,7 @@ class TheivesTools(Tool):
       self.value = 2500
       self.weight = 1
 
+#Item
 class Abacus(Item):
    def __init__(self):
       Item.__init__(self)
