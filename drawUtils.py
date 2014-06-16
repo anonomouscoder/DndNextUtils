@@ -7,7 +7,7 @@ global allFont
 allFont = font.SysFont("monospace",11)
 # set up the window
 global MAINWINDOW
-MAINWINDOW = pygame.display.set_mode((1200, 600), 0, 32)
+MAINWINDOW = pygame.display.set_mode((1200, 1000), 0, 32)
 pygame.display.set_caption('Character Generator')
 global fullWindowGroup
 fullWindowGroup = LayeredDirty()
