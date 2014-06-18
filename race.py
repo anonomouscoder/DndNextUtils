@@ -1,4 +1,7 @@
+import string,sys,inspect
 class BaseRace:
+   def __str__(self):
+      return (string.split(str(self.__class__),".",1))[1]
    raceString = "BaseRace"
    abiltyAdjustment = []
    abilitiesToChoose = 0
@@ -13,7 +16,7 @@ class BaseRace:
    traits = [""]
    def chooseSubRace(self,choice):
       return
-   def __init__(self,choice):
+   def __init__(self,choice=""):
       self.chooseSubRace(choice)
 #
 class Dwarf(BaseRace):
@@ -147,3 +150,17 @@ class Warforged(BaseRace):
    languagesToChoose = 1
    traits = ["Composite Plating","Living Construct"]
 #
+def getClassFromString(string):
+   classmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
+   rtn = BaseRace()
+   print "test string: " + string
+   for c in classmembers:
+      if str(string).lower() == str(c[0]).lower():
+         rtn = c[1]()
+   return rtn
+
+r = getClassFromString("Dwarf")
+r.chooseSubRace("Hill Dwarf")
+print r.raceString
+getClassFromString("Elf")
+getClassFromString("BLAH")

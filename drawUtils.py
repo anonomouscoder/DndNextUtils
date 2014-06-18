@@ -53,13 +53,15 @@ global GREEN
 global BLUE
 global BGCOLOR
 
-BLACK = (  0,   0,   0)
-GREY =  ( 87,  87,  87)
-GRAY =  ( 87,  87,  87)
-WHITE = (255, 255, 255)
-RED   = (255,   0,   0)
-GREEN = (  0, 255,   0)
-BLUE  = (  0,   0, 255)
+BLACK =    (  0,   0,   0)
+GREY =     ( 87,  87,  87)
+GRAY =     ( 87,  87,  87)
+DARKGREY = ( 60,  60,  60)
+DARKGRAY = ( 60,  60,  60)
+WHITE =    (255, 255, 255)
+RED   =    (255,   0,   0)
+GREEN =    (  0, 255,   0)
+BLUE  =    (  0,   0, 255)
 BGCOLOR = BLACK
 
 textCursorString = (               #sized 24x24

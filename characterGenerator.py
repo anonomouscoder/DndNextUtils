@@ -141,7 +141,8 @@ class Character:
       self.armorProficiencies = []; self.weaponProficiencies = []; self.toolProficiencies = []
       self.weapons = []; self.armors = []; self.tools = []; self.items = []
       self.money = Money()
-      self.setCharacterName(name)
+      self.playerName = ""
+      self.characterName = name
       if rollForStats:
          self.rollStats(orderOfStats)
       else:
@@ -368,24 +369,21 @@ class Character:
          index = self.findClassLevel(Monk())
          if index != -1:
             self.classLevels[index].chooseElements(arguments)
-   #name
-   def setCharacterName(self,name):
-      self.characterName = name
    #races
    def addRace(self,Race):
       self.race = Race
       for i in self.race.abiltyAdjustment:
          if i == "str":
             self.str = self.str + 1
-         if i == "con":
+         elif i == "con":
             self.con = self.con + 1
-         if i == "dex":
+         elif i == "dex":
             self.dex = self.dex + 1
-         if i == "int":
+         elif i == "int":
             self.int = self.int + 1
-         if i == "wis":
+         elif i == "wis":
             self.wis = self.wis + 1
-         if i == "cha":
+         elif i == "cha":
             self.cha = self.cha + 1
    def addSubRace(self,choice):
       oldLength = len(self.race.abiltyAdjustment)
@@ -462,15 +460,15 @@ class Character:
       self.buyItem(item)
       self.equipItem(item)
          
-orderOfStats = ["str","con","dex","wis","int","cha"]
-listOfClasses = [Fighter()]
-listOfSkills = ["athletics"]
-race = Dwarf("Mountain Dwarf")
-c = Character(False,[11,18,18,11,11,11],[], listOfClasses, "Urist", race, Sage, listOfSkills)
-c.money.useElectrum = False
-c.money = Money(256004,0,0,0,0,False)
-c.buyEquip(BattleAxe())
-c.buyEquip(ChainMail())
-c.buyItem(Shield())
-c.combineAc()
+#orderOfStats = ["str","con","dex","wis","int","cha"]
+#listOfClasses = [Fighter()]
+#listOfSkills = ["athletics"]
+#race = Dwarf("Mountain Dwarf")
+#c = Character(False,[11,18,18,11,11,11],[], listOfClasses, "Urist", race, Sage, listOfSkills)
+#c.money.useElectrum = False
+#c.money = Money(256004,0,0,0,0,False)
+#c.buyEquip(BattleAxe())
+#c.buyEquip(ChainMail())
+#c.buyItem(Shield())
+#c.combineAc()
 #c.printStats()
