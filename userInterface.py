@@ -32,6 +32,8 @@ class Clickable():
             print "function: " + str(f)
             print "functionArgs: " + str(self.functionArgs[i])
             f(self.functionArgs[i])
+      else:
+         print "function is not set!"
 
 #You can click it, but all it does is be displayed
 class Label(Clickable):
@@ -47,9 +49,10 @@ class VariableLabel(Label):
       self.variable = var
       Clickable.__init__(self,self.variable)
    def display(self):
-      print "variable location:"
-      print self.variable
-      self.text = str(self.variable[0])
+      if len(self.variable) == 1 or self.variable[1] == "":
+         self.text = str(self.variable[0])
+      else:
+         self.text = str(self.variable[0]) + "(" + str(self.variable[1]) + ")"
       Label.display(self)
 
 #Hidden
@@ -177,6 +180,7 @@ class creationWindow():
       for tab in self.listOfTabs:
          #is the header clicked on?
          if tab.header.isWithinBoundaries(mousex,mousey):
+            tab.header.runFunctions()
             for otherTabs in self.listOfTabs:
                otherTabs.header.focusFunction(False)
             tab.header.focusFunction(True)
@@ -192,12 +196,15 @@ class creationWindow():
                   clickable.focusFunction(False)
             #parse each page
             for page in tab.listOfPages:
-               for clickable in page.listOfClickables:
-                  if clickable.isWithinBoundaries(mousex,mousey):
-                     clickable.focusFunction(True)
-                     clickable.runFunctions()
-                  else:
-                     clickable.focusFunction(False)
+               if page.visible == True:
+                  for clickable in page.listOfClickables:
+                     if clickable.isWithinBoundaries(mousex,mousey):
+                        clickable.focusFunction(True)
+                        clickable.runFunctions()
+                     else:
+                        clickable.focusFunction(False)
+               else:
+                  print "page " + page.text + " is not visible"
             #for page in tab.listOfPages:
             #   for click in page.listOfClickables:
             #      if click.focused == True:
@@ -216,8 +223,6 @@ class creationWindow():
       for tab in self.listOfTabs:
          tab.display()
       pygame.display.update()
-      print "race string location:"
-      print [self.character.raceString]
    def displayMenu(self):
       self.setupNameTab()
       self.setupAbilityScoresTab()
@@ -255,35 +260,11 @@ class creationWindow():
       t.listOfClickables = listOfClickables
       t.header = Clickable("Ability Scores")
       self.listOfTabs.append(t)
-   def pageShow(self,args):
-      textOfPageToShow = args[0]
-      for tab in self.listOfTabs:
-         if tab.header.text == "Race":
-            for page in tab.listOfPages:
-               if page.text == textOfPageToShow:
-                  page.visible = True
-               else:
-                  page.visible = False
-   def allPagesHide(self,args):
-      for tab in self.listOfTabs:
-         if tab.header.text == "Race":
-            for page in tab.listOfPages:
-                page.visible = False
-   def defineRace(self,args):
-      print "old race location:"
-      print self.character.race[0]
-      race = characterGenerator.race.getClassFromString(args[0])
-      
-      print "new race location?:"
-      print race
-      self.character.addRace(race)
-      print "new race location!:"
-      print self.character.race[0]
-   def defineSubRace(self,args):
-      self.character.addSubRace(args[0])
    def setupRaceTab(self):
       t = Tab()
       t.header = Clickable("Race")
+      t.header.function = [self.setFocus,self.setFocus]
+      t.header.functionArgs = [["race"],["subrace"]]
       listOfClickables = [Clickable("Dwarf"), Clickable("Elf"), Clickable("Halfling"), Clickable("Human"), Clickable("Dragonborn"), Clickable("Drow"), Clickable("Gnome"), Clickable("Halfelf"), Clickable("Halforc"), Clickable("Kender"), Clickable("Tiefling"), Clickable("Warforged")]
       self.setSpacing(listOfClickables,(110,0))
       nameWidth = 105
@@ -292,17 +273,17 @@ class creationWindow():
       
       #Dwarven subraces
       sectionDwarfSubRace = Page()
-      sectionDwarfSubRace.visible = False
+      sectionDwarfSubRace.visible = True
       sectionDwarfSubRace.backgroundColor = BLACK
       sectionDwarfSubRace.text = "dwarf"
       sectionDwarfSubRace.boundaries = (xPageStart,yPageStart,(nameWidth+5)+5,45)
       subraceColumns = [[Clickable("Hill Dwarf"), Clickable("Mountain Dwarf")]]
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionDwarfSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
-      (subraceColumns[0])[0].function = [self.defineSubRace]
-      (subraceColumns[0])[0].functionArgs = [["Hill Dwarf"]]
-      (subraceColumns[0])[1].function = [self.defineSubRace]
-      (subraceColumns[0])[1].functionArgs = [["Mountain Dwarf"]]
+      (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[0].functionArgs = [["Hill Dwarf"],["Dwarf"]]
+      (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[1].functionArgs = [["Mountain Dwarf"],["Dwarf"]]
       
       #Elven subraces
       sectionElfSubRace = Page()
@@ -313,6 +294,10 @@ class creationWindow():
       subraceColumns = [[Clickable("High Elf"), Clickable("Wood Elf")]]
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionElfSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
+      (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[0].functionArgs = [["High Elf"],["Elf"]]
+      (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[1].functionArgs = [["Wood Elf"],["Elf"]]
       
       #Halfling subraces
       sectionHalflingSubRace = Page()
@@ -323,6 +308,10 @@ class creationWindow():
       subraceColumns = [[Clickable("Lightfoot"), Clickable("Stout")]]
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionHalflingSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
+      (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[0].functionArgs = [["Lightfoot"],["Halfling"]]
+      (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[1].functionArgs = [["Stout"],["Halfling"]]
       
       #Gnomish subraces
       sectionGnomeSubRace = Page()
@@ -333,6 +322,10 @@ class creationWindow():
       subraceColumns = [[Clickable("Forest Gnome"), Clickable("Rock Gnome")]]
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionGnomeSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
+      (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[0].functionArgs = [["Forest Gnome"],["Gnome"]]
+      (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
+      (subraceColumns[0])[1].functionArgs = [["Rock Gnome"],["Gnome"]]
       
       #defining function for the race clickable
       for click in listOfClickables:
@@ -349,7 +342,7 @@ class creationWindow():
             click.functionArgs = [[""],[click.text]]
             click.function = [self.allPagesHide,self.defineRace]
 
-      
+      #defining function for the subrace clickable
       t.listOfClickables = listOfClickables
       
       t.listOfPages.append(sectionGnomeSubRace)
@@ -389,13 +382,14 @@ class creationWindow():
       #-------------------------------------------------------------------------------------
       sectionBasics = Page()
       sectionBasics.text = "basics"
-      sectionBasics.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)*4+5,65)
+      sectionBasics.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)*3+(longNameWidth+5)+5,65)
       raceLabel = VariableLabel(self.character.race)
+      classLabel = VariableLabel(self.character.classLevels)
       basicColumns = [[Label("Player Name"), Label("Race"), Label("Vision")],
                       [TextBox(""), raceLabel, Label("")],
                       [Label("Character Name"), Label("Class(level)"), Label("Alignment")],
-                      [TextBox(""), Label(""), Label("")]]
-      columnWidthList = [nameWidth,nameWidth,nameWidth,nameWidth]
+                      [TextBox(""), classLabel, Label("")]]
+      columnWidthList = [nameWidth,longNameWidth,nameWidth,nameWidth]
       self.setHorizontalSpacing(sectionBasics,basicColumns,(xPageStart,yPageStart),columnWidthList)
       
       #-------------------------------------------------------------------------------------
@@ -405,7 +399,7 @@ class creationWindow():
       #-------------------------------------------------------------------------------------
       sectionAttibutes = Page()
       sectionAttibutes.text = "attributes"
-      sectionAttibutes.boundaries = (xPageStart-5+(nameWidth+5)*4+5,yPageStart-5,(nameWidth+5)*2+(numberWidth+5)*4+5 ,65)
+      sectionAttibutes.boundaries = (xPageStart-5+(nameWidth+5)*3+(longNameWidth+5)+5,yPageStart-5,(nameWidth+5)*2+(numberWidth+5)*4+5 ,65)
       attributeColumns = [[Label("Strength"), Label("Constitution"), Label("Dexterity")],
                           [Label(""), Label(""), Label("")],
                           [Label(""), Label(""), Label("")],
@@ -413,7 +407,7 @@ class creationWindow():
                           [Label(""), Label(""), Label("")],
                           [Label(""), Label(""), Label("")]]
       columnWidthList = [nameWidth,numberWidth,numberWidth,nameWidth,numberWidth,numberWidth]
-      self.setHorizontalSpacing(sectionAttibutes,attributeColumns,(xPageStart+(nameWidth+5)*4+5,yPageStart),columnWidthList)    
+      self.setHorizontalSpacing(sectionAttibutes,attributeColumns,(xPageStart+(nameWidth+5)*3+(longNameWidth+5)+5,yPageStart),columnWidthList)    
       yPageStart = yPageStart + 65
       #-------------------------------------------------------------------------------------
       # Experience (Next) _______ _______ | Hp        _______ _______ | Initiative _______ |
@@ -560,7 +554,45 @@ class creationWindow():
                self.menuMouseClickedLogic(mousex,mousey)
       pygame.quit()
       sys.exit()
-      
+   #Here are functions that various Clickables can can do
+   # Show this page, hide other pages
+   def pageShow(self,args):
+      textOfPageToShow = args[0]
+      for tab in self.listOfTabs:
+         if tab.header.focused:
+            for page in tab.listOfPages:
+               if page.text == textOfPageToShow:
+                  page.visible = True
+               else:
+                  page.visible = False
+   # Hide all of the pages
+   def allPagesHide(self,args):
+      for tab in self.listOfTabs:
+         if tab.header.text == "Race":
+            for page in tab.listOfPages:
+                page.visible = False
+   def defineRace(self,args):
+      race = characterGenerator.race.getClassFromString(args[0])
+      self.character.addRace(race)
+   def defineSubRace(self,args):
+      self.character.addSubRace(args[0]) 
+   def setFocus(self,args):
+      if args[0] == "race":
+         textToSearchFor = str(self.character.race[0])
+      elif args[0] == "subrace":
+         textToSearchFor = str(self.character.race[0].subraceString)
+      else:
+         textToSearchFor = args[0]
+      print "searching for: " + str(textToSearchFor)
+      for tab in self.listOfTabs:
+         for click in tab.listOfClickables:
+            if click.text == textToSearchFor:
+               click.focused = True
+         for page in tab.listOfPages:
+            for click in page.listOfClickables:
+               if click.text == textToSearchFor:
+                  click.focused = True
+                  
 pygame.key.set_repeat(500,100)
 window = creationWindow()   
 window.creationLoop()

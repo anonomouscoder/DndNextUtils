@@ -127,7 +127,7 @@ class Character:
                maxDex = armor.maxDexBonus
       self.ac = self.ac + maxDex
       self.acNoArmor = 10 + self.getAbilityMod("dex")
-   def __init__(self,rollForStats=True,listOfStats=[10,10,10,10,10,10],orderOfStats=["str","con","dex","int","wis","cha"],listOfClassesToLevelUp = [Barbarian()],name="Unnamed",race=Dwarf("Mountain Dwarf"),background=Artisan(),listOfSkills=[]):
+   def __init__(self,rollForStats=True,listOfStats=[10,10,10,10,10,10],orderOfStats=["str","con","dex","int","wis","cha"],listOfClassesToLevelUp = [Barbarian()],name="Unnamed",race=Dwarf("Hill Dwarf"),background=Artisan(),listOfSkills=[]):
    
       self.str = 0;self.con = 0;self.dex = 0;self.int = 0;self.wis = 0;self.cha = 0
       self.hitPoints = 0
@@ -135,7 +135,7 @@ class Character:
       self.totalLevel = 0
       self.proficiency = 0; self.skills = []
       self.background = BaseBackground()
-      self.race = [BaseRace()]; self.raceString = str(self.race)
+      self.race = [BaseRace(),""]; self.raceString = str(self.race)
       self.armorClass = 0
       self.spells = 0
       self.armorProficiencies = []; self.weaponProficiencies = []; self.toolProficiencies = []
@@ -372,6 +372,7 @@ class Character:
    #races
    def addRace(self,Race):
       self.race[0] = Race
+      self.race[1] = self.race[0].subraceString
       self.raceString = str(self.race)
       for i in self.race[0].abiltyAdjustment:
          if i == "str":
@@ -386,11 +387,16 @@ class Character:
             self.wis = self.wis + 1
          elif i == "cha":
             self.cha = self.cha + 1
+   def getRace(self):
+      return self.race[0]
+   def getSubRace(self):
+      return self.race[0].subraceString
    def addSubRace(self,choice):
       oldLength = len(self.race[0].abiltyAdjustment)
       self.race[0].chooseSubRace(choice)
+      self.race[1] = self.race[0].subraceString
       if oldLength != len(self.race[0].abiltyAdjustment):
-         i = self.race[0].abiltyAdjustment[len(self.race[0].abiltyAdjustment)]
+         i = self.race[0].abiltyAdjustment[len(self.race[0].abiltyAdjustment)-1]
          if i == "str":
             self.str = self.str + 1
          if i == "con":

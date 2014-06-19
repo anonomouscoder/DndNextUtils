@@ -2,7 +2,7 @@ import string
 
 class BaseClass:
    def __str__(self):
-      return (string.split(str(self.__class__),".",1))[1]
+      return (string.split(str(self.__class__),".",1))[1] + "(" + str(self.level) + ")"
    hitDice = 8
    proficiencyBonusPerLevel =   [1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6]
    numberOfAbilitiesToIncrease = 0

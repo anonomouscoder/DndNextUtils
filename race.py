@@ -2,9 +2,7 @@ import string,sys,inspect
 class BaseRace:
    def __str__(self):
       return (string.split(str(self.__class__),".",1))[1]
-#   def __eq__(self,other):
-#      if isinstance(other, self) or issubclass(other,self):
-#         other.
+
    raceString = "BaseRace"
    abiltyAdjustment = []
    abilitiesToChoose = 0
@@ -15,9 +13,11 @@ class BaseRace:
    languagesToChoose = 0
    languagesToChooseFrom = []
    subraces = []
+   subraceString = ""
    weaponProficiencies = []
    traits = [""]
    def chooseSubRace(self,choice):
+      self.subraceString = choice
       return
    def __init__(self,choice=""):
       self.chooseSubRace(choice)
@@ -34,6 +34,7 @@ class Dwarf(BaseRace):
    traits = ["Dwarven Resilience","Stonecunning"]
    subraces = ["Hill Dwarf","Mountain Dwarf"]
    def chooseSubRace(self,choice):
+      self.subraceString = choice
       if choice == self.subraces[0]: # Hill Dwarf
          self.abiltyAdjustment.append("str")
          self.traits.append("Dwarven Toughness")
@@ -51,6 +52,7 @@ class Elf(BaseRace):
    traits = ["Keen Senses","Fey Ancestry","Trance"]
    subraces = ["High Elf","Wood Elf"]
    def chooseSubRace(self,choice):
+      self.subraceString = choice
       if choice == self.subraces[0]: # High Elf
          self.abiltyAdjustment.append("int")
          self.traits.append("Cantrip")
@@ -69,6 +71,7 @@ class Halfling(BaseRace):
    traits = ["Lucky","Brave","Halfling Nimbleness"]
    subraces = ["Lightfoot","Stout"]
    def chooseSubRace(self,choice):
+      self.subraceString = choice
       if choice == self.subraces[0]: # Lightfoot
          self.abiltyAdjustment.append("cha")
          self.traits.append("Naturally Stealthy")
@@ -106,6 +109,7 @@ class Gnome(BaseRace):
    traits = ["Gnome Cunning"]
    subraces = ["Forest Gnome","Rock Gnome"]
    def chooseSubRace(self,choice):
+      self.subraceString = choice
       if choice == self.subraces[0]: # Lightfoot
          self.abiltyAdjustment.append("dex")
          self.traits.append("Natural Illusionist")
