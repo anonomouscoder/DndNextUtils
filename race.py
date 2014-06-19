@@ -2,6 +2,9 @@ import string,sys,inspect
 class BaseRace:
    def __str__(self):
       return (string.split(str(self.__class__),".",1))[1]
+#   def __eq__(self,other):
+#      if isinstance(other, self) or issubclass(other,self):
+#         other.
    raceString = "BaseRace"
    abiltyAdjustment = []
    abilitiesToChoose = 0
@@ -158,9 +161,3 @@ def getClassFromString(string):
       if str(string).lower() == str(c[0]).lower():
          rtn = c[1]()
    return rtn
-
-r = getClassFromString("Dwarf")
-r.chooseSubRace("Hill Dwarf")
-print r.raceString
-getClassFromString("Elf")
-getClassFromString("BLAH")

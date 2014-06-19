@@ -106,7 +106,7 @@ class Character:
          for j in i.weaponProficiencies:
             if j not in self.weaponProficiencies:
                self.weaponProficiencies.append(j)
-      for i in self.race.weaponProficiencies:
+      for i in self.race[0].weaponProficiencies:
          if i not in self.weaponProficiencies:
             self.weaponProficiencies.append(i)
       #tools
@@ -135,7 +135,7 @@ class Character:
       self.totalLevel = 0
       self.proficiency = 0; self.skills = []
       self.background = BaseBackground()
-      self.race = BaseRace("")
+      self.race = [BaseRace()]; self.raceString = str(self.race)
       self.armorClass = 0
       self.spells = 0
       self.armorProficiencies = []; self.weaponProficiencies = []; self.toolProficiencies = []
@@ -156,7 +156,7 @@ class Character:
       self.combineProficiencies()
       self.combineAc()
    def printStats(self):
-      print self.characterName + " the " + self.race.raceString 
+      print self.characterName + " the " + self.race[0].raceString 
       for i in self.classLevels:
          print "Class: " + str(i) + " Level: " + str(i.level)
       print "HP: " + str(self.hitPoints)
@@ -178,7 +178,7 @@ class Character:
       print "Total value: " + str(self.money.getTotalInCopper()) + " cp"
       print "----------------------------------"
       print "Traits: "
-      for i in self.race.traits:
+      for i in self.race[0].traits:
          print i
       for i in self.background.traits:
          print i
@@ -371,8 +371,9 @@ class Character:
             self.classLevels[index].chooseElements(arguments)
    #races
    def addRace(self,Race):
-      self.race = Race
-      for i in self.race.abiltyAdjustment:
+      self.race[0] = Race
+      self.raceString = str(self.race)
+      for i in self.race[0].abiltyAdjustment:
          if i == "str":
             self.str = self.str + 1
          elif i == "con":
@@ -386,10 +387,10 @@ class Character:
          elif i == "cha":
             self.cha = self.cha + 1
    def addSubRace(self,choice):
-      oldLength = len(self.race.abiltyAdjustment)
-      self.race.chooseSubRace(choice)
-      if oldLength != len(self.race.abiltyAdjustment):
-         i = self.race.abiltyAdjustment[len(self.race.abiltyAdjustment)]
+      oldLength = len(self.race[0].abiltyAdjustment)
+      self.race[0].chooseSubRace(choice)
+      if oldLength != len(self.race[0].abiltyAdjustment):
+         i = self.race[0].abiltyAdjustment[len(self.race[0].abiltyAdjustment)]
          if i == "str":
             self.str = self.str + 1
          if i == "con":

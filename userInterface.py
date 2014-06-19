@@ -4,6 +4,7 @@ from characterGenerator import *
 #bascially anything that the user may click on and have an effect
 class Clickable():
    def __init__(self,text,boundaries=(0,0,0,0)):
+      self.link = ""
       self.text = text
       self.boundaries = boundaries
       self.focused = False
@@ -31,7 +32,7 @@ class Clickable():
             print "function: " + str(f)
             print "functionArgs: " + str(self.functionArgs[i])
             f(self.functionArgs[i])
-  
+
 #You can click it, but all it does is be displayed
 class Label(Clickable):
    def display(self):
@@ -39,6 +40,17 @@ class Label(Clickable):
       pygame.draw.rect(MAINWINDOW, WHITE,  self.boundaries) 
       d = allFont.render(self.text, 1, BLACK)
       MAINWINDOW.blit(d,(x,y))
+
+#Same as label, but the text of the label is updated dynamically
+class VariableLabel(Label):
+   def __init__(self,var,boundaries=(0,0,0,0)):
+      self.variable = var
+      Clickable.__init__(self,self.variable)
+   def display(self):
+      print "variable location:"
+      print self.variable
+      self.text = str(self.variable[0])
+      Label.display(self)
 
 #Hidden
 class Hidden(Clickable):
@@ -204,6 +216,8 @@ class creationWindow():
       for tab in self.listOfTabs:
          tab.display()
       pygame.display.update()
+      print "race string location:"
+      print [self.character.raceString]
    def displayMenu(self):
       self.setupNameTab()
       self.setupAbilityScoresTab()
@@ -241,7 +255,6 @@ class creationWindow():
       t.listOfClickables = listOfClickables
       t.header = Clickable("Ability Scores")
       self.listOfTabs.append(t)
-
    def pageShow(self,args):
       textOfPageToShow = args[0]
       for tab in self.listOfTabs:
@@ -255,12 +268,17 @@ class creationWindow():
       for tab in self.listOfTabs:
          if tab.header.text == "Race":
             for page in tab.listOfPages:
-               print "set page " + page.text + " to not visible"
-               page.visible = False
+                page.visible = False
    def defineRace(self,args):
+      print "old race location:"
+      print self.character.race[0]
       race = characterGenerator.race.getClassFromString(args[0])
+      
+      print "new race location?:"
+      print race
       self.character.addRace(race)
-      print str(self.character.race)
+      print "new race location!:"
+      print self.character.race[0]
    def defineSubRace(self,args):
       self.character.addSubRace(args[0])
    def setupRaceTab(self):
@@ -320,15 +338,15 @@ class creationWindow():
       for click in listOfClickables:
          click.function =     [self.pageShow,self.defineRace]
          if click.text == "Dwarf":
-            click.functionArgs = [[sectionDwarfSubRace.text],[str(click)]]
+            click.functionArgs = [[sectionDwarfSubRace.text],[click.text]]
          elif click.text == "Elf":
-            click.functionArgs = [[sectionElfSubRace.text],[str(click)]]
+            click.functionArgs = [[sectionElfSubRace.text],[click.text]]
          elif click.text == "Halfling":
-            click.functionArgs = [[sectionHalflingSubRace.text],[str(click)]]
+            click.functionArgs = [[sectionHalflingSubRace.text],[click.text]]
          elif click.text == "Gnome":
-            click.functionArgs = [[sectionGnomeSubRace.text],[str(click)]]
+            click.functionArgs = [[sectionGnomeSubRace.text],[click.text]]
          else:
-            click.functionArgs = [[""],[str(click)]]
+            click.functionArgs = [[""],[click.text]]
             click.function = [self.allPagesHide,self.defineRace]
 
       
@@ -372,8 +390,9 @@ class creationWindow():
       sectionBasics = Page()
       sectionBasics.text = "basics"
       sectionBasics.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)*4+5,65)
+      raceLabel = VariableLabel(self.character.race)
       basicColumns = [[Label("Player Name"), Label("Race"), Label("Vision")],
-                      [TextBox(""), Label(str(self.character.race)), Label("")],
+                      [TextBox(""), raceLabel, Label("")],
                       [Label("Character Name"), Label("Class(level)"), Label("Alignment")],
                       [TextBox(""), Label(""), Label("")]]
       columnWidthList = [nameWidth,nameWidth,nameWidth,nameWidth]
