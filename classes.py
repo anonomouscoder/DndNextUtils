@@ -1,8 +1,8 @@
-import string
+import string,sys,inspect
 
 class BaseClass:
    def __str__(self):
-      return (string.split(str(self.__class__),".",1))[1] + "(" + str(self.level) + ")"
+      return (string.split(str(self.__class__),".",1))[1]
    hitDice = 8
    proficiencyBonusPerLevel =   [1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6]
    numberOfAbilitiesToIncrease = 0
@@ -200,6 +200,7 @@ class Barbarian(BaseClass):
          self.animalChosen[1] = rage
 
    def __init__(self,level=1):
+      print "init() a Barbarian"
       self.armorProficiencies = ["light","medium","shields"]
       self.weaponProficiencies = ["simple","martial"]
       self.toolProficiencies = ["landMount"]
@@ -1291,3 +1292,10 @@ class Rogue(BaseClass):
       for l in range(1,level):
          self.levelUp()
 #
+def getClassFromString(string):
+   classmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
+   rtn = BaseClass()
+   for c in classmembers:
+      if str(string).lower() == str(c[0]).lower():
+         rtn = c[1]()
+   return rtn

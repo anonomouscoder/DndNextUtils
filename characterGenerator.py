@@ -7,19 +7,6 @@ from equipment import *
 
 class Character:
    #utilities
-   def getAbilityMod(self,ability):
-      if ability == "str":
-         return (self.str-10)/2
-      if ability == "con":
-         return (self.con-10)/2
-      if ability == "dex":
-         return (self.dex-10)/2
-      if ability == "int":
-         return (self.int-10)/2
-      if ability == "wis":
-         return (self.wis-10)/2
-      if ability == "cha":
-         return (self.cha-10)/2
    def rollDie(self,numberOfSides):
       r = random.randint(1,numberOfSides)
       return r
@@ -43,23 +30,35 @@ class Character:
       for i,stat in enumerate(orderOfStats):
          if stat == "str":
             self.str = listOfStats[i]
+            self.strMod = (self.str-10)/2
          elif stat == "con":
             self.con = listOfStats[i]
+            self.conMod = (self.con-10)/2
          elif stat == "dex":
             self.dex = listOfStats[i]
+            self.dexMod = (self.dex-10)/2
          elif stat == "int":
             self.int = listOfStats[i]
+            self.intMod = (self.int-10)/2
          elif stat == "wis":
             self.wis = listOfStats[i]
+            self.wisMod = (self.wis-10)/2
          elif stat == "cha":
             self.cha = listOfStats[i]
+            self.chaMod = (self.cha-10)/2
    def setStats(self,listOfStats):
       self.str = listOfStats[0]
+      self.strMod = (self.str-10)/2
       self.con = listOfStats[1]
+      self.conMod = (self.con-10)/2
       self.dex = listOfStats[2]
+      self.dexMod = (self.dex-10)/2
       self.int = listOfStats[3]
+      self.intMod = (self.int-10)/2
       self.wis = listOfStats[4]
+      self.wisMod = (self.wis-10)/2
       self.cha = listOfStats[5]
+      self.chaMod = (self.cha-10)/2
    def addToAbility(self,choice):
       incremented = False
       #make sure you can do it
@@ -70,26 +69,75 @@ class Character:
          #it's valid
          if choice == "str" and self.str < 20:
             self.str = self.str + 1
+            self.strMod = (self.str-10)/2
             incremented = True
          if choice == "con" and self.con < 20:
             self.con = self.con + 1
+            self.conMod = (self.con-10)/2
             incremented = True
          if choice == "dex" and self.dex < 20:
             self.dex = self.dex + 1
+            self.dexMod = (self.dex-10)/2
             incremented = True
          if choice == "int" and self.int < 20:
             self.int = self.int + 1
+            self.intMod = (self.int-10)/2
             incremented = True
          if choice == "wis" and self.wis < 20:
             self.wis = self.wis + 1
+            self.wisMod = (self.wis-10)/2
             incremented = True
          if choice == "cha" and self.cha < 20:
             self.cha = self.cha + 1
+            self.chaMod = (self.cha-10)/2
             incremented = True
       if incremented:
          for i in self.classLevels:
             if i.numberOfAbilitiesToIncrease > 0:
                i.numberOfAbilitiesToIncrease = i.numberOfAbilitiesToIncrease - 1
+   def setAbility(self,choice,value):
+      if choice == "str" and self.str < 20:
+         self.str = value
+         self.strMod = (self.str-10)/2
+      elif choice == "con" and self.con < 20:
+         self.con = value
+         self.conMod = (self.con-10)/2
+      elif choice == "dex" and self.dex < 20:
+         self.dex = value
+         self.dexMod = (self.dex-10)/2
+      elif choice == "int" and self.int < 20:
+         self.int = value
+         self.intMod = (self.int-10)/2
+      elif choice == "wis" and self.wis < 20:
+         self.wis = value
+         self.wisMod = (self.wis-10)/2
+      elif choice == "cha" and self.cha < 20:
+         self.cha = value
+         self.chaMod = (self.cha-10)/2
+      #figure out points spent
+      self.pointsSpent = 0
+      values = [self.str,self.con,self.dex,self.int,self.wis,self.cha]
+      for v in values:
+         if v == 9:
+            self.pointsSpent = self.pointsSpent + 1
+         elif v == 10:
+            self.pointsSpent = self.pointsSpent + 2
+         elif v == 11:
+            self.pointsSpent = self.pointsSpent + 3
+         elif v == 12:
+            self.pointsSpent = self.pointsSpent + 4
+         elif v == 13:
+            self.pointsSpent = self.pointsSpent + 5
+         elif v == 14:
+            self.pointsSpent = self.pointsSpent + 7
+         elif v == 15:
+            self.pointsSpent = self.pointsSpent + 9
+         elif v == 16:
+            self.pointsSpent = self.pointsSpent + 12
+         elif v == 17:
+            self.pointsSpent = self.pointsSpent + 15
+         elif v == 18:
+            self.pointsSpent = self.pointsSpent + 18
    #creation utilities
    def combineProficiencies(self):
       #proficiency bonus
@@ -106,7 +154,7 @@ class Character:
          for j in i.weaponProficiencies:
             if j not in self.weaponProficiencies:
                self.weaponProficiencies.append(j)
-      for i in self.race[0].weaponProficiencies:
+      for i in self.race.weaponProficiencies:
          if i not in self.weaponProficiencies:
             self.weaponProficiencies.append(i)
       #tools
@@ -119,23 +167,25 @@ class Character:
             self.toolProficiencies.append(i)
    def combineAc(self):
       self.ac = 0
-      maxDex = self.getAbilityMod("dex")
+      maxDex = self.dexMod
       for armor in self.armors:
          if armor.equipped:
             self.ac = self.ac + armor.ac
             if maxDex > armor.maxDexBonus:
                maxDex = armor.maxDexBonus
       self.ac = self.ac + maxDex
-      self.acNoArmor = 10 + self.getAbilityMod("dex")
-   def __init__(self,rollForStats=True,listOfStats=[10,10,10,10,10,10],orderOfStats=["str","con","dex","int","wis","cha"],listOfClassesToLevelUp = [Barbarian()],name="Unnamed",race=Dwarf("Hill Dwarf"),background=Artisan(),listOfSkills=[]):
-   
+      self.acNoArmor = 10 + self.dexMod
+   def __init__(self,rollForStats=True,listOfStats=[10,10,10,10,10,10],orderOfStats=["str","con","dex","int","wis","cha"],listOfClassesToLevelUp = [],name="Unnamed",race=Dwarf("Hill Dwarf"),background=Artisan(),listOfSkills=[]):
+      
       self.str = 0;self.con = 0;self.dex = 0;self.int = 0;self.wis = 0;self.cha = 0
+      self.strMod = 0;self.conMod = 0;self.dexMod = 0;self.intMod = 0;self.wisMod = 0;self.chaMod = 0
+      self.pointsSpent = 0
       self.hitPoints = 0
       self.classLevels = []
       self.totalLevel = 0
       self.proficiency = 0; self.skills = []
       self.background = BaseBackground()
-      self.race = [BaseRace(),""]; self.raceString = str(self.race)
+      self.race = BaseRace(); self.raceString = str(self.race)
       self.armorClass = 0
       self.spells = 0
       self.armorProficiencies = []; self.weaponProficiencies = []; self.toolProficiencies = []
@@ -160,9 +210,9 @@ class Character:
       for i in self.classLevels:
          print "Class: " + str(i) + " Level: " + str(i.level)
       print "HP: " + str(self.hitPoints)
-      print "STR:" + str(self.str) + " (" + str((self.str - 10)/2) + ") INT:" + str(self.int) + " (" + str((self.int - 10)/2) + ")"
-      print "CON:" + str(self.con) + " (" + str((self.con - 10)/2) + ") WIS:" + str(self.wis) + " (" + str((self.wis - 10)/2) + ")"
-      print "DEX:" + str(self.dex) + " (" + str((self.dex - 10)/2) + ") CHA:" + str(self.cha) + " (" + str((self.cha - 10)/2) + ")"
+      print "STR:" + str(self.str) + " (" + str(self.strMod) + ") INT:" + str(self.int) + " (" + str(self.intMod) + ")"
+      print "CON:" + str(self.con) + " (" + str(self.conMod) + ") WIS:" + str(self.wis) + " (" + str(self.wisMod) + ")"
+      print "DEX:" + str(self.dex) + " (" + str(self.dexMod) + ") CHA:" + str(self.cha) + " (" + str(self.chaMod) + ")"
       print "AC = " + str(self.ac) + ", AC (No Armor) = " + str(self.acNoArmor)
       abilityScoreIncreasesSum = 0
       for i in self.classLevels:
@@ -316,22 +366,32 @@ class Character:
       print "----------------------------------"
    #classes
    def addClassLevel(self,classToLevelUp):
+      print "current class levels: " + str(self.classLevels)
+      
+      print "at levels: " 
+      for i in self.classLevels:
+         print i.level,
+      print ""
+      print "leveling up " + str(classToLevelUp)
       foundAt = self.findClassLevel(classToLevelUp) 
+      
       if foundAt != -1:
          i = self.classLevels[foundAt]
       else:
+         print classToLevelUp.__class__()
          self.classLevels.append(classToLevelUp.__class__())   #add the class (level 1)
+         print "class levels: " + str(self.classLevels)
          i = self.classLevels[len(self.classLevels)-1]
          if self.totalLevel == 0:
-            self.hitPoints = self.hitPoints + i.hitDice + self.getAbilityMod("con")
+            self.hitPoints = self.hitPoints + i.hitDice + self.conMod
          else:
-            self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + self.getAbilityMod("con")
+            self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + self.conMod
          classToLevelUp.level = classToLevelUp.level -1        #reduce the amount leveled up by 1
          self.totalLevel = self.totalLevel + 1
       for j in range(classToLevelUp.level):
          i.levelUp()
          self.totalLevel = self.totalLevel + 1
-         self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + self.getAbilityMod("con")
+         self.hitPoints = self.hitPoints + self.rollDie(i.hitDice) + self.conMod
    def findClassLevel(self,classToFind):
       index = -1
       for i,cl in enumerate(self.classLevels):
@@ -371,10 +431,9 @@ class Character:
             self.classLevels[index].chooseElements(arguments)
    #races
    def addRace(self,Race):
-      self.race[0] = Race
-      self.race[1] = self.race[0].subraceString
+      self.race = Race
       self.raceString = str(self.race)
-      for i in self.race[0].abiltyAdjustment:
+      for i in self.race.abiltyAdjustment:
          if i == "str":
             self.str = self.str + 1
          elif i == "con":
@@ -387,27 +446,24 @@ class Character:
             self.wis = self.wis + 1
          elif i == "cha":
             self.cha = self.cha + 1
-   def getRace(self):
-      return self.race[0]
    def getSubRace(self):
-      return self.race[0].subraceString
+      return self.race.subraceString
    def addSubRace(self,choice):
-      oldLength = len(self.race[0].abiltyAdjustment)
-      self.race[0].chooseSubRace(choice)
-      self.race[1] = self.race[0].subraceString
-      if oldLength != len(self.race[0].abiltyAdjustment):
-         i = self.race[0].abiltyAdjustment[len(self.race[0].abiltyAdjustment)-1]
+      oldLength = len(self.race.abiltyAdjustment)
+      self.race.chooseSubRace(choice)
+      if oldLength != len(self.race.abiltyAdjustment):
+         i = self.race.abiltyAdjustment[len(self.race.abiltyAdjustment)-1]
          if i == "str":
             self.str = self.str + 1
-         if i == "con":
+         elif i == "con":
             self.con = self.con + 1
-         if i == "dex":
+         elif i == "dex":
             self.dex = self.dex + 1
-         if i == "int":
+         elif i == "int":
             self.int = self.int + 1
-         if i == "wis":
+         elif i == "wis":
             self.wis = self.wis + 1
-         if i == "cha":
+         elif i == "cha":
             self.cha = self.cha + 1
    #backgrounds/skills
    def addBackground(self,background):

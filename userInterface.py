@@ -1,4 +1,4 @@
-import characterGenerator,pygame,drawUtils,time
+import characterGenerator,pygame,drawUtils,time,string
 from drawUtils import *
 from characterGenerator import *
 #bascially anything that the user may click on and have an effect
@@ -10,12 +10,15 @@ class Clickable():
       self.focused = False
       self.function = ""
       self.functionArgs = [[""]]
+      self.updateDisplayFunction = ""
+      self.updateDisplayFunctionArgs = [[""]]
    def isWithinBoundaries(self,x,y):
       (boundaryx,boundaryy,lenx,leny) = self.boundaries
       if x > boundaryx and x < boundaryx + lenx and y > boundaryy and y < boundaryy + leny:
          return True
       return False
    def display(self):
+      self.updateDisplay()
       (x,y,l,h) = self.boundaries
       if self.focused:
          color = WHITE
@@ -29,15 +32,24 @@ class Clickable():
    def runFunctions(self):
       if self.function != "":
          for i,f in enumerate(self.function):
-            print "function: " + str(f)
-            print "functionArgs: " + str(self.functionArgs[i])
-            f(self.functionArgs[i])
+            if self.functionArgs[i] == []:
+               output = f()
+            else:
+               output = f(self.functionArgs[i])
       else:
          print "function is not set!"
-
+   def updateDisplay(self):
+      if self.updateDisplayFunction != "":
+         for i,f in enumerate(self.updateDisplayFunction):
+            if self.updateDisplayFunctionArgs[i] == []:
+               self.text = f()
+            else:
+               self.text = f(self.updateDisplayFunctionArgs[i])
+      
 #You can click it, but all it does is be displayed
 class Label(Clickable):
    def display(self):
+      self.updateDisplay()
       (x,y,l,h) = self.boundaries
       pygame.draw.rect(MAINWINDOW, WHITE,  self.boundaries) 
       d = allFont.render(self.text, 1, BLACK)
@@ -47,21 +59,20 @@ class Label(Clickable):
 class VariableLabel(Label):
    def __init__(self,var,boundaries=(0,0,0,0)):
       self.variable = var
-      Clickable.__init__(self,self.variable)
+      Clickable.__init__(self,var)
    def display(self):
-      if len(self.variable) == 1 or self.variable[1] == "":
+      if self.variable == []:
+         self.text = self.variable
+      elif len(self.variable) == 1 or self.variable[1] == "":
          self.text = str(self.variable[0])
       else:
-         self.text = str(self.variable[0]) + "(" + str(self.variable[1]) + ")"
+         self.text = str(self.variable[0]) + ", " + str(self.variable[1])
       Label.display(self)
 
 #Hidden
 class Hidden(Clickable):
    def display(self):
-      (x,y,l,h) = self.boundaries
-      pygame.draw.rect(MAINWINDOW, DARKGREY,  self.boundaries) 
-      d = allFont.render(self.text, 1, BLACK)
-      MAINWINDOW.blit(d,(x,y)) 
+      return 
 
 #Clicking it applies focus, focused TextBox receives characters
 class TextBox(Clickable):
@@ -70,6 +81,7 @@ class TextBox(Clickable):
       self.maxLength = 13
       self.variable = "" #where to write this value
    def display(self):
+      self.updateDisplay()
       (x,y,l,h) = self.boundaries
       if self.focused:
          color = WHITE
@@ -87,6 +99,7 @@ class RadioButton(Clickable):
       Clickable.__init__(self,"")
       self.selected = False
    def display(self):
+      self.updateDisplay()
       (x,y,l,h) = self.boundaries
       if self.selected:
          color = WHITE
@@ -103,6 +116,67 @@ class RadioButton(Clickable):
             self.selected = True
       self.focused = bool
 
+#Pair of Clickables that when a Receiver is focused, it takes the value from the first Sender in the list
+class Sender(Clickable):
+   def __init__(self,text,boundaries=(0,0,0,0)):
+      self.selected = False
+      Clickable.__init__(self,text)
+   def isWithinBoundaries(self,x,y):
+      if Clickable.isWithinBoundaries(self,x,y):
+         if self.selected:
+            self.selected = False
+         else:
+            self.selected = True
+         return True
+      return False
+   def display(self):
+      if self.selected:
+         self.focused = True
+      else:
+         self.focused = False
+      Clickable.display(self)
+   def runFunctions(self):
+      needToDeselect = False
+      if self.function != "":
+         for i,f in enumerate(self.function):
+            if self.functionArgs[i] == []:
+               needToDeselect = f()
+            else:
+               needToDeselect = f(self.functionArgs[i])
+            if needToDeselect:
+               self.selected = False
+class Receiver(Clickable):
+   def __init__(self,text,boundaries=(0,0,0,0)):
+      self.selected = False
+      self.hasValue = False
+      Clickable.__init__(self,text)
+   def isWithinBoundaries(self,x,y):
+      if Clickable.isWithinBoundaries(self,x,y):
+         if self.selected:
+            self.selected = False
+         else:
+            self.selected = True
+         return True
+      return False
+   def display(self):
+      if self.selected:
+         self.focused = True
+      else:
+         self.focused = False
+      if self.hasValue:
+         self.focused = True
+      Clickable.display(self)
+   def runFunctions(self):
+      needToDeselect = False
+      if self.function != "":
+         for i,f in enumerate(self.function):
+            if self.functionArgs[i] == []:
+               needToDeselect = f()
+            else:
+               needToDeselect = f(self.functionArgs[i])
+            if needToDeselect:
+               self.selected = False
+               
 #Pages hold sets of clickables
 class Page(Clickable):
    def __init__(self):
@@ -127,7 +201,6 @@ class Page(Clickable):
       for clickable in self.listOfClickables:
          clickable.focusFunction(False)
          if isinstance(clickable,Dropdown) and clickable.isWithinBoundaries(mousex,mousey) and hasFocus == False:
-            print "Dropdown found"
             clickable.focusFunction(True)
             hasFocus = True
       
@@ -158,6 +231,7 @@ class creationWindow():
       self.buffer = ""
       self.listOfTabs = []
       self.character = Character()
+      self.temporaryRolls = [0,0,0,0,0,0]
    def menuKeyboardDown(self,char):
       for tab in self.listOfTabs:
          if tab.header.focused == True:
@@ -218,18 +292,37 @@ class creationWindow():
                if isinstance(clickable, TextBox):
                   if clickable.isWithinBoundaries(mousex,mousey):
                      pygame.mouse.set_cursor(textCursor)
+   def updatePage(self,tab,page):
+      found = False
+      for p in tab.listOfPages:
+         if p.text == page.text:
+            found = True
+            p = page
+            break
+      if not found:
+         tab.listOfPages.append(page)
+   def updateTab(self,tab):
+      found = False
+      for t in self.listOfTabs:
+         if t.header.text == tab.header.text:
+            t.listOfPages = []
+            for page in tab.listOfPages:
+               t.listOfPages.append(page)
+            found = True
+            break
+      if not found:
+         self.listOfTabs.append(tab)
    def refreshMenu(self):
+      print "refreshing menu"
       MAINWINDOW.fill(BGCOLOR)
       for tab in self.listOfTabs:
          tab.display()
       pygame.display.update()
    def displayMenu(self):
-      self.setupNameTab()
       self.setupAbilityScoresTab()
       self.setupRaceTab()
       self.setupClassTab()
       self.setupBackgroundTab()
-      self.setupSkillsTab()
       self.setupCharacterSheetTab()
       
       headerList = []
@@ -246,28 +339,128 @@ class creationWindow():
       for i in listToSpace:
          i.boundaries = (x,y,columnWidth,rowHeight)
          y = y + verticalBuffer
-   def setupNameTab(self):
+   def setupAbilityScoresTab(self):
+      nameWidth = 105
+      numberWidth = 20
+      xPageStart = 110
+      yPageStart = 0
       t = Tab()
-      listOfClickables = [Clickable("Player"),Clickable("Character")]
+      t.header = Clickable("Ability Scores")
+      listOfClickables = [Clickable("Roll"),Clickable("Point buy")]
+      listOfClickables[0].function = [self.rollAbilities,self.pageShow]
+      listOfClickables[0].functionArgs = [[""],["roll"]]
+      listOfClickables[1].function = [self.resetAbilities,self.pageShow]
+      listOfClickables[1].functionArgs = [[""],["pointbuy"]]
       self.setSpacing(listOfClickables,(110,0))
       t.listOfClickables = listOfClickables
-      t.header = Clickable("Names")
+      
+                         
+      
+      # /Ability Scores / /Roll     / |##|   STR |  |##| INT |  |##|
+      # |Race           | |Point buy| |##|   CON |  |##| WIS |  |##|
+      # |Classes        |             |##|   DEX |  |##| CHA |  |##|       
+      # |Background     |             |##| 
+      # |Character Sheet|             |##|    
+      #                               |##|
+      rollPage = Page()
+      rollPage.visible = True
+      rollPage.text = "roll"
+      rollPage.boundaries = (xPageStart+(nameWidth+5),yPageStart,(nameWidth+5)*3+(numberWidth+5)*8+5,85)
+      rollPage.backgroundColor = BLACK
+      rollColumns = [[Sender(""),   Sender(""),   Sender(""),   Sender(""), Sender(""), Sender("")],
+                     [Label("STR"), Label("CON"), Label("DEX"), Hidden(""), Hidden(""), Hidden("")],
+                     [Receiver(""), Receiver(""), Receiver(""), Hidden(""), Hidden(""), Hidden("")],
+                     [Label(""),    Label(""),    Label(""),    Hidden(""), Hidden(""), Hidden("")],
+                     [Label("INT"), Label("WIS"), Label("CHA"), Hidden(""), Hidden(""), Hidden("")],
+                     [Receiver(""), Receiver(""), Receiver(""), Hidden(""), Hidden(""), Hidden("")],
+                     [Label(""),    Label(""),    Label(""),    Hidden(""), Hidden(""), Hidden("")]]
+      for i,row in enumerate(rollColumns[0]):
+         row.updateDisplayFunction = [self.displayTemporaryRolls]
+         row.updateDisplayFunctionArgs = [[i]]
+      for column in rollColumns:
+         for click in column:
+            print "is click: " + str(click) + " a Swapper? " + str(isinstance(click,Sender) or isinstance(click,Receiver))
+            if isinstance(click,Sender) or isinstance(click,Receiver):
+               print "setting swapper function"
+               click.function = [self.swapValues]
+               click.functionArgs = [[rollColumns]]
+      columnWidthList = [numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth]
+      self.setHorizontalSpacing(rollPage,rollColumns,(xPageStart+(nameWidth+5),yPageStart),columnWidthList)
+      
+      # /Ability Scores / |Roll     | Points spent |##|
+      # |Race           | /Point buy/ STR          |-| ##|##|+| INT |-|##|##|+|
+      # |Classes        |             CON          |-| ##|##|+| WIS |-|##|##|+|
+      # |Background     |             DEX          |-| ##|##|+| CHA |-|##|##|+|
+      # |Character Sheet|             
+      #       
+      pointBuyPage = Page()
+      pointBuyPage.visible = False
+      pointBuyPage.text = "pointbuy"
+      pointBuyPage.boundaries = (xPageStart+(nameWidth+5),yPageStart,(nameWidth+5)*3+(numberWidth+5)*8+5,85)
+      pointBuyPage.backgroundColor = BLACK
+      pointBuyColumns = [[Label("Points Spent"), Label("STR"),           Label("CON"), Label("DEX")],
+                         [Label(""),             Label("-"),             Label("-"),   Label("-")],
+                         [Hidden(""),            Label(""),              Label(""),    Label("")],
+                         [Hidden(""),            Label(""),              Label(""),    Label("")],
+                         [Hidden(""),            Label("+"),             Label("+"),   Label("+")],
+                         [Hidden(""),            Label("INT"),           Label("WIS"), Label("CHA")],
+                         [Hidden(""),            Label("-"),             Label("-"),   Label("-")],
+                         [Hidden(""),            Label(""),              Label(""),    Label("")],
+                         [Hidden(""),            Label(""),              Label(""),    Label("")],
+                         [Hidden(""),            Label("+"),             Label("+"),   Label("+")]]
+
+      (pointBuyColumns[1])[0].updateDisplayFunction = [self.printPointsSpent]
+      decrementAbilityFunction = [self.decrementAbility]
+      incrementAbilityFunction = [self.incrementAbility]
+      for i,click in enumerate(pointBuyColumns[1]):
+         if i != 0:
+            click.function = decrementAbilityFunction
+            click.functionArgs = [[((pointBuyColumns[0])[i].text).lower()]]
+      for i,click in enumerate(pointBuyColumns[4]):
+         if i != 0:
+            click.function = incrementAbilityFunction
+            click.functionArgs = [[((pointBuyColumns[0])[i].text).lower()]]
+      for i,click in enumerate(pointBuyColumns[6]):
+         if i != 0:
+            click.function = decrementAbilityFunction
+            click.functionArgs = [[((pointBuyColumns[5])[i].text).lower()]]
+      for i,click in enumerate(pointBuyColumns[9]):
+         if i != 0:
+            click.function = incrementAbilityFunction
+            click.functionArgs = [[((pointBuyColumns[5])[i].text).lower()]]
+         
+      for i,click in enumerate(pointBuyColumns[2]):
+         if i != 0:
+            click.updateDisplayFunction = [self.printAbility]
+            click.updateDisplayFunctionArgs = [[((pointBuyColumns[0])[i].text).lower()]]
+      for i,click in enumerate(pointBuyColumns[3]):
+         if i != 0:
+            click.updateDisplayFunction = [self.printAbilityMod]
+            click.updateDisplayFunctionArgs = [[((pointBuyColumns[0])[i].text).lower()]]
+      for i,click in enumerate(pointBuyColumns[7]):
+         if i != 0:
+            click.updateDisplayFunction = [self.printAbility]
+            click.updateDisplayFunctionArgs = [[((pointBuyColumns[5])[i].text).lower()]]
+      for i,click in enumerate(pointBuyColumns[8]):
+         if i != 0:
+            click.updateDisplayFunction = [self.printAbilityMod]
+            click.updateDisplayFunctionArgs = [[((pointBuyColumns[5])[i].text).lower()]]
+         
+      columnWidthList = [nameWidth,nameWidth,numberWidth,numberWidth,numberWidth,numberWidth,nameWidth,numberWidth,numberWidth,numberWidth,numberWidth]
+      self.setHorizontalSpacing(pointBuyPage,pointBuyColumns,(xPageStart+(nameWidth+5),yPageStart),columnWidthList)
+      
+      t.listOfPages.append(rollPage)
+      t.listOfPages.append(pointBuyPage)
       self.listOfTabs.append(t)
-   def setupAbilityScoresTab(self):
-      t = Tab()
-      listOfClickables = [Clickable("Roll"),Clickable("Point buy")]
-      self.setSpacing(listOfClickables,(110,20))
-      t.listOfClickables = listOfClickables
-      t.header = Clickable("Ability Scores")
-      self.listOfTabs.append(t)
+      
    def setupRaceTab(self):
       t = Tab()
       t.header = Clickable("Race")
       t.header.function = [self.setFocus,self.setFocus]
-      t.header.functionArgs = [["race"],["subrace"]]
+      t.header.functionArgs = ["race","subrace"]
       listOfClickables = [Clickable("Dwarf"), Clickable("Elf"), Clickable("Halfling"), Clickable("Human"), Clickable("Dragonborn"), Clickable("Drow"), Clickable("Gnome"), Clickable("Halfelf"), Clickable("Halforc"), Clickable("Kender"), Clickable("Tiefling"), Clickable("Warforged")]
-      self.setSpacing(listOfClickables,(110,0))
       nameWidth = 105
+      self.setSpacing(listOfClickables,(nameWidth+5,0))
       xPageStart = (nameWidth+5)*2
       yPageStart = 0
       
@@ -342,7 +535,6 @@ class creationWindow():
             click.functionArgs = [[""],[click.text]]
             click.function = [self.allPagesHide,self.defineRace]
 
-      #defining function for the subrace clickable
       t.listOfClickables = listOfClickables
       
       t.listOfPages.append(sectionGnomeSubRace)
@@ -351,23 +543,45 @@ class creationWindow():
       t.listOfPages.append(sectionDwarfSubRace)
       self.listOfTabs.append(t)
    def setupClassTab(self):
+      nameWidth = 105
+      numberWidth = 20
+      xPageStart = 110
+      yPageStart = 0
       t = Tab()
-      listOfClickables = [Clickable("Class name"),Clickable("Level")]
-      self.setSpacing(listOfClickables,(110,60))
-      t.listOfClickables = listOfClickables
       t.header = Clickable("Classes")
+      
+      classColumns = [[Label("Barbarian"), Label("Bard"), Label("Cleric"), Label("Druid"), Label("Fighter"), Label("Mage"), Label("Monk"), Label("Paladin"), Label("Ranger"), Label("Rogue")],
+                      [Label("-"), Label("-"), Label("-"), Label("-"), Label("-"), Label("-"), Label("-"), Label("-"), Label("-"), Label("-")],
+                      [Label(""), Label(""), Label(""), Label(""), Label(""), Label(""), Label(""), Label(""), Label(""), Label("")],
+                      [Label("+"), Label("+"), Label("+"), Label("+"), Label("+"), Label("+"), Label("+"), Label("+"), Label("+"), Label("+")]]
+      decrementLevelFunction = [self.decrementLevel]
+      for i,click in enumerate(classColumns[1]):
+         click.function = decrementLevelFunction
+         click.functionArgs = [[(classColumns[0])[i].text]]
+         
+      levelFunction = [self.findLevelOfClass]
+      levelFunctionArgs = [[]]
+      for i,click in enumerate(classColumns[2]):
+         click.updateDisplayFunction = levelFunction
+         click.updateDisplayFunctionArgs = [[(classColumns[0])[i].text]]
+         
+      incrementLevelFunction = [self.incrementLevel]
+      for i,click in enumerate(classColumns[3]):
+         click.function = incrementLevelFunction
+         click.functionArgs = [[(classColumns[0])[i].text]]
+         
+      columnWidthList = [nameWidth,numberWidth,numberWidth,numberWidth]
+      self.setHorizontalSpacing(t,classColumns,(xPageStart,yPageStart),columnWidthList)
       self.listOfTabs.append(t)
    def setupBackgroundTab(self):
       t = Tab()
       t.header = Clickable("Background")
       self.listOfTabs.append(t)
-   def setupSkillsTab(self):
-      t = Tab()
-      t.header = Clickable("Skills")
-      self.listOfTabs.append(t)
    def setupCharacterSheetTab(self):
       t = Tab()
       t.header = Clickable("Character Sheet")
+      t.header.function = [self.setupCharacterSheetTab,self.refreshMenu]
+      t.header.functionArgs = [[],[]]
       xPageStart = 215
       yPageStart = 5
       nameWidth = 105
@@ -376,20 +590,21 @@ class creationWindow():
       longNumberWidth = 55
       descriptionWidth = 800
       #-----Default Section-----------------------------------------------------------------
-      # Player Name  ______________             Character Name ______________              |
-      # Race         ______________             Class (level)  ______________              |
-      # Vision       ______________             Alignment      ______________              |
+      # Player Name     ______________             Race           ______________           |
+      # Character Name  ______________             Subrace        ______________           |
+      # Vision          ______________             Alignment      ______________           |
       #-------------------------------------------------------------------------------------
       sectionBasics = Page()
       sectionBasics.text = "basics"
       sectionBasics.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)*3+(longNameWidth+5)+5,65)
-      raceLabel = VariableLabel(self.character.race)
-      classLabel = VariableLabel(self.character.classLevels)
-      basicColumns = [[Label("Player Name"), Label("Race"), Label("Vision")],
-                      [TextBox(""), raceLabel, Label("")],
-                      [Label("Character Name"), Label("Class(level)"), Label("Alignment")],
-                      [TextBox(""), classLabel, Label("")]]
-      columnWidthList = [nameWidth,longNameWidth,nameWidth,nameWidth]
+      raceLabel =  VariableLabel([self.character.race])
+      subRaceLabel = VariableLabel([self.character.race.subraceString])
+      levelLabel = VariableLabel([self.character.totalLevel])
+      basicColumns = [[Label("Player Name"), Label("Character Name"), Label("Vision")],
+                      [TextBox(""), TextBox(""), Label("")],
+                      [Label("Race"), Label("Subrace"), Label("Alignment")],
+                      [raceLabel, subRaceLabel, Label("")]]
+      columnWidthList = [nameWidth,nameWidth,nameWidth,longNameWidth]
       self.setHorizontalSpacing(sectionBasics,basicColumns,(xPageStart,yPageStart),columnWidthList)
       
       #-------------------------------------------------------------------------------------
@@ -400,15 +615,54 @@ class creationWindow():
       sectionAttibutes = Page()
       sectionAttibutes.text = "attributes"
       sectionAttibutes.boundaries = (xPageStart-5+(nameWidth+5)*3+(longNameWidth+5)+5,yPageStart-5,(nameWidth+5)*2+(numberWidth+5)*4+5 ,65)
+      strModLabel = VariableLabel([self.character.strMod])
+      conModLabel = VariableLabel([self.character.conMod])
+      dexModLabel = VariableLabel([self.character.dexMod])
+      intModLabel = VariableLabel([self.character.intMod])
+      wisModLabel = VariableLabel([self.character.wisMod])
+      chaModLabel = VariableLabel([self.character.chaMod])
       attributeColumns = [[Label("Strength"), Label("Constitution"), Label("Dexterity")],
-                          [Label(""), Label(""), Label("")],
-                          [Label(""), Label(""), Label("")],
+                          [VariableLabel([self.character.str]), VariableLabel([self.character.con]), VariableLabel([self.character.dex])],
+                          [strModLabel, conModLabel, dexModLabel],
                           [Label("Intelligence"), Label("Wisdom"), Label("Charisma")],
-                          [Label(""), Label(""), Label("")],
-                          [Label(""), Label(""), Label("")]]
+                          [VariableLabel([self.character.int]), VariableLabel([self.character.wis]), VariableLabel([self.character.cha])],
+                          [intModLabel, wisModLabel, chaModLabel]]
       columnWidthList = [nameWidth,numberWidth,numberWidth,nameWidth,numberWidth,numberWidth]
       self.setHorizontalSpacing(sectionAttibutes,attributeColumns,(xPageStart+(nameWidth+5)*3+(longNameWidth+5)+5,yPageStart),columnWidthList)    
-      yPageStart = yPageStart + 65
+      numberOfRows = 3
+      yPageStart = yPageStart + numberOfRows*20 + 5
+      
+      #-------------------------------------------------------------------------------------
+      # Class ______________ Level _______                                                 |
+      #-------------------------------------------------------------------------------------
+      sectionClasses = Page()
+      sectionClasses.text = "classes"
+      classesColumns = [[],
+                        []]
+      numberOfRows = 0
+      for c in self.character.classLevels:
+         if numberOfRows == 0:
+            classesColumns[0].append(Label("Class"))
+            classesColumns[1].append(Label("Level"))
+            numberOfRows = numberOfRows + 1
+         classLabel = VariableLabel([c])
+         levelLabel = VariableLabel([c.level])
+         classesColumns[0].append(classLabel)
+         classesColumns[1].append(levelLabel)
+         numberOfRows = numberOfRows + 1
+      if numberOfRows > 2:
+         classesColumns[0].append(Label("Total"))
+         classesColumns[1].append(VariableLabel([self.character.totalLevel]))
+         numberOfRows = numberOfRows + 1
+         
+      columnWidthList = [longNameWidth,nameWidth]
+      self.setHorizontalSpacing(sectionClasses,classesColumns,(xPageStart,yPageStart),columnWidthList) 
+      
+      sectionClasses.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)+(longNameWidth+5)+5, numberOfRows*20+5)
+      
+      
+      yPageStart = yPageStart + numberOfRows*20 + 5
+      
       #-------------------------------------------------------------------------------------
       # Experience (Next) _______ _______ | Hp        _______ _______ | Initiative _______ |
       # AC (no armor)     _______ _______ | Hit dice  _______ _______ | Speed      _______ |
@@ -439,7 +693,8 @@ class creationWindow():
                          [TextBox(""), TextBox("")]]
       columnWidthList = [nameWidth, nameWidth, nameWidth, nameWidth]
       self.setHorizontalSpacing(sectionLanguages,languageColumns,(xPageStart+(nameWidth+5)*3+(longNumberWidth+5)*2+(numberWidth+5)*3+5,yPageStart),columnWidthList)
-      yPageStart = yPageStart + 45
+      numberOfRows = 2
+      yPageStart = yPageStart + numberOfRows*20 + 5
       #-------------------------------------------------------------------------------------
       # Proficiency bonus _______                                                          |
       # Saving Throws   ______________ ______________                                      |
@@ -474,7 +729,8 @@ class creationWindow():
                        [Label("Persuasion(CHA)"), Label("Religion(INT)"), Label("Search(INT)"), Label("Sleight of Hand(DEX)"), Label("Stealth(DEX)"), Label("Survival(WIS)")]]
       columnWidthList = [numberWidth, longNameWidth, numberWidth, longNameWidth, numberWidth, longNameWidth]
       self.setHorizontalSpacing(sectionSkills,skillsColumns,(xPageStart+longNameWidth+nameWidth*2+5*4,yPageStart),columnWidthList)
-      yPageStart = yPageStart + 125
+      numberOfRows = 6
+      yPageStart = yPageStart + numberOfRows*20 + 5
       
       #-------------------------------------------------------------------------------------
       # Class Features Descriptions                                                        |
@@ -491,7 +747,8 @@ class creationWindow():
                         [Label("Descriptions"), Label(""), Label(""), Label(""), Label("")]]
       columnWidthList = [nameWidth, descriptionWidth]
       self.setHorizontalSpacing(sectionClassFeatures,featureColumns,(xPageStart,yPageStart),columnWidthList)
-      yPageStart = yPageStart + 105
+      numberOfRows = 5
+      yPageStart = yPageStart + numberOfRows*20 + 5
       #-------------------------------------------------------------------------------------
       # Racial Traits  Description                                                         |
       # ______________ ____________________________________________________________________|
@@ -507,19 +764,22 @@ class creationWindow():
                       [Label("Descriptions"), Label(""), Label(""), Label(""), Label("")]]
       columnWidthList = [nameWidth, descriptionWidth]
       self.setHorizontalSpacing(sectionRacialTraits,traitColumns,(xPageStart,yPageStart),columnWidthList)
-      yPageStart = yPageStart + 105
+      numberOfRows = 5
+      yPageStart = yPageStart + numberOfRows*20 + 5
       
       #append them to the list in the order in which they should be drawn
-      t.listOfPages.append(sectionRacialTraits)
-      t.listOfPages.append(sectionClassFeatures)
-      t.listOfPages.append(sectionSkills)
-      t.listOfPages.append(sectionProficiencies)
-      t.listOfPages.append(sectionLanguages)
-      t.listOfPages.append(sectionVarious)
-      t.listOfPages.append(sectionAttibutes)
-      t.listOfPages.append(sectionBasics)
+      self.updatePage(t,sectionRacialTraits)
+      self.updatePage(t,sectionClassFeatures)
+      self.updatePage(t,sectionSkills)
+      self.updatePage(t,sectionProficiencies)
+      self.updatePage(t,sectionLanguages)
+      self.updatePage(t,sectionVarious)
+      #print "checking for classes"
+      self.updatePage(t,sectionClasses)
+      self.updatePage(t,sectionAttibutes)
+      self.updatePage(t,sectionBasics)
       
-      self.listOfTabs.append(t)
+      self.updateTab(t)
    def setHorizontalSpacing(self,pageToAddTo,listToSpace,startingCoordinate,columnWidthList,rowHeight=15,verticalBuffer=20):
       x,y = startingCoordinate
       previousWidth = 0
@@ -558,6 +818,7 @@ class creationWindow():
    # Show this page, hide other pages
    def pageShow(self,args):
       textOfPageToShow = args[0]
+      print "showing page " + str(textOfPageToShow)
       for tab in self.listOfTabs:
          if tab.header.focused:
             for page in tab.listOfPages:
@@ -576,14 +837,23 @@ class creationWindow():
       self.character.addRace(race)
    def defineSubRace(self,args):
       self.character.addSubRace(args[0]) 
+   def defineClassLevel(self,args):
+      print args
+      className = args[0]
+      classLevel = args[1]
+      c = classes.getClassFromString(className)
+      for level in range(classLevel-1):
+         c.levelUp()
+      self.character.addClassLevel(c)
    def setFocus(self,args):
-      if args[0] == "race":
-         textToSearchFor = str(self.character.race[0])
-      elif args[0] == "subrace":
-         textToSearchFor = str(self.character.race[0].subraceString)
+      if args == "race":
+         textToSearchFor = self.character.raceString
+      elif args == "subrace":
+         textToSearchFor = self.character.race.subraceString
+      elif args == "class":
+         textToSearchFor = str(self.character.classLevels[args[1]])
       else:
-         textToSearchFor = args[0]
-      print "searching for: " + str(textToSearchFor)
+         textToSearchFor = args
       for tab in self.listOfTabs:
          for click in tab.listOfClickables:
             if click.text == textToSearchFor:
@@ -592,7 +862,121 @@ class creationWindow():
             for click in page.listOfClickables:
                if click.text == textToSearchFor:
                   click.focused = True
-                  
+   def decrementLevel(self,args):
+      return
+   def incrementLevel(self,args):
+      print "incrementing level: " + str(args[0])
+      c = classes.getClassFromString(args[0])
+      self.character.addClassLevel(c)
+   def findLevelOfClass(self,args):
+      if self.character.findClassLevel(args[0]) == -1:
+         return "0"
+      else:
+         return str(self.character.classLevels[self.character.findClassLevel(args[0])].level)
+   def resetAbilities(self,args):
+      print "Abilities reset!"
+      self.character.setAbility("str",8)
+      self.character.setAbility("con",8)
+      self.character.setAbility("dex",8)
+      self.character.setAbility("int",8)
+      self.character.setAbility("wis",8)
+      self.character.setAbility("cha",8)
+   def incrementAbility(self,args):
+      value = 8
+      if args[0] == "str":
+         value = self.character.str + 1
+      elif args[0] == "con":
+         value = self.character.con + 1
+      elif args[0] == "dex":
+         value = self.character.dex + 1
+      elif args[0] == "int":
+         value = self.character.int + 1
+      elif args[0] == "wis":
+         value = self.character.wis + 1
+      elif args[0] == "cha":
+         value = self.character.cha + 1
+      self.character.setAbility(args[0],value)
+   def decrementAbility(self,args):
+      value = 8
+      if args[0] == "str":
+         value = self.character.str - 1
+      elif args[0] == "con":
+         value = self.character.con - 1
+      elif args[0] == "dex":
+         value = self.character.dex - 1
+      elif args[0] == "int":
+         value = self.character.int - 1
+      elif args[0] == "wis":
+         value = self.character.wis - 1
+      elif args[0] == "cha":
+         value = self.character.cha - 1
+      self.character.setAbility(args[0],value)
+   def rollAbilities(self,args):
+      value = 0
+      for i in range(6):
+         least = 6
+         value = 0
+         for j in range(4):
+            r = self.character.rollDie(6)
+            if r < least:
+               value = value + least
+               least = r
+            else:
+               value = value + r
+         value = value - 6 #subtract the inital least value
+         self.temporaryRolls[i] = value
+      self.temporaryRolls.sort(reverse=True)
+      print str(self.temporaryRolls)
+   def displayTemporaryRolls(self,args):
+      return str(self.temporaryRolls[args[0]])
+   def swapValues(self,args):
+      listOfClickables = args[0]
+      swapValue = ""
+      swapIndexI = 0
+      swapIndexJ = 0
+      didSwap = False
+      for i,column in enumerate(listOfClickables):
+         for j,click in enumerate(column):
+            if isinstance(click,Sender) and click.selected and swapValue == "":
+               swapValue = click.text
+               swapIndexI = i
+               swapIndexJ = j
+            if isinstance(click,Receiver) and click.selected and swapValue != "":
+               (listOfClickables[swapIndexI])[swapIndexJ] = click.text
+               click.text = swapValue
+               click.hasValue = True
+               didSwap = True
+               break
+      return didSwap
+   def printPointsSpent(self,args):
+      return str(self.character.pointsSpent)
+   def printAbility(self,args):
+      if args[0] == "str":
+         return str(self.character.str)
+      elif args[0] == "con":
+         return str(self.character.con)
+      elif args[0] == "dex":
+         return str(self.character.dex)
+      elif args[0] == "int":
+         return str(self.character.int)
+      elif args[0] == "wis":
+         return str(self.character.wis)
+      elif args[0] == "cha":
+         return str(self.character.cha)
+   def printAbilityMod(self,args):
+      if args[0] == "str":
+         return str(self.character.strMod)
+      elif args[0] == "con":
+         return str(self.character.conMod)
+      elif args[0] == "dex":
+         return str(self.character.dexMod)
+      elif args[0] == "int":
+         return str(self.character.intMod)
+      elif args[0] == "wis":
+         return str(self.character.wisMod)
+      elif args[0] == "cha":
+         return str(self.character.chaMod)
+   
 pygame.key.set_repeat(500,100)
 window = creationWindow()   
 window.creationLoop()
