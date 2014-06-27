@@ -120,6 +120,7 @@ class RadioButton(Clickable):
 class Sender(Clickable):
    def __init__(self,text,boundaries=(0,0,0,0)):
       self.selected = False
+      self.used = False
       Clickable.__init__(self,text)
    def isWithinBoundaries(self,x,y):
       if Clickable.isWithinBoundaries(self,x,y):
@@ -134,7 +135,21 @@ class Sender(Clickable):
          self.focused = True
       else:
          self.focused = False
-      Clickable.display(self)
+      self.updateDisplay()
+      (x,y,l,h) = self.boundaries
+      self.border = (x-3,y-3,l+6,h+6)
+      if self.focused:
+         borderColor = GREY
+      else:
+         borderColor = BLACK
+      if self.used:
+         color = GREY
+      else:
+         color = WHITE
+      pygame.draw.rect(MAINWINDOW, borderColor,  self.border) 
+      pygame.draw.rect(MAINWINDOW, color,  self.boundaries) 
+      d = allFont.render(self.text, 1, BLACK)
+      MAINWINDOW.blit(d,(x,y))
    def runFunctions(self):
       needToDeselect = False
       if self.function != "":
@@ -143,8 +158,8 @@ class Sender(Clickable):
                needToDeselect = f()
             else:
                needToDeselect = f(self.functionArgs[i])
-            if needToDeselect:
-               self.selected = False
+      if self.used or needToDeselect:
+         self.selected = False
 class Receiver(Clickable):
    def __init__(self,text,boundaries=(0,0,0,0)):
       self.selected = False
@@ -334,11 +349,7 @@ class creationWindow():
          tab.header = headerList[i]
       
       self.refreshMenu()
-   def setSpacing(self,listToSpace,startingCoordinate,columnWidth=105,rowHeight=15,verticalBuffer=20):
-      x,y = startingCoordinate
-      for i in listToSpace:
-         i.boundaries = (x,y,columnWidth,rowHeight)
-         y = y + verticalBuffer
+   #Setting up the various tabs
    def setupAbilityScoresTab(self):
       nameWidth = 105
       numberWidth = 20
@@ -346,13 +357,9 @@ class creationWindow():
       yPageStart = 0
       t = Tab()
       t.header = Clickable("Ability Scores")
+      t.header.function = [self.setupAbilityScoresTab,self.refreshMenu]
+      t.header.functionArgs = [[],[]]
       listOfClickables = [Clickable("Roll"),Clickable("Point buy")]
-      listOfClickables[0].function = [self.rollAbilities,self.pageShow]
-      listOfClickables[0].functionArgs = [[""],["roll"]]
-      listOfClickables[1].function = [self.resetAbilities,self.pageShow]
-      listOfClickables[1].functionArgs = [[""],["pointbuy"]]
-      self.setSpacing(listOfClickables,(110,0))
-      t.listOfClickables = listOfClickables
       
                          
       
@@ -370,18 +377,16 @@ class creationWindow():
       rollColumns = [[Sender(""),   Sender(""),   Sender(""),   Sender(""), Sender(""), Sender("")],
                      [Label("STR"), Label("CON"), Label("DEX"), Hidden(""), Hidden(""), Hidden("")],
                      [Receiver(""), Receiver(""), Receiver(""), Hidden(""), Hidden(""), Hidden("")],
-                     [Label(""),    Label(""),    Label(""),    Hidden(""), Hidden(""), Hidden("")],
+                     [Label(""),  Label(""),  Label(""),  Hidden(""), Hidden(""), Hidden("")],
                      [Label("INT"), Label("WIS"), Label("CHA"), Hidden(""), Hidden(""), Hidden("")],
                      [Receiver(""), Receiver(""), Receiver(""), Hidden(""), Hidden(""), Hidden("")],
-                     [Label(""),    Label(""),    Label(""),    Hidden(""), Hidden(""), Hidden("")]]
+                     [Label(""),  Label(""),  Label(""),  Hidden(""), Hidden(""), Hidden("")]]
       for i,row in enumerate(rollColumns[0]):
          row.updateDisplayFunction = [self.displayTemporaryRolls]
          row.updateDisplayFunctionArgs = [[i]]
       for column in rollColumns:
          for click in column:
-            print "is click: " + str(click) + " a Swapper? " + str(isinstance(click,Sender) or isinstance(click,Receiver))
             if isinstance(click,Sender) or isinstance(click,Receiver):
-               print "setting swapper function"
                click.function = [self.swapValues]
                click.functionArgs = [[rollColumns]]
       columnWidthList = [numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth]
@@ -396,7 +401,7 @@ class creationWindow():
       pointBuyPage = Page()
       pointBuyPage.visible = False
       pointBuyPage.text = "pointbuy"
-      pointBuyPage.boundaries = (xPageStart+(nameWidth+5),yPageStart,(nameWidth+5)*3+(numberWidth+5)*8+5,85)
+      pointBuyPage.boundaries = (xPageStart+(nameWidth+5),yPageStart,(nameWidth+5)+(numberWidth+5)*10+5,85)
       pointBuyPage.backgroundColor = BLACK
       pointBuyColumns = [[Label("Points Spent"), Label("STR"),           Label("CON"), Label("DEX")],
                          [Label(""),             Label("-"),             Label("-"),   Label("-")],
@@ -446,13 +451,19 @@ class creationWindow():
             click.updateDisplayFunction = [self.printAbilityMod]
             click.updateDisplayFunctionArgs = [[((pointBuyColumns[5])[i].text).lower()]]
          
-      columnWidthList = [nameWidth,nameWidth,numberWidth,numberWidth,numberWidth,numberWidth,nameWidth,numberWidth,numberWidth,numberWidth,numberWidth]
+      columnWidthList = [nameWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth,numberWidth]
       self.setHorizontalSpacing(pointBuyPage,pointBuyColumns,(xPageStart+(nameWidth+5),yPageStart),columnWidthList)
+      
+      listOfClickables[0].function = [self.rollAbilities,self.pageShow,self.reinitRolls]
+      listOfClickables[0].functionArgs = [[""],["roll"],[rollColumns]]
+      listOfClickables[1].function = [self.resetAbilities,self.pageShow]
+      listOfClickables[1].functionArgs = [[""],["pointbuy"]]
+      self.setSpacing(listOfClickables,(110,0))
+      t.listOfClickables = listOfClickables
       
       t.listOfPages.append(rollPage)
       t.listOfPages.append(pointBuyPage)
       self.listOfTabs.append(t)
-      
    def setupRaceTab(self):
       t = Tab()
       t.header = Clickable("Race")
@@ -466,7 +477,7 @@ class creationWindow():
       
       #Dwarven subraces
       sectionDwarfSubRace = Page()
-      sectionDwarfSubRace.visible = True
+      sectionDwarfSubRace.visible = False
       sectionDwarfSubRace.backgroundColor = BLACK
       sectionDwarfSubRace.text = "dwarf"
       sectionDwarfSubRace.boundaries = (xPageStart,yPageStart,(nameWidth+5)+5,45)
@@ -474,9 +485,9 @@ class creationWindow():
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionDwarfSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
       (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[0].functionArgs = [["Hill Dwarf"],["Dwarf"]]
+      (subraceColumns[0])[0].functionArgs = [["Hill Dwarf"],"race"]
       (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[1].functionArgs = [["Mountain Dwarf"],["Dwarf"]]
+      (subraceColumns[0])[1].functionArgs = [["Mountain Dwarf"],"race"]
       
       #Elven subraces
       sectionElfSubRace = Page()
@@ -488,9 +499,9 @@ class creationWindow():
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionElfSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
       (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[0].functionArgs = [["High Elf"],["Elf"]]
+      (subraceColumns[0])[0].functionArgs = [["High Elf"],"race"]
       (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[1].functionArgs = [["Wood Elf"],["Elf"]]
+      (subraceColumns[0])[1].functionArgs = [["Wood Elf"],"race"]
       
       #Halfling subraces
       sectionHalflingSubRace = Page()
@@ -502,9 +513,9 @@ class creationWindow():
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionHalflingSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
       (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[0].functionArgs = [["Lightfoot"],["Halfling"]]
+      (subraceColumns[0])[0].functionArgs = [["Lightfoot"],"race"]
       (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[1].functionArgs = [["Stout"],["Halfling"]]
+      (subraceColumns[0])[1].functionArgs = [["Stout"],"race"]
       
       #Gnomish subraces
       sectionGnomeSubRace = Page()
@@ -516,9 +527,9 @@ class creationWindow():
       columnWidthList = [nameWidth]
       self.setHorizontalSpacing(sectionGnomeSubRace,subraceColumns,(xPageStart,yPageStart),columnWidthList)
       (subraceColumns[0])[0].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[0].functionArgs = [["Forest Gnome"],["Gnome"]]
+      (subraceColumns[0])[0].functionArgs = [["Forest Gnome"],"race"]
       (subraceColumns[0])[1].function = [self.defineSubRace,self.setFocus]
-      (subraceColumns[0])[1].functionArgs = [["Rock Gnome"],["Gnome"]]
+      (subraceColumns[0])[1].functionArgs = [["Rock Gnome"],"race"]
       
       #defining function for the race clickable
       for click in listOfClickables:
@@ -615,69 +626,90 @@ class creationWindow():
       sectionAttibutes = Page()
       sectionAttibutes.text = "attributes"
       sectionAttibutes.boundaries = (xPageStart-5+(nameWidth+5)*3+(longNameWidth+5)+5,yPageStart-5,(nameWidth+5)*2+(numberWidth+5)*4+5 ,65)
-      strModLabel = VariableLabel([self.character.strMod])
-      conModLabel = VariableLabel([self.character.conMod])
-      dexModLabel = VariableLabel([self.character.dexMod])
-      intModLabel = VariableLabel([self.character.intMod])
-      wisModLabel = VariableLabel([self.character.wisMod])
-      chaModLabel = VariableLabel([self.character.chaMod])
+
       attributeColumns = [[Label("Strength"), Label("Constitution"), Label("Dexterity")],
                           [VariableLabel([self.character.str]), VariableLabel([self.character.con]), VariableLabel([self.character.dex])],
-                          [strModLabel, conModLabel, dexModLabel],
+                          [Label(""), Label(""), Label("")],
                           [Label("Intelligence"), Label("Wisdom"), Label("Charisma")],
                           [VariableLabel([self.character.int]), VariableLabel([self.character.wis]), VariableLabel([self.character.cha])],
-                          [intModLabel, wisModLabel, chaModLabel]]
+                          [Label(""), Label(""), Label("")]]
+      abilityList = ["str","con","dex"]
+      for i,click in enumerate(attributeColumns[2]):
+         click.updateDisplayFunction = [self.printAbilityMod]
+         click.updateDisplayFunctionArgs = [[abilityList[i]]]
+      abilityList = ["int","wis","cha"]
+      for i,click in enumerate(attributeColumns[5]):
+         click.updateDisplayFunction = [self.printAbilityMod]
+         click.updateDisplayFunctionArgs = [[abilityList[i]]]
+                          
       columnWidthList = [nameWidth,numberWidth,numberWidth,nameWidth,numberWidth,numberWidth]
       self.setHorizontalSpacing(sectionAttibutes,attributeColumns,(xPageStart+(nameWidth+5)*3+(longNameWidth+5)+5,yPageStart),columnWidthList)    
       numberOfRows = 3
       yPageStart = yPageStart + numberOfRows*20 + 5
       
       #-------------------------------------------------------------------------------------
-      # Class ______________ Level _______                                                 |
+      # Class          Level HitDice Max  Die                                        |
+      # ______________ ____  ____    ____ ____                                        |
       #-------------------------------------------------------------------------------------
       sectionClasses = Page()
       sectionClasses.text = "classes"
       classesColumns = [[],
+                        [],
+                        [],
+                        [],
                         []]
       numberOfRows = 0
       for c in self.character.classLevels:
          if numberOfRows == 0:
             classesColumns[0].append(Label("Class"))
             classesColumns[1].append(Label("Level"))
+            classesColumns[2].append(Label("Hit Dice"))
+            classesColumns[3].append(Label("Maximum"))
+            classesColumns[4].append(Label("Die"))
             numberOfRows = numberOfRows + 1
          classLabel = VariableLabel([c])
          levelLabel = VariableLabel([c.level])
+         
+         availableHitDice = VariableLabel([c.level])
+         hitDiceType = VariableLabel([c.hitDice])
          classesColumns[0].append(classLabel)
          classesColumns[1].append(levelLabel)
+         classesColumns[2].append(TextBox(""))
+         classesColumns[3].append(availableHitDice)
+         classesColumns[4].append(hitDiceType)
          numberOfRows = numberOfRows + 1
       if numberOfRows > 2:
          classesColumns[0].append(Label("Total"))
          classesColumns[1].append(VariableLabel([self.character.totalLevel]))
+         classesColumns[2].append(Hidden(""))
+         classesColumns[3].append(Hidden(""))
+         classesColumns[4].append(Hidden(""))
          numberOfRows = numberOfRows + 1
          
-      columnWidthList = [longNameWidth,nameWidth]
+      columnWidthList = [longNameWidth,nameWidth,nameWidth,numberWidth,numberWidth]
       self.setHorizontalSpacing(sectionClasses,classesColumns,(xPageStart,yPageStart),columnWidthList) 
       
-      sectionClasses.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)+(longNameWidth+5)+5, numberOfRows*20+5)
+      sectionClasses.boundaries = (xPageStart-5,yPageStart-5,(nameWidth+5)*2+(numberWidth+5)*2+(longNameWidth+5)+5, numberOfRows*20+5)
       
       
       yPageStart = yPageStart + numberOfRows*20 + 5
       
       #-------------------------------------------------------------------------------------
       # Experience (Next) _______ _______ | Hp        _______ _______ | Initiative _______ |
-      # AC (no armor)     _______ _______ | Hit dice  _______ _______ | Speed      _______ |
+      # AC (no armor)     _______ _______ |                           | Speed      _______ |
       #-------------------------------------------------------------------------------------
       sectionVarious = Page()
       sectionVarious.text = "various"
       sectionVarious.boundaries = (xPageStart-5,yPageStart-5, (nameWidth+5)*3+(numberWidth+5)*3+(longNumberWidth+5)*2+5 ,45)
       variousColumns = [[Label("Exp, Next"), Label("AC, no Armor")],
-                        [TextBox(""), Label("")],
-                        [TextBox(""), Label("")],
-                        [Label("HP"), Label("Hit Dice")],
-                        [TextBox(""), Label("")],
-                        [Label(""), Label("")],
+                        [TextBox(""), VariableLabel([self.character.armorClass])],
+                        [Label(""), VariableLabel([self.character.armorClass])],
+                        [Label("HP"), Hidden("")],
+                        [TextBox(""), Hidden("")],
+                        [VariableLabel([self.character.hitPoints]), Hidden("")],
                         [Label("Initiative"), Label("Speed")],
                         [Label(""), Label("")]]
+      (variousColumns[2])[0].updateDisplayFunction = [self.getExpTillNextLevel]
       columnWidthList = [nameWidth, longNumberWidth, longNumberWidth, nameWidth, numberWidth, numberWidth, nameWidth, numberWidth]
       self.setHorizontalSpacing(sectionVarious,variousColumns,(xPageStart,yPageStart),columnWidthList) 
       #-------------------------------------------------------------------------------------
@@ -731,6 +763,41 @@ class creationWindow():
       self.setHorizontalSpacing(sectionSkills,skillsColumns,(xPageStart+longNameWidth+nameWidth*2+5*4,yPageStart),columnWidthList)
       numberOfRows = 6
       yPageStart = yPageStart + numberOfRows*20 + 5
+      #-------------------------------------------------------------------------------------
+      # Racial Traits  Description                                                         |
+      # ______________ ____________________________________________________________________|
+      # ______________ ____________________________________________________________________|
+      # ______________ ____________________________________________________________________|
+      # ______________ ____________________________________________________________________|
+      # ______________ ____________________________________________________________________|
+      #-------------------------------------------------------------------------------------
+      traitColumns = [[],[]]
+      numberOfRows = 0
+      for i,trait in enumerate(self.character.race.traits):
+         if numberOfRows == 0:
+            traitColumns[0].append(Label("Racial Traits"))
+            traitColumns[1].append(Label("Descriptions"))
+            numberOfRows = numberOfRows + 1
+         traitColumns[0].append(Label(str(trait)))
+         for j,descriptionLine in enumerate(self.character.race.traitDescriptions[i]):
+            if j != 0:
+               traitColumns[0].append(Hidden(""))
+            traitColumns[1].append(Label(str(descriptionLine)))
+            numberOfRows = numberOfRows + 1
+      for i,subracetrait in enumerate(self.character.race.subRaceTraits):
+         traitColumns[0].append(Label(str(subracetrait)))
+         for j,descriptionLine in enumerate(self.character.race.subRaceTraitDescriptions[i]):
+            if j != 0:
+               traitColumns[0].append(Hidden(""))
+            traitColumns[1].append(Label(str(descriptionLine)))
+            numberOfRows = numberOfRows + 1
+      
+      sectionRacialTraits = Page()
+      sectionRacialTraits.text = "racial traits"
+      sectionRacialTraits.boundaries = (xPageStart-5,yPageStart-5,longNameWidth+5+descriptionWidth+5+5,numberOfRows*20+5)
+      columnWidthList = [longNameWidth, descriptionWidth]
+      self.setHorizontalSpacing(sectionRacialTraits,traitColumns,(xPageStart,yPageStart),columnWidthList)
+      yPageStart = yPageStart + numberOfRows*20 + 5
       
       #-------------------------------------------------------------------------------------
       # Class Features Descriptions                                                        |
@@ -740,31 +807,39 @@ class creationWindow():
       # ______________ ____________________________________________________________________|
       # ______________ ____________________________________________________________________|
       #-------------------------------------------------------------------------------------
+      featureColumns = [[],[]]
+      numberOfRows = 0
+      for c in self.character.classLevels:
+         subsetOfFeatureList = []
+         subsetOfFeatureListDescriptions = []
+         print "checking featurelist:"
+         print c.featureList
+         for i,f in enumerate(c.featureList):
+            if i < c.level:
+               subsetOfFeatureList.append(f)
+               subsetOfFeatureListDescriptions.append(c.featureListDescriptions[i])
+            else:
+               break
+         print subsetOfFeatureList
+         if numberOfRows == 0:
+            featureColumns[0].append(Label("Class Features"))
+            featureColumns[1].append(Label("Descriptions"))
+            numberOfRows = numberOfRows + 1
+         for i,level in enumerate(subsetOfFeatureList):
+            for j,feature in enumerate(level):
+               featureColumns[0].append(Label(feature))
+               for k,descriptionLine in enumerate((subsetOfFeatureListDescriptions[i])[j]):
+                  if k != 0:
+                     featureColumns[0].append(Hidden(""))
+                  featureColumns[1].append(Label(descriptionLine))
+                  numberOfRows = numberOfRows + 1
+      
+         
       sectionClassFeatures = Page()
       sectionClassFeatures.text = "classfeatures"
-      sectionClassFeatures.boundaries = (xPageStart-5,yPageStart-5,nameWidth+5+descriptionWidth+5+5,105)
-      featureColumns = [[Label("Class Features"), Label(""), Label(""), Label(""), Label("")],
-                        [Label("Descriptions"), Label(""), Label(""), Label(""), Label("")]]
-      columnWidthList = [nameWidth, descriptionWidth]
+      sectionClassFeatures.boundaries = (xPageStart-5,yPageStart-5,longNameWidth+5+descriptionWidth+5+5,numberOfRows*20+5)
+      columnWidthList = [longNameWidth, descriptionWidth]
       self.setHorizontalSpacing(sectionClassFeatures,featureColumns,(xPageStart,yPageStart),columnWidthList)
-      numberOfRows = 5
-      yPageStart = yPageStart + numberOfRows*20 + 5
-      #-------------------------------------------------------------------------------------
-      # Racial Traits  Description                                                         |
-      # ______________ ____________________________________________________________________|
-      # ______________ ____________________________________________________________________|
-      # ______________ ____________________________________________________________________|
-      # ______________ ____________________________________________________________________|
-      # ______________ ____________________________________________________________________|
-      #-------------------------------------------------------------------------------------
-      sectionRacialTraits = Page()
-      sectionRacialTraits.text = "racial traits"
-      sectionRacialTraits.boundaries = (xPageStart-5,yPageStart-5,nameWidth+5+descriptionWidth+5+5,105)
-      traitColumns = [[Label("Racial Traits"), Label(""), Label(""), Label(""), Label("")],
-                      [Label("Descriptions"), Label(""), Label(""), Label(""), Label("")]]
-      columnWidthList = [nameWidth, descriptionWidth]
-      self.setHorizontalSpacing(sectionRacialTraits,traitColumns,(xPageStart,yPageStart),columnWidthList)
-      numberOfRows = 5
       yPageStart = yPageStart + numberOfRows*20 + 5
       
       #append them to the list in the order in which they should be drawn
@@ -774,12 +849,12 @@ class creationWindow():
       self.updatePage(t,sectionProficiencies)
       self.updatePage(t,sectionLanguages)
       self.updatePage(t,sectionVarious)
-      #print "checking for classes"
       self.updatePage(t,sectionClasses)
       self.updatePage(t,sectionAttibutes)
       self.updatePage(t,sectionBasics)
       
       self.updateTab(t)
+   #Utility functions for setting up columns and rows
    def setHorizontalSpacing(self,pageToAddTo,listToSpace,startingCoordinate,columnWidthList,rowHeight=15,verticalBuffer=20):
       x,y = startingCoordinate
       previousWidth = 0
@@ -789,6 +864,12 @@ class creationWindow():
          previousWidth = previousWidth + width + 5
          for i in column:
             pageToAddTo.listOfClickables.append(i)
+   def setSpacing(self,listToSpace,startingCoordinate,columnWidth=105,rowHeight=15,verticalBuffer=20):
+      x,y = startingCoordinate
+      for i in listToSpace:
+         i.boundaries = (x,y,columnWidth,rowHeight)
+         y = y + verticalBuffer
+   #The running loop
    def creationLoop(self):
       self.displayMenu()
       self.hostnameString = ""
@@ -814,7 +895,7 @@ class creationWindow():
                self.menuMouseClickedLogic(mousex,mousey)
       pygame.quit()
       sys.exit()
-   #Here are functions that various Clickables can can do
+   #Clickable functions
    # Show this page, hide other pages
    def pageShow(self,args):
       textOfPageToShow = args[0]
@@ -833,19 +914,28 @@ class creationWindow():
             for page in tab.listOfPages:
                 page.visible = False
    def defineRace(self,args):
+      print "removing current race"
+      self.character.removeRace()
       race = characterGenerator.race.getClassFromString(args[0])
+      print "adding new race"
       self.character.addRace(race)
    def defineSubRace(self,args):
+      print "removing current subrace"
+      self.character.removeSubRace()
+      print "adding new subrace"
       self.character.addSubRace(args[0]) 
    def defineClassLevel(self,args):
-      print args
       className = args[0]
       classLevel = args[1]
       c = classes.getClassFromString(className)
       for level in range(classLevel-1):
          c.levelUp()
       self.character.addClassLevel(c)
+   def getExpTillNextLevel(self,args):
+      expTable = [0,250,950,2250,4750,9500,16000,25000,38000,56000,77000,96000,12000,150000,190000,230000,280000,330000,390000,460000,"na"]
+      return str(expTable[self.character.totalLevel])
    def setFocus(self,args):
+      print "setting focus to " + str(args)
       if args == "race":
          textToSearchFor = self.character.raceString
       elif args == "subrace":
@@ -867,6 +957,8 @@ class creationWindow():
    def incrementLevel(self,args):
       print "incrementing level: " + str(args[0])
       c = classes.getClassFromString(args[0])
+      if self.character.totalLevel == 20:
+         return
       self.character.addClassLevel(c)
    def findLevelOfClass(self,args):
       if self.character.findClassLevel(args[0]) == -1:
@@ -929,6 +1021,18 @@ class creationWindow():
       print str(self.temporaryRolls)
    def displayTemporaryRolls(self,args):
       return str(self.temporaryRolls[args[0]])
+   def reinitRolls(self,args):
+      listOfClickables = args[0]
+      for i,column in enumerate(listOfClickables):
+         for j,click in enumerate(column):
+            if isinstance(click,Sender):
+               click.used = False
+            if isinstance(click,Receiver):
+               click.text = ""
+               click.selected = False
+               click.hasValue = False
+               #set mods to be 0
+               (listOfClickables[i+1])[j].text = "0"
    def swapValues(self,args):
       listOfClickables = args[0]
       swapValue = ""
@@ -938,14 +1042,33 @@ class creationWindow():
       for i,column in enumerate(listOfClickables):
          for j,click in enumerate(column):
             if isinstance(click,Sender) and click.selected and swapValue == "":
+               print str((listOfClickables[i])[j])
                swapValue = click.text
                swapIndexI = i
                swapIndexJ = j
-            if isinstance(click,Receiver) and click.selected and swapValue != "":
-               (listOfClickables[swapIndexI])[swapIndexJ] = click.text
+            if isinstance(click,Receiver) and click.selected and swapValue != "" and (listOfClickables[swapIndexI])[swapIndexJ].used == False:
+               (listOfClickables[swapIndexI])[swapIndexJ].used = True
+               (listOfClickables[swapIndexI])[swapIndexJ].selected = False
+               (listOfClickables[swapIndexI])[swapIndexJ].text = ""
                click.text = swapValue
+               self.character.setAbility((listOfClickables[i-1])[j].text.lower(), int(swapValue))
+               
+               click.selected = False
                click.hasValue = True
                didSwap = True
+               if (listOfClickables[i-1])[j].text.lower() == "str":
+                  (listOfClickables[i+1])[j].text = str(self.character.strMod)
+               elif (listOfClickables[i-1])[j].text.lower() == "con":
+                  (listOfClickables[i+1])[j].text = str(self.character.conMod)
+               elif (listOfClickables[i-1])[j].text.lower() == "dex":
+                  (listOfClickables[i+1])[j].text = str(self.character.dexMod)
+               elif (listOfClickables[i-1])[j].text.lower() == "int":
+                  (listOfClickables[i+1])[j].text = str(self.character.intMod)
+               elif (listOfClickables[i-1])[j].text.lower() == "wis":
+                  (listOfClickables[i+1])[j].text = str(self.character.wisMod)
+               elif (listOfClickables[i-1])[j].text.lower() == "cha":
+                  (listOfClickables[i+1])[j].text = str(self.character.chaMod)
+               print "mod: " + str((listOfClickables[i+1])[j].text)
                break
       return didSwap
    def printPointsSpent(self,args):

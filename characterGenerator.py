@@ -96,6 +96,7 @@ class Character:
             if i.numberOfAbilitiesToIncrease > 0:
                i.numberOfAbilitiesToIncrease = i.numberOfAbilitiesToIncrease - 1
    def setAbility(self,choice,value):
+      print "setting ability: " + str(choice) + " to " + str(value)
       if choice == "str" and self.str < 20:
          self.str = value
          self.strMod = (self.str-10)/2
@@ -175,8 +176,7 @@ class Character:
                maxDex = armor.maxDexBonus
       self.ac = self.ac + maxDex
       self.acNoArmor = 10 + self.dexMod
-   def __init__(self,rollForStats=True,listOfStats=[10,10,10,10,10,10],orderOfStats=["str","con","dex","int","wis","cha"],listOfClassesToLevelUp = [],name="Unnamed",race=Dwarf("Hill Dwarf"),background=Artisan(),listOfSkills=[]):
-      
+   def __init__(self,rollForStats=False,listOfStats=[10,10,10,10,10,10],orderOfStats=["str","con","dex","int","wis","cha"],listOfClassesToLevelUp = [],name="Unnamed",race=BaseRace(""),background=Artisan(),listOfSkills=[]):
       self.str = 0;self.con = 0;self.dex = 0;self.int = 0;self.wis = 0;self.cha = 0
       self.strMod = 0;self.conMod = 0;self.dexMod = 0;self.intMod = 0;self.wisMod = 0;self.chaMod = 0
       self.pointsSpent = 0
@@ -433,38 +433,72 @@ class Character:
    def addRace(self,Race):
       self.race = Race
       self.raceString = str(self.race)
+      print "abilities to add: " + str(self.race.abiltyAdjustment)
       for i in self.race.abiltyAdjustment:
          if i == "str":
-            self.str = self.str + 1
+            self.setAbility(i,self.str + 1)
          elif i == "con":
-            self.con = self.con + 1
+            self.setAbility(i,self.con + 1)
          elif i == "dex":
-            self.dex = self.dex + 1
+            self.setAbility(i,self.dex + 1)
          elif i == "int":
-            self.int = self.int + 1
+            self.setAbility(i,self.int + 1)
          elif i == "wis":
-            self.wis = self.wis + 1
+            self.setAbility(i,self.wis + 1)
          elif i == "cha":
-            self.cha = self.cha + 1
-   def getSubRace(self):
-      return self.race.subraceString
+            self.setAbility(i,self.cha + 1)
+   def removeRace(self):
+      print "removing race"
+      print "abilities to remove: " + str(self.race.abiltyAdjustment)
+      for i in self.race.abiltyAdjustment:
+         if i == "str":
+            self.setAbility(i,self.str - 1)
+         elif i == "con":
+            self.setAbility(i,self.con - 1)
+         elif i == "dex":
+            self.setAbility(i,self.dex - 1)
+         elif i == "int":
+            self.setAbility(i,self.int - 1)
+         elif i == "wis":
+            self.setAbility(i,self.wis - 1)
+         elif i == "cha":
+            self.setAbility(i,self.cha - 1)
+      
+      self.race = BaseRace()
    def addSubRace(self,choice):
       oldLength = len(self.race.abiltyAdjustment)
       self.race.chooseSubRace(choice)
-      if oldLength != len(self.race.abiltyAdjustment):
-         i = self.race.abiltyAdjustment[len(self.race.abiltyAdjustment)-1]
+      for i in self.race.subRaceAbilityAdjustment:
          if i == "str":
-            self.str = self.str + 1
+            self.setAbility(i,self.str + 1)
          elif i == "con":
-            self.con = self.con + 1
+            self.setAbility(i,self.con + 1)
          elif i == "dex":
-            self.dex = self.dex + 1
+            self.setAbility(i,self.dex + 1)
          elif i == "int":
-            self.int = self.int + 1
+            self.setAbility(i,self.int + 1)
          elif i == "wis":
-            self.wis = self.wis + 1
+            self.setAbility(i,self.wis + 1)
          elif i == "cha":
-            self.cha = self.cha + 1
+            self.setAbility(i,self.cha + 1)
+   def removeSubRace(self):
+      for i in self.race.subRaceAbilityAdjustment:
+         if i == "str":
+            self.setAbility(i,self.str - 1)
+         elif i == "con":
+            self.setAbility(i,self.con - 1)
+         elif i == "dex":
+            self.setAbility(i,self.dex - 1)
+         elif i == "int":
+            self.setAbility(i,self.int - 1)
+         elif i == "wis":
+            self.setAbility(i,self.wis - 1)
+         elif i == "cha":
+            self.setAbility(i,self.cha - 1)
+      self.race.subRaceAbilityAdjustment = []
+      self.race.subRaceTraits = [""]
+      self.race.subraceString = ""
+      
    #backgrounds/skills
    def addBackground(self,background):
       self.background = background
